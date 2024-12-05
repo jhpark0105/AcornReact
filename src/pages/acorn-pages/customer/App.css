@@ -49,4 +49,22 @@
     position: relative;
     z-index: 1050;
   }
+
+  /* App.css 또는 모달 관련 CSS 파일에서 스타일 확인 */
+  .modal {
+    display: flex !important; /* Ensure modal is shown */
+    align-items: center; /* Center the modal vertically */
+    justify-content: center; /* Center the modal horizontally */
+  }
+
+  .modal-body {
+    overflow-y: auto; /* If content is long */
+    max-height: calc(100vh - 200px); /* Prevent the modal from exceeding the viewport height */
+  }
+
+  .datepicker-dropdown, .genderpicker-dropdown {
+    z-index: 1060; /* 모달보다 높은 값으로 설정 */
+  }
+  
+    
   
