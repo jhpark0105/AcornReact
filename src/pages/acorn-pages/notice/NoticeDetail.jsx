@@ -33,7 +33,7 @@ export default function NoticeDetail() {
 						<Typography color="text.secondary"># {notice.noticeNo}</Typography>
 					</Grid>
 					<Grid item xs={6} sx={{ textAlign: 'right' }}>
-						<Typography color="text.secondary">작성일자: {notice.noticeReg}</Typography>
+						<Typography color="text.secondary">작성일: {notice.noticeReg}</Typography>
 					</Grid>
 				</Grid>
 				<Divider sx={{ my: 2 }} />
