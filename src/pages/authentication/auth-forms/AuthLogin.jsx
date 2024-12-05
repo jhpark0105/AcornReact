@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import axios from 'axios';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 // material-ui
 import Button from '@mui/material/Button';
@@ -32,6 +33,7 @@ import FirebaseSocial from './FirebaseSocial';
 // ============================|| JWT - LOGIN ||============================ //
 
 export default function AuthLogin({ isDemo = false }) {
+  const navigate = useNavigate();
   const [checked, setChecked] = React.useState(false);
 
   const [showPassword, setShowPassword] = React.useState(false);
@@ -43,46 +45,71 @@ export default function AuthLogin({ isDemo = false }) {
     event.preventDefault();
   };
 
+  const handleLogin = (values, { setSubmitting, setErrors }) => {
+    axios
+      .post('http://localhost:8080/main/login', values, {
+        withCredentials: true
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          //alert('로그인 성공');
+          navigate('/main/dashboard');
+        }
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 401) {
+          setErrors({ submit: '아이디 또는 비밀번호가 올바르지 않습니다.' });
+          //alert("로그인 실패: 아이디 또는 비밀번호가 올바르지 않습니다.");
+        } else {
+          console.error('로그인 에러: ', error);
+        }
+      })
+      .finally(() => {
+        setSubmitting(false); // 폼 제출 실패시 로그인 버튼 재활성화
+      });
+  };
   return (
     <>
       <Formik
         initialValues={{
-          email: '',
+          id: '',
           password: '',
           submit: null
         }}
         validationSchema={Yup.object().shape({
-          email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-          password: Yup.string().max(255).required('Password is required')
+          id: Yup.string().max(20).required('아이디는 필수 입력 항목입니다.'),
+          //email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+          password: Yup.string().max(20).required('비밀번호는 필수 입력 항목입니다.')
         })}
+        onSubmit={handleLogin} // handleLogin 함수 연결
       >
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
           <form noValidate onSubmit={handleSubmit}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="email-login">Email Address</InputLabel>
+                  <InputLabel htmlFor="id-login">아이디</InputLabel>
                   <OutlinedInput
-                    id="email-login"
-                    type="email"
-                    value={values.email}
-                    name="email"
+                    id="id-login"
+                    type="text"
+                    value={values.id}
+                    name="id"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    placeholder="Enter email address"
+                    placeholder="아이디를 입력하세요"
                     fullWidth
-                    error={Boolean(touched.email && errors.email)}
+                    error={Boolean(touched.id && errors.id)}
                   />
                 </Stack>
-                {touched.email && errors.email && (
-                  <FormHelperText error id="standard-weight-helper-text-email-login">
-                    {errors.email}
+                {touched.id && errors.id && (
+                  <FormHelperText error id="standard-weight-helper-text-id-login">
+                    {errors.id}
                   </FormHelperText>
                 )}
               </Grid>
               <Grid item xs={12}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="password-login">Password</InputLabel>
+                  <InputLabel htmlFor="password-login">비밀번호</InputLabel>
                   <OutlinedInput
                     fullWidth
                     error={Boolean(touched.password && errors.password)}
@@ -95,7 +122,7 @@ export default function AuthLogin({ isDemo = false }) {
                     endAdornment={
                       <InputAdornment position="end">
                         <IconButton
-                          aria-label="toggle password visibility"
+                          aria-label="비밀번호 표시 여부 변경"
                           onClick={handleClickShowPassword}
                           onMouseDown={handleMouseDownPassword}
                           edge="end"
@@ -105,7 +132,7 @@ export default function AuthLogin({ isDemo = false }) {
                         </IconButton>
                       </InputAdornment>
                     }
-                    placeholder="Enter password"
+                    placeholder="비밀번호를 입력하세요."
                   />
                 </Stack>
                 {touched.password && errors.password && (
@@ -127,10 +154,10 @@ export default function AuthLogin({ isDemo = false }) {
                         size="small"
                       />
                     }
-                    label={<Typography variant="h6">Keep me sign in</Typography>}
+                    label={<Typography variant="h6">아이디 기억하기</Typography>}
                   />
                   <Link variant="h6" component={RouterLink} color="text.primary">
-                    Forgot Password?
+                    아이디 / 비밀번호 찾기
                   </Link>
                 </Stack>
               </Grid>
@@ -142,13 +169,13 @@ export default function AuthLogin({ isDemo = false }) {
               <Grid item xs={12}>
                 <AnimateButton>
                   <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
-                    Login
+                    로그인
                   </Button>
                 </AnimateButton>
               </Grid>
               <Grid item xs={12}>
                 <Divider>
-                  <Typography variant="caption"> Login with</Typography>
+                  <Typography variant="caption">소셜 계정으로 로그인</Typography>
                 </Divider>
               </Grid>
               <Grid item xs={12}>
