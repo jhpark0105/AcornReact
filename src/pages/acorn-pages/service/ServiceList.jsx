@@ -1,23 +1,11 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-// import ListSearch from "./ListSearch";
 import Pagination from "../../../acorn-components/components/Pagination";
-// import styles from "../ListSearch.module.css";
-
 import 'bootstrap/dist/css/bootstrap.min.css';
-
-// material-ui
-import Link from "@mui/material/Link";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Box from "@mui/material/Box";
-
-// third-party
+import styles from "../../../styles/ListSearch.module.css";  // 수정: .modul.css -> .module.css
 import { NumericFormat } from "react-number-format";
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import ListSearch from "../../../acorn-components/components/ListSearch" // ListSearch 컴포넌트 임포트
 
 // 정렬 로직
 function descendingComparator(a, b, orderBy) {
@@ -52,7 +40,7 @@ function stableSort(array, comparator) {
 const headCells = [
   { id: "serviceCode", align: "left", label: "서비스 코드" },
   { id: "serviceName", align: "left", label: "서비스 명" },
-  { id: "servicePrice", align: "right", label: "서비스 금액" },
+  { id: "servicePrice", align: "left", label: "서비스 금액" },
 ];
 
 // 테이블 헤더 컴포넌트
@@ -79,18 +67,15 @@ TestTableHead.propTypes = {
   orderBy: PropTypes.string.isRequired,
 };
 
-// 메인 컴포넌트
 function ServiceList({ services, handleDetail, setShowModal }) {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filteredData, setFilteredData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
-  const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("serviceCode");
+  const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태
+  const [filteredData, setFilteredData] = useState([]); // 필터링된 데이터 상태
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
+  const [itemsPerPage, setItemsPerPage] = useState(5); // 한 페이지당 항목 수
 
-  // 초기 렌더링 시 filteredData 설정
+  // 초기 렌더링 시 filteredData를 services로 설정
   useEffect(() => {
-    setFilteredData([]);
+    setFilteredData(services); // services가 변경될 때마다 filteredData 갱신
   }, [services]);
 
   // 검색어 상태 업데이트
@@ -103,8 +88,8 @@ function ServiceList({ services, handleDetail, setShowModal }) {
     const filtered = services.filter((item) =>
       item.serviceName.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    setFilteredData(filtered);
-    setCurrentPage(1);
+    setFilteredData(filtered); // 필터링된 데이터 상태 업데이트
+    setCurrentPage(1); // 검색 후 첫 페이지로 이동
   };
 
   // 현재 페이지 데이터 계산
@@ -120,41 +105,38 @@ function ServiceList({ services, handleDetail, setShowModal }) {
       {/* 검색 및 등록 버튼 */}
       <div
         style={{
-          width: "80%",
-          margin: "0 auto",
           display: "flex",
+          //justify-content: space-between과 align-items: center를 사용하여 
+          // 버튼과 검색 필드를 일관되게 배치
           justifyContent: "space-between",
+          alignItems: "center",
+          width: "100%", // 테이블 컨테이너에 width: 100%를 적용하여 테이블이 부모 컨테이너의 전체 너비를 차지
         }}
       >
-        <div style={{ flex: "none" }}>
-          {/* <ListSearch
+        {/* ListSearch 컴포넌트가 왼쪽 끝에 맞게 설정 */}
+        <div className={styles["list-component-container"]} style={{ flex: "1" }}>
+          <ListSearch
             searchTerm={searchTerm}
             onChange={onChange}
             handleSearchClick={handleSearchClick}
-          /> */}
+          />
         </div>
+
         <button onClick={() => setShowModal(true)} className="btn btn-success mb-3">
           서비스 등록
         </button>
       </div>
 
       {/* 테이블 */}
-      <TableContainer
-        sx={{
-          width: "80%",
-          margin: "0 auto",
-          overflowX: "auto",
-          "& td, & th": { whiteSpace: "nowrap" },
-        }}
-      >
+      <TableContainer className={styles["table-container"]}>
         <Table>
-          <TestTableHead order={order} orderBy={orderBy} />
+          <TestTableHead order="asc" orderBy="serviceCode" />
           <TableBody>
             {currentItems.length > 0 ? (
               currentItems.map((row) => (
                 <TableRow key={row.serviceCode}>
                   <TableCell>
-                    <Link color="secondary">{row.serviceCode}</Link>
+                    {row.serviceCode}
                   </TableCell>
                   <TableCell>
                     <span
@@ -168,13 +150,8 @@ function ServiceList({ services, handleDetail, setShowModal }) {
                       {row.serviceName}
                     </span>
                   </TableCell>
-                  <TableCell align="right">
-                    <NumericFormat
-                      value={row.servicePrice}
-                      displayType="text"
-                      thousandSeparator
-                      suffix=" 원"
-                    />
+                  <TableCell align="left">
+                    <NumericFormat value={row.servicePrice} displayType="text" thousandSeparator suffix=" 원" />
                   </TableCell>
                 </TableRow>
               ))
