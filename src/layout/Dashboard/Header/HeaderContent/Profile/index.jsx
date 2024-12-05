@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types';
 import { useRef, useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -50,6 +52,7 @@ function a11yProps(index) {
 
 export default function Profile() {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
@@ -69,6 +72,19 @@ export default function Profile() {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const handleLogout = () => {
+    axios.post('http://localhost:8080/logoutProcess')
+    .then((response) => {
+      if (response.status === 200) {
+        //alert("로그아웃 성공");
+        navigate('/main/login');
+      }
+    })
+    .catch(error => {
+        console.error("로그아웃 에러 : ",error);
+    })
+  }
 
   const iconBackColorOpen = 'grey.100';
 
@@ -90,7 +106,7 @@ export default function Profile() {
       >
 
         <Stack direction="row" spacing={1.25} alignItems="center" sx={{ p: 0.5 }}>
-          <Avatar alt="profile user" /* src={avatar1} */ size="sm" />
+          <Avatar alt="profile user" /* src={avatar1}  */ size="sm" />
           <Typography variant="subtitle1" sx={{ textTransform: 'capitalize' }}>
             Acorn
           </Typography>
@@ -136,7 +152,7 @@ export default function Profile() {
                       </Grid>
                       <Grid item>
                         <Tooltip title="Logout">
-                          <IconButton size="large" sx={{ color: 'text.primary' }}>
+                          <IconButton size="large" sx={{ color: 'text.primary' }} onClick={handleLogout}>
                             <LogoutOutlined />
                           </IconButton>
                         </Tooltip>
