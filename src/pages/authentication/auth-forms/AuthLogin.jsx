@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect } from 'react';
 import axios from 'axios';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 // material-ui
 import Button from '@mui/material/Button';
@@ -45,9 +46,28 @@ export default function AuthLogin({ isDemo = false }) {
     event.preventDefault();
   };
 
+  // 초기값: 쿠키에서 아이디 및 체크박스 상태를 불러옴
+  useEffect(() => {
+    const savedUserId = Cookies.get('savedUserId');
+    const savedChecked = Cookies.get('checked') === 'true';
+
+    if (savedChecked) {
+      setChecked(true);
+    }
+  }, []);
+
   const handleLogin = (values, { setSubmitting, setErrors }) => {
-    axios
-      .post('http://localhost:8080/main/login', values, {
+
+        // 체크박스 상태에 따라 쿠키 저장/삭제
+        if (checked) {
+          Cookies.set('savedUserId', values.id, { expires: 7 }); // 7일 동안 유지
+          Cookies.set('checked', 'true', { expires: 7 });
+        } else {
+          Cookies.remove('savedUserId');
+          Cookies.remove('checked');
+        }
+
+    axios.post('http://localhost:8080/main/login', values, {
         withCredentials: true
       })
       .then((response) => {
@@ -72,7 +92,7 @@ export default function AuthLogin({ isDemo = false }) {
     <>
       <Formik
         initialValues={{
-          id: '',
+          id: Cookies.get('savedUserId') || '',
           password: '',
           submit: null
         }}
