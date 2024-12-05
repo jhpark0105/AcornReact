@@ -79,6 +79,24 @@ function MemberList({ members, handleDetail, setShowModal }) {
   const handleRowClick = (row) => {
     handleDetail(row); // 행 클릭 시 상세 보기 처리
   };
+    // rows 정의 - memberName을 클릭 가능하게 만들어 파란색으로 표시
+    const rows = currentItems.map((member) => ({
+      memberId: member.memberId,
+      memberName: (
+        <span
+          style={{
+            color: "blue", // 파란색 텍스트
+            cursor: "pointer", // 클릭 시 손 모양 커서
+            textDecoration: "underline", // 밑줄 추가
+          }}
+          onClick={() => handleRowClick(member)} // 클릭 시 handleRowClick 호출
+        >
+          {member.memberName}
+        </span>
+      ),
+      memberJob: member.memberJob,
+      memberTel: member.memberTel,
+    }));
 
   return (
     <div>
@@ -128,8 +146,8 @@ function MemberList({ members, handleDetail, setShowModal }) {
       {/* Table 컴포넌트를 사용하여 데이터를 렌더링 */}
       <TableComponent
         columns={columns}
-        rows={currentItems}
-        onRowClick={handleRowClick}
+        rows={rows} //rows TableComponent에 전달
+        onRowClick={handleRowClick} 
       />
 
       {/* 페이지네이션 */}

@@ -7,6 +7,7 @@ function DeleteConfirmationModal({ selectedProductB, handleDeleteB, setShowDelet
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">삭제 확인</h5>
+
             <button type="button" className="btn-close" onClick={() => setShowDeleteBModal(false)}></button>
           </div>
 

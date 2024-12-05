@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const ProductModal = ({ handleChange, handleInsert, setShowModal, selectedProduct }) => {
+const ProductModal = ({ handleChange, handleInsert, setShowModal }) => {
     const [productbs, setProductbs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState(''); // 대분류 초기값
@@ -8,7 +8,7 @@ const ProductModal = ({ handleChange, handleInsert, setShowModal, selectedProduc
     useEffect(() => {
         const fetchProductB = async () => {
             try {
-                const response = await fetch('/product-b');
+                const response = await fetch('/product/product-b');
                 const data = await response.json();
                 if (Array.isArray(data)) {
                     setProductbs(data);
@@ -31,7 +31,7 @@ const ProductModal = ({ handleChange, handleInsert, setShowModal, selectedProduc
     const handleCategoryChange = (e) => {
         const selectedCode = e.target.value; // 선택된 productBCode
         setSelectedCategory(selectedCode);
-        handleChange({ target: { name: 'productBCode', value: selectedCode } }); // productBCode 전달
+        handleChange({ target: { name : 'productBCode', value : selectedCode } }); // productBCode 전달
     };
 
     const handleProductInsert = () => {
@@ -45,6 +45,7 @@ const ProductModal = ({ handleChange, handleInsert, setShowModal, selectedProduc
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title">상품 등록</h5>
+
                         <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
                     </div>
                     <div className="modal-body">
@@ -52,12 +53,7 @@ const ProductModal = ({ handleChange, handleInsert, setShowModal, selectedProduc
                             {/* 대분류 선택 */}
                             <div className="mb-3">
                                 <label>대분류</label>
-                                <select
-                                    name="productBCode"
-                                    value={selectedCategory}
-                                    onChange={handleCategoryChange}
-                                    className="form-control"
-                                >
+                                <select name="productBCode" value={selectedCategory} onChange={handleCategoryChange} className="form-control" >
                                     <option value="">대분류를 선택하세요</option>
                                     {productbs.map((productb) => (
                                         <option key={productb.productBCode} value={productb.productBCode}>
@@ -67,7 +63,6 @@ const ProductModal = ({ handleChange, handleInsert, setShowModal, selectedProduc
                                 </select>
                             </div>
 
-                            {/* 나머지 입력 필드 */}
                             <div className="mb-3">
                                 <label>상품 코드</label>
                                 <input type="text" name="productCode" onChange={handleChange} className="form-control" placeholder="상품 코드를 입력하세요." />

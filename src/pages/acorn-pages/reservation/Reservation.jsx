@@ -166,7 +166,6 @@ const handleSave = () => {
 
   return (
     <div className="Reservation">
-      <h2>Reservation List</h2>
 
       <ToastContainer />
       <ReservationList 

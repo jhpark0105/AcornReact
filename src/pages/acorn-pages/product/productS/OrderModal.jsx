@@ -88,7 +88,7 @@ export default function OrderModal({handleClose}){
                 cart:cart,
                 ordersApplyDate:new Date().toISOString().split("T")[0],
                 ordersEndDate:ordersEndDate,
-                branchCode:"B001"
+                branchCode:"B004"
             })
             .then(res=>{
                 if(res){
@@ -135,13 +135,13 @@ export default function OrderModal({handleClose}){
                 <InputGroup.Text id="branchCode">지점코드</InputGroup.Text>
                 <Form.Control
                 readOnly
-                placeholder="B001"
+                placeholder="B004"
                 aria-label="branchCode"
                 aria-describedby="branchCode"
                 />
             </InputGroup>
             <div>
-                발주 마감일
+                발주 마감일&nbsp;&nbsp;&nbsp;
                 <input type='date' required onChange={CompareDate}></input>
             </div>
             <Form.Label htmlFor="productB">대분류</Form.Label>
@@ -171,17 +171,17 @@ export default function OrderModal({handleClose}){
                     {showCartList&&
                     <ol>
                         {cart.map((product,index)=>
-                            <li key={index}>
-                                {product.productDtoFO.productName}&nbsp;&nbsp;&nbsp;
-                                {product.productDtoFO.productPrice}원&nbsp;&nbsp;&nbsp;
-                                {product.ordersEa}개&nbsp;
+                            <li key={index} style={{ display: 'flex', alignItems: 'center' }}>
+                                <span style={{ flex: 3 }}>{product.productDtoFO.productName}</span>&nbsp;&nbsp;
+                                <span style={{ flex: 1 }}>{product.productDtoFO.productPrice}원</span>&nbsp;&nbsp;
+                                <span style={{ flex: 1 }}>{product.ordersEa}개</span>&nbsp;
                                 <button onClick={()=>{
                                     updateOrdersEa(index,1);
                                 }}>+</button>&nbsp;
                                 <button onClick={()=>{
                                     if(product.ordersEa>1) updateOrdersEa(index,-1);
                                 }}>-</button>&nbsp;&nbsp;&nbsp;
-                                <input type='number' min={1} placeholder='개수 입력' onBlur={(e)=>{
+                                <input type='number' min={1} placeholder='개수' style={{ width: '4em'}} onBlur={(e)=>{
                                     updateOrdersEa(index,parseInt(e.target.value));
                                 }}></input>&nbsp;&nbsp;&nbsp;
                                 <button onClick={() =>
