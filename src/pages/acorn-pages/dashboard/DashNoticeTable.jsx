@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 // material-ui
-import Link from '@mui/material/Link';
+import {Link} from 'react-router-dom';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -80,8 +80,13 @@ export default function DashboardNotice() {
                 key={index}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
-                <TableCell component="th" scope="row" title={notice.noticeTitle}>
-                  <Link color="secondary">{notice.noticeTitle}</Link>
+                <TableCell component="th" scope="row" title={notice.noticeTitle}
+                  sx={{maxWidth: '150px', // 최대 너비를 설정하여 텍스트가 넘어가는 시점을 조정
+                    whiteSpace: 'nowrap', // 텍스트를 한 줄로 유지
+                    overflow: 'hidden',   // 넘치는 텍스트를 숨김 처리
+                    textOverflow: 'ellipsis', // 넘친 부분에 ... 표시
+                  }}>
+                  <Link color="secondary" to={`/main/notice/${notice.noticeNo}`}>{notice.noticeTitle}</Link>
                 </TableCell>
                 <TableCell align="right">{notice.noticeReg}</TableCell>
               </TableRow>
