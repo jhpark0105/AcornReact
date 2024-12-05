@@ -1,4 +1,4 @@
-
+import '../../../styles/modal.css';
 import React, { useEffect, useState } from 'react';
 
 function ReservationDetail({ isEditing, selectedReservation, handleDetailChange, handleSave, handleEdit, setShowDetailModal, setShowDeleteModal }) {

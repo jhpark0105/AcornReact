@@ -1,4 +1,4 @@
-
+import '../../../styles/modal.css';
 // components/DeleteConfirmationModal.js
 import React from 'react';
 
