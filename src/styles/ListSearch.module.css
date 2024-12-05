@@ -11,6 +11,16 @@
     border-radius: 4px;
     font-size: 16px;
 }
+
+/* selectbox css*/
+.searchSelect {
+    margin-right: 3px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
 /* 
 .searchButton {
     padding: 8px 16px;
