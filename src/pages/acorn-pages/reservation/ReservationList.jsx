@@ -25,52 +25,42 @@ function ReservationList({ reservations, handleDetail, setShowModal }) {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
-  // useEffect(() => {
-  //   if (reservations) setFilteredData(reservations);
-  // }, [reservations]);
-
-  //초기 렌더링 시 filteredData를 reservations로 설정
   useEffect(() => {
-    if(reservations && reservations.length > 0) {
-    const today = new Date();
-    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), today.getDate()); // 이번 달 1일
-    const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate()); // 이번 달 마지막 날
+    if (reservations && reservations.length > 0) {
+      const today = new Date();
+      const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1); // 이번 달 1일
+      const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0); // 이번 달 마지막 날
 
-    // 시작일 종료일 지정 
-    setStartDate(startOfMonth);
-    setEndDate(endOfMonth);
+      setStartDate(startOfMonth);
+      setEndDate(endOfMonth);
 
-    // 필터링된 데이터 설정 (초기 데이터는 한 달만 필터링)
-    const filtered = reservations.filter((reservation) => {
-      const reservationDate = new Date(reservation.reservationDate);
-      return reservationDate >= startOfMonth && reservationDate <= endOfMonth;
-    });
-  
-    setFilteredData(filtered);
+      const filtered = reservations.filter((reservation) => {
+        const reservationDate = new Date(reservation.reservationDate);
+        return reservationDate >= startOfMonth && reservationDate <= endOfMonth;
+      });
+
+      setFilteredData(filtered);
     }
-    }, [reservations]); // 예약데이터 변경될 때마다 필터링
+  }, [reservations]);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
-  const onChange = (term) => setSearchTerm(term);
-
   const handleSearchClick = () => {
     let filtered = reservations;
 
-    // 검색 필터링
     if (searchTerm) {
       filtered = filtered.filter((item) => {
         const serviceMatch = item.service.serviceName
-          .toLowerCase()
+          ?.toLowerCase()
           .includes(searchTerm.toLowerCase());
         const customerMatch = item.customer.customerName
-          .toLowerCase()
+          ?.toLowerCase()
           .includes(searchTerm.toLowerCase());
         const memberMatch = item.member.memberName
-          .toLowerCase()
+          ?.toLowerCase()
           .includes(searchTerm.toLowerCase());
 
         if (selectedFilter === "serviceName") return serviceMatch;
@@ -80,19 +70,10 @@ function ReservationList({ reservations, handleDetail, setShowModal }) {
       });
     }
 
-    // 기간 필터링
     if (startDate && endDate) {
-      const formattedStartDate = new Date(startDate).toLocaleDateString("en-CA");
-      const formattedEndDate = new Date(endDate).toLocaleDateString("en-CA");
-
       filtered = filtered.filter((reservation) => {
-        const reservationDate = new Date(
-          reservation.reservationDate
-        ).toLocaleDateString("en-CA");
-        return (
-          reservationDate >= formattedStartDate &&
-          reservationDate <= formattedEndDate
-        );
+        const reservationDate = new Date(reservation.reservationDate);
+        return reservationDate >= startDate && reservationDate <= endDate;
       });
     }
 
@@ -132,7 +113,7 @@ function ReservationList({ reservations, handleDetail, setShowModal }) {
   }));
 
   return (
-    <Box sx={{ width: "80%", margin: "0 auto" }}>
+    <Box sx={{ width: "100%", margin: "0 auto", padding: "16px" }}>
       <Box
         sx={{
           display: "flex",
@@ -147,19 +128,11 @@ function ReservationList({ reservations, handleDetail, setShowModal }) {
           <DateSearch selectedDate={endDate} setSelectedDate={setEndDate} />
           <ListSearch
             searchTerm={searchTerm}
-            onChange={onChange}
+            onChange={setSearchTerm}
             handleSearchClick={handleSearchClick}
             selectedFilter={selectedFilter}
             setSelectedFilter={setSelectedFilter}
           />
-          {/* <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSearchClick}
-            startIcon={<RiSearchLine />}
-          >
-            검색
-          </Button> */}
         </Box>
         <Button
           variant="contained"
@@ -170,7 +143,7 @@ function ReservationList({ reservations, handleDetail, setShowModal }) {
         </Button>
       </Box>
 
-      <TableContainer>
+      <TableContainer sx={{ width: "100%", overflowX: "auto" }}>
         <Table>
           <TableHead>
             <TableRow>

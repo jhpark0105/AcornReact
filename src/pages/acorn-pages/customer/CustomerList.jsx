@@ -174,22 +174,31 @@ export default function CustomerList() {
             </div>
 
             {/* 고객 등록 모달 */}
+            {/* 고객 등록 모달 */}
             {showModal && (
-                <div className="modal show"
-                    style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)" }} tabIndex="-1">
-                    <div className="modal-dialog">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">고객 등록</h5>
-                                <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
-                            </div>
-                            <div className="modal-body">
-                                <CustomerInsForm setShowModal={setShowModal} show={showModal} refresh={refresh} />
-                            </div>
-                        </div>
+            <div 
+            className="modal show"
+            style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)" }} 
+            tabIndex="-1"
+          >
+                <div className="modal-dialog">
+                <div className="modal-content">
+                    <div className="modal-header">
+                    <h5 className="modal-title">고객 등록</h5>
+                    <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
+                    </div>
+                    <div className="modal-body">
+                    <CustomerInsForm 
+                        setShowModal={setShowModal} 
+                        refresh={refresh} 
+                        show={false} // show 상태는 모달 외부에서 처리
+                    />
                     </div>
                 </div>
+                </div>
+            </div>
             )}
+
 
             {/* 고객 상세보기 모달 */}
             {showDetailModal && selectedCustomer && (
@@ -200,7 +209,7 @@ export default function CustomerList() {
             <TableComponent
                 columns={columns}
                 rows={rows}
-                onRowClick={handleDetail}
+                onRowClick={null}
             />
 
             {/* 페이지네이션 */}

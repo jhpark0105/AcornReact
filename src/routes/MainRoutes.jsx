@@ -6,6 +6,9 @@ import Main from 'layout/Dashboard';
 import { element } from 'prop-types';
 import Login from 'pages/authentication/login';
 import MainCard from 'components/MainCard';
+// 마이페이지
+import MypageView from '../pages/acorn-pages/mypage/MypageView';
+import MypageUpdate from '../pages/acorn-pages/mypage/MypageUpdate';
 
 // =====
 
@@ -84,6 +87,14 @@ const MainRoutes = {
         {
           path: 'notice/*',
           element: <Notice />
+        },
+        {
+          path: 'manager/mypage/view/:branchCode',
+          element: <MypageView />
+        },
+        {
+          path: 'manager/mypage/update/:branchCode',
+          element: <MypageUpdate />
         },
       ]
     }
