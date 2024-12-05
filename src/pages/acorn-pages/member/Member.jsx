@@ -1,277 +1,186 @@
+import MainCard from "components/MainCard";
 import React, { useEffect, useState } from 'react';
 import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import 'rsuite/SelectPicker/styles/index.css';
+import MemberList from "./MemberList";
+import CreateMember from "./CreateMember";
+import MemberDetail from "./MemberDetail";
+import MemberDelete from "./MemberDelete";
+import 'rsuite/dist/rsuite.min.css';
 
 function App() {
-  const [services, setServices] = useState([]);
+  const [members, setMembers] = useState([]);
   const [state, setState] = useState({});
-  const [showModal, setShowModal] = useState(false); // 등록 모달 상태 관리
-  const [selectedService, setSelectedService] = useState(null); // 상세보기 데이터
-  const [showDetailModal, setShowDetailModal] = useState(false); // 상세보기 모달 상태
+  const [showModal,setShowModal] = useState(false); // 등록 모달 상태 관리
+  const [selectedMember, setSelectedMember] = useState(null); // 상세보기 데이터
+  const [showDetailModal, setShowDetailModal] = useState(false); // 상세보기 모달
   const [showDeleteModal, setShowDeleteModal] = useState(false); // 삭제 확인 모달
-  const [isEditing, setIsEditing] = useState(false); // 수정 모드 상태
+  const [updating, setUpdating] = useState(false); // 수정 모드 상태
 
   useEffect(() => {
-    fetchServices();
+    fetchMembers();
   }, []);
 
-  const fetchServices = () => {
-    axios.get('http://localhost:8080/service')
-      .then((response) => {
-        setServices(response.data);
-      })
-      .catch((error) => {
-        toast.error("서비스 정보를 불러오는 데 오류가 발생했습니다.");
-        console.error("Error fetching services:", error);
-      });
+  // 전체 직원 목록  출력
+  const fetchMembers = () => {
+    axios.get("http://localhost:8080/member")
+    .then((response) => {
+      setMembers(response.data);
+    })
+    .catch((error) => {
+      toast.error("직원 정보를 불러오는 데 오류가 발생했습니다.");
+      console.log("Error fetching members : ", error);
+    });
   };
 
+  // 입력 폼에서 값 변경 시 상태 업데이트
   const handleChange = (e) => {
     setState({
       ...state,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value // 변경된 값 상태 반영
     });
   };
 
-  const handleInsert = () => {
-    axios.post("http://localhost:8080/service", state)
-      .then((res) => {
-        if (res.data.isSuccess) {
-          toast.success("서비스 등록 성공!");
-          setShowModal(false);
-          fetchServices();
-        }
-      })
-      .catch((error) => {
-        toast.error("서비스 등록 중 오류가 발생했습니다.");
-        console.error("Error:", error);
-      });
-  };
-
-  const handleDetail = (service) => {
-    setSelectedService(service);
-    setShowDetailModal(true);
-    setIsEditing(false);
-  };
-
-  const handleEdit = () => {
-    setIsEditing(true);
-  };
-
-  const handleSave = () => {
-    axios.put(`http://localhost:8080/service/${selectedService.serviceCode}`, selectedService)
-      .then((res) => {
-        if (res.data.isSuccess) {
-          toast.success("서비스 수정 성공!");
-          setIsEditing(false);
-          setShowDetailModal(false);
-          fetchServices();
-        }
-      })
-      .catch((error) => {
-        toast.error("수정 중 오류가 발생했습니다.");
-        console.error("Error:", error);
-      });
-  };
-
-  const handleDetailChange = (e) => {
-    setSelectedService({
-      ...selectedService,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleDelete = () => {
-    if (selectedService) {
-      axios.delete(`http://localhost:8080/service/${selectedService.serviceCode}`)
-        .then((res) => {
-          if (res.data.isSuccess) {
-            toast.success("서비스 삭제 성공!");
-            setShowDeleteModal(false);
-            setShowDetailModal(false);
-            fetchServices();
-          }
-        })
-        .catch((error) => {
-          toast.error("삭제 중 오류가 발생했습니다.");
-          console.error("Error deleting service:", error);
-        });
+  // insertProcess
+  const insertProcess = (e) => {
+    console.log(state);
+    // 필수 필드 비어져있을 때 
+    if(!state.memberName || !state.memberId) {
+      toast.error("직원명과 사번을 입력해주세요");
+      return ;
     }
+
+    axios.post("http://localhost:8080/member", state)
+    // state를 요청 본문에 포함
+    .then((response) => {
+      if(response.data.Success) {
+        toast.success(response.data.message);
+        setShowModal(false); // insert 모달 닫기
+        setState({}); // 상태 초기화 
+        fetchMembers(); // 리로딩 후 최신 직원 데이터 불러오기
+      } else {
+        toast.error(response.data.message); // 실패메시지 출력 
+      }
+    })
+    .catch((error) => {
+      toast.error("직원 등록 중 오류가 발생했습니다.");
+      console.log("member insert : " + error);
+    });
   };
+
+  // 입력 폼에서 직책 선택 시 상태 업데이트
+  // const handlePicker = (value) => {
+  //   setState({
+  //     ...state,
+  //     memberJob : value // 선택된 직책을 상태에 저장 
+  //   })
+  // }
+
+  // 특정 직원 상세 정보 표시
+  const handleDetail = (member) => {
+    setSelectedMember(member); // 선택한 직원 데이터를 상태에 저장
+    setShowDetailModal(true); // 상세보기 모달 열기
+    setUpdating(false); // update 모드 초기화
+  };
+
+  // 상세보기 모달에서 update 모드로 전환
+  const handleUpdate = () => {// update 모드 활성화
+    setUpdating(true);
+  };
+
+  // updateProcess
+  const handleSave = () => {
+    axios.put(`http://localhost:8080/member/${selectedMember.memberId}`, {...selectedMember})
+    // 새로운 객체를 만들어서 변경하는 것이 좋아 
+    .then((response) => {
+      if(response.data.Success) {
+        toast.success("직원 정보를 수정하였습니다.");
+        setUpdating(false); // update 모드 종료
+        setShowDetailModal(false); // update 모달 닫기
+        fetchMembers(); // 리로딩 후 최신 데이터 불러옴 
+      }
+    })
+    .catch((error) => {
+      toast.error("직원 정보 수정 중 오류가 발생했습니다.");
+      console.log("update Error : " + error);
+    });
+  };
+
+  // 상세보기 모달에서 입력 값 변경 시 상태 업데이트
+  const handleDetailChange = (e) => {
+    setSelectedMember({
+      ...selectedMember,
+      [e.target.name] : e.target.value, // 변경된 입력값 상태에 반영 
+    });
+  };
+
+  // deleteProcess
+  const handleDelete = () => {
+    if(selectedMember) {
+      axios.delete(`http://localhost:8080/member/${selectedMember.memberId}`)
+      .then((response) => {
+        if(response.data.Success) {
+          toast.success("직원 정보를 삭제했습니다.");
+          setShowDeleteModal(false); // 삭제 모달 닫기
+          setShowDetailModal(false); // 상세정보 보기 모달 닫기
+          fetchMembers(); // 리로딩 후 최신 데이터 불러오기 
+        }
+      })
+      .catch((error) => {
+        toast.error("직원 삭제 중 오류가 발생했습니다.")
+        console.log("deleting member Error : " + error);
+      });
+    };
+  };
+
 
   return (
-    <div className="App">
-      <h2>Service List</h2>
+    <div className="App" style={{position:'relative'}}>
+      
 
       <ToastContainer />
+      <MemberList
+        members={members} // 직원 목록 데이터 전달
+        handleDetail={handleDetail} // 직원 상세보기 이벤트 처리하는 함수
+        fetchMembers={fetchMembers} // 직원을 가져오는 함수
+        setShowModal={setShowModal} // 모달 창을 열기 위한 상태 설정 함수
+      />
 
-      <div style={{ width: "80%", margin: "0 auto", display: "flex", justifyContent: "flex-end" }}>
-        <button onClick={() => setShowModal(true)} className="btn btn-success mb-3">
-          서비스 등록
-        </button>
-      </div>
+      {showModal && <CreateMember // showModal이 true일 경우 새 서비스 생성 모달 보기
+        handleChange={handleChange} // 입력값 변경 처리
+        insertProcess={insertProcess} // 새 직원 추가
+        setShowModal={setShowModal}  // 모달 닫음
+        //handlePicker={handlePicker} // 함수 전달
+        show={showModal} // show props 추가
+        style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} // 모달 위치 중앙으로 설정
+      />}
 
-      <table className="table table-bordered" style={{ margin: "0 auto", width: "80%" }}>
-        <thead>
-          <tr>
-            <th>서비스 코드</th>
-            <th>서비스 명</th>
-            <th>서비스 금액</th>
-          </tr>
-        </thead>
-        <tbody>
-          {services.length > 0 ? (
-            services.map((service) => (
-              <tr key={service.serviceCode}>
-                <td>{service.serviceCode}</td>
-                <td>
-                  <span
-                    style={{ color: "blue", cursor: "pointer", textDecoration: "underline" }}
-                    onClick={() => handleDetail(service)}>
-                    {service.serviceName}
-                  </span>
-                </td>
-                <td>{service.servicePrice}</td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="3">등록된 서비스가 없습니다.</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-
-      {showModal && (
-        <div className="modal show" 
-          style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)" }} tabIndex="-1">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">서비스 등록</h5>
-                <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
-              </div>
-
-              <div className="modal-body">
-                <form>
-                  <div className="mb-3">
-                    <label>서비스 코드</label>
-                    <input type="text" name="serviceCode" onChange={handleChange}
-                      className="form-control" placeholder="서비스 코드를 입력하세요." />
-                  </div>
-
-                  <div className="mb-3">
-                    <label>서비스 명</label>
-                    <input type="text" name="serviceName" onChange={handleChange}
-                      className="form-control" placeholder="서비스 이름을 입력하세요." />
-                  </div>
-
-                  <div className="mb-3">
-                    <label>서비스 금액</label>
-                    <input type="number" name="servicePrice" onChange={handleChange}
-                      className="form-control" placeholder="서비스 금액을 입력하세요." />
-                  </div>
-                </form>
-              </div>
-
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>
-                  닫기
-                </button>
-                <button type="button" className="btn btn-primary" onClick={handleInsert}>
-                  등록
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {showDetailModal && selectedService && (
-        <div className="modal show"
-          style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-          tabIndex="-1">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                  <h5 className="modal-title">
-                    {isEditing ? "서비스 수정" : "서비스 상세 정보"}
-                  </h5>
-                  <button type="button" className="btn-close" onClick={() => setShowDetailModal(false)}></button>
-              </div>
-
-              <div className="modal-body">
-                <form>
-                  <div className="mb-3">
-                    <label>서비스 코드</label>
-                    <input type="text" name="serviceCode" className="form-control"
-                      value={selectedService.serviceCode} onChange={handleDetailChange} readOnly/>
-                  </div>
-
-                  <div className="mb-3">
-                    <label>서비스 명</label>
-                    <input type="text" name="serviceName" className="form-control"
-                      value={selectedService.serviceName} onChange={handleDetailChange} readOnly={!isEditing}/>
-                  </div>
-
-                  <div className="mb-3">
-                    <label>서비스 금액</label>
-                    <input type="number" name="servicePrice" className="form-control"
-                      value={selectedService.servicePrice} onChange={handleDetailChange} readOnly={!isEditing}/>
-                  </div>
-                </form>
-              </div>
-
-              <div className="modal-footer">
-                {isEditing ? (
-                  <button type="button" className="btn btn-primary" onClick={handleSave}>
-                    저장
-                  </button>
-                ) : (
-                  <>
-                    <button type="button" className="btn btn-warning" onClick={handleEdit}>
-                      수정
-                    </button>
-                    <button type="button" className="btn btn-danger" onClick={() => setShowDeleteModal(true)}>
-                      삭제
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
+      {showDetailModal && selectedMember && (
+        // showDetailModal이 true고 selectedMember가 존재할 경우, 직원 상세보기 모달 출력
+        <MemberDetail 
+         updating={updating} // 수정 가능 여부 결정
+         selectedMember={selectedMember} // 선택된 직원 데이터
+         handleDetailChange={handleDetailChange} // 상세정보 변경
+         handleSave={handleSave} // 변경 정보 저장
+         handleUpdate={handleUpdate} // 수정 모드로 전환
+         setShowDetailModal={setShowDetailModal} // 상세 모달창 
+         setShowDeleteModal={setShowDeleteModal} // 삭제 확인 모달
+         style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} // 모달 위치 중앙으로 설정
+        />
       )}
 
       {showDeleteModal && (
-        <div className="modal show"
-          style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-          tabIndex="-1">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                  <h5 className="modal-title">"{selectedService.serviceName}" 삭제</h5>
-                  <button type="button" className="btn-close" onClick={() => setShowDeleteModal(false)}></button>
-              </div>
-
-              <div className="modal-body">
-                  <p>정말 이 서비스를 삭제하시겠습니까?</p>
-              </div>
-
-              <div className="modal-footer">
-                  <button type="button" className="btn btn-secondary" onClick={() => setShowDeleteModal(false)}>
-                    취소
-                  </button>
-                  <button type="button" className="btn btn-danger" onClick={handleDelete}>
-                    삭제
-                  </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <MemberDelete 
+          selectedMember={selectedMember}
+          handleDelete={handleDelete} // 삭제 작업
+          setShowDeleteModal={setShowDeleteModal} // 삭제 모달 닫기
+          style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} // 모달 위치 중앙으로 설정
+        />
       )}
+
     </div>
   );
 }
