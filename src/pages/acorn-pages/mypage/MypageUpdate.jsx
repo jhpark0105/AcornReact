@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Paper, Avatar, TextField, Button, Grid, Box } from '@mui/material';
+import { Paper, Avatar, TextField, Button, Grid, Box, Typography } from '@mui/material';
 import ConfirmModal from './ConfirmModal';  // 수정 확인 모달
 
 const MypageUpdate = () => {
@@ -57,6 +57,9 @@ const MypageUpdate = () => {
           onCancel={() => setShowModal(false)}
         />
       )}
+      <Typography variant="h5" align="center" sx={{ color: '#1976d2', marginBottom: 3 }}>
+        마이페이지 수정
+      </Typography>
       <Grid container spacing={3} alignItems="center">
         <Grid item xs={4}>
           <Avatar

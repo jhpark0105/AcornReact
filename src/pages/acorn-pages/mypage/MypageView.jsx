@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Paper, Grid, Avatar, TextField, Box, Button } from '@mui/material';
+import { Paper, Grid, Avatar, TextField, Box, Typography } from '@mui/material';
 
 const MypageView = () => {
   const { branchCode } = useParams();
@@ -25,6 +25,9 @@ const MypageView = () => {
 
   return (
     <Paper elevation={3} sx={{ maxWidth: 800, margin: 'auto', p: 4 }}>
+      <Typography variant="h5" align="center" sx={{ color: '#1976d2', marginBottom: 3 }}>
+        마이페이지 보기
+      </Typography>
       <Grid container spacing={3} alignItems="center">
         <Grid item xs={4}>
           <Avatar
