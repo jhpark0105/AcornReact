@@ -155,7 +155,6 @@ function App() {
         setShowModal={setShowModal}  // 모달 닫음
         //handlePicker={handlePicker} // 함수 전달
         show={showModal} // show props 추가
-        style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} // 모달 위치 중앙으로 설정
       />}
 
       {showDetailModal && selectedMember && (
@@ -168,7 +167,6 @@ function App() {
          handleUpdate={handleUpdate} // 수정 모드로 전환
          setShowDetailModal={setShowDetailModal} // 상세 모달창 
          setShowDeleteModal={setShowDeleteModal} // 삭제 확인 모달
-         style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} // 모달 위치 중앙으로 설정
         />
       )}
 

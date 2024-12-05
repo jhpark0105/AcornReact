@@ -3,6 +3,7 @@ import { SelectPicker } from 'rsuite';
 import { useRef } from "react";
 import DatePickerComponent from './Picker/DatePicker'
 import SelectPickerComponent from "./Picker/SelectPicker";
+import '../../../styles/modal.css';
 
 const MemberModal = ({handleChange, insertProcess, setShowModal, show}) => {
     const [selectedJob, setSelectedJob] = useState(""); // 직책 상태
