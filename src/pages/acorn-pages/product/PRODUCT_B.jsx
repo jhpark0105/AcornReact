@@ -87,7 +87,6 @@ function PRODUCT_B() {
 
   return (
     <div className="App">
-      <h2>대분류 목록</h2>
 
       <ToastContainer />
 

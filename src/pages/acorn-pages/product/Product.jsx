@@ -3,7 +3,8 @@ import React from 'react';
 import { Routes, Route } from "react-router-dom";
 import ProductBList from './productB/ProductBList';
 import PRODUCT_B from './PRODUCT_B';
-import PRODUCT from './PRODUCT';
+import PRODUCT from './PRODUCTS';
+
 function App() {
   return (
     <>

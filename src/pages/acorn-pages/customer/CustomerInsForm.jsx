@@ -6,6 +6,7 @@ import { SelectPicker } from "rsuite";
 import DatePickerComponent from "./Picker/DatePicker";
 import GenderPickerComponent from "./Picker/GenderPicker";
 import SelectPickerComponent from "./Picker/SelectPicker";
+import '../../../styles/modal.css';
 
 export default function CustomerInsForm({ setShowModal, refresh, show }) {
   const [state, setState] = useState({
@@ -102,6 +103,7 @@ export default function CustomerInsForm({ setShowModal, refresh, show }) {
               <div className="mb-3"> 
                 <label>고객 등록일</label>
                 <DatePickerComponent 
+                value={state.customerReg} 
                 selected={startDate} 
                 onChange={(date) => setStartDate(date)} 
                 dateFormat="yyyy-MM-dd"
