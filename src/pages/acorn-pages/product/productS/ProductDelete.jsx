@@ -1,4 +1,3 @@
-// components/DeleteConfirmationModal.js
 import React from 'react';
 
 function DeleteConfirmationModal({ selectedProduct, handleDelete, setShowDeleteModal }) {
@@ -8,11 +7,12 @@ function DeleteConfirmationModal({ selectedProduct, handleDelete, setShowDeleteM
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">삭제 확인</h5>
+
             <button type="button" className="btn-close" onClick={() => setShowDeleteModal(false)}></button>
           </div>
 
           <div className="modal-body">
-            <p>정말로 {selectedProduct.productName} 상품을 삭제하시겠습니까?</p>
+            <p>정말로 '{selectedProduct.productName}' 상품을 삭제하시겠습니까?</p>
           </div>
 
           <div className="modal-footer">
