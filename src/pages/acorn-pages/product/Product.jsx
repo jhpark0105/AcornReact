@@ -1,19 +1,36 @@
-import axios from "axios";
-import React from 'react';
-import { Routes, Route, Link, BrowserRouter as Router } from "react-router-dom";
-import ProductBList from './productB/ProductBList';
-import PRODUCT_B from './PRODUCT_B';
-import PRODUCT from './PRODUCTS';
-
+import Button from '@mui/material/Button';
+import Modal from 'react-bootstrap/Modal';
+import OrderModal from './OrderModal';
+import { useState } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './modal.css';
 const Product = () => {
-    return (
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+    return(
         <>
-            <Routes>
-                {/* <Route path="/" element={<PRODUCT_B />} /> */}
-                <Route path="/productB" element={<ProductBList />} />
-                <Route path="/product" element={<PRODUCT />} />
-            </Routes>
-        </>
+        <Button variant="contained" onClick={handleShow}>
+            발주하기
+        </Button>
+
+        <Modal show={show} onHide={handleClose}
+            dialogClassName="custom-modal"
+            style={{
+                zIndex: 1500,
+                overflowY: 'auto'
+            }}>
+            <Modal.Header closeButton>
+            <Modal.Title>발주 화면</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <OrderModal handleClose={handleClose}></OrderModal>
+            </Modal.Body>
+            <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>닫기</Button>
+            </Modal.Footer>
+        </Modal>
+        </> 
     );
 }
 
