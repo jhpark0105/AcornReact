@@ -1,0 +1,74 @@
+/* 공통 영역 */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px; /* 버튼 간 간격 */
+    margin-top: 20px;
+  }
+  
+  /* 페이지 버튼 */
+  .pageButton {
+    width: 30px; /* 버튼 크기 */
+    height: 30px; /* 버튼 높이 */
+    border: 1px solid #ddd; /* 버튼 경계 */
+    border-radius: 50%; /* 동그란 모양 */
+    background-color: #f9f9f9; /* 기본 배경색 */
+    color: #333; /* 글자 색 */
+    cursor: pointer; /* 클릭 가능 커서 */
+    font-size: 16px; /* 글자 크기 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s, color 0.3s; /* 호버 효과 */
+  }
+  
+  /* 페이지 버튼: 호버 */
+  .pageButton:hover {
+    background-color: #e6e6e6; /* 호버 시 배경 색 */
+  }
+  
+  /* 페이지 버튼: 활성화 상태 */
+  .pageButton.active {
+    background-color: #007bff; /* 활성화된 버튼의 배경 색 */
+    color: white; /* 활성화된 버튼의 글자 색 */
+    border: none; /* 활성화된 버튼의 경계 제거 */
+  }
+  
+  /* 페이지 버튼: 비활성화 상태 */
+  .pageButton.disabled {
+    background-color: #f1f1f1; /* 비활성화된 버튼의 배경 색 */
+    color: #aaa; /* 비활성화된 버튼의 글자 색 */
+    cursor: not-allowed; /* 클릭 불가 커서 */
+  }
+  
+  /* 페이지당 항목 선택 버튼 */
+  .itemsPerPageContainer {
+    margin: 10px 0;
+    text-align: right;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .itemsPerPageButton {
+    margin: 0 5px;
+    padding: 5px 10px;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #fff; /* 기본 버튼 배경 */
+    color: #000; /* 기본 버튼 글자 색 */
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .itemsPerPageButton:hover {
+    background-color: #007bff;
+    color: #fff;
+  }
+  
+  .itemsPerPageButton.active {
+    background-color: #007bff; /* 활성화된 버튼의 배경 */
+    color: #fff; /* 활성화된 버튼의 글자 색 */
+  }
+  

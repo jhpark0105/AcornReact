@@ -1,0 +1,25 @@
+.row {
+    border: 1px solid black;
+    width: 500;
+    margin: 20px;
+    padding: 10px;
+}
+
+.chart-head {
+    flex-flow: row nowrap;
+    text-align: center;
+}
+
+.chart-title {
+    text-align: center;
+    margin: 20px;
+    padding: 10px;
+}
+
+.align-end {
+    justify-content: end;
+}
+
+.float {
+    position: relative;
+}
