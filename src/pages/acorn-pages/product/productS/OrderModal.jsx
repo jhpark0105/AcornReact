@@ -88,7 +88,7 @@ export default function OrderModal({handleClose}){
                 cart:cart,
                 ordersApplyDate:new Date().toISOString().split("T")[0],
                 ordersEndDate:ordersEndDate,
-                branchCode:"B001"
+                branchCode:"B004"
             })
             .then(res=>{
                 if(res){
@@ -135,7 +135,7 @@ export default function OrderModal({handleClose}){
                 <InputGroup.Text id="branchCode">지점코드</InputGroup.Text>
                 <Form.Control
                 readOnly
-                placeholder="B001"
+                placeholder="B004"
                 aria-label="branchCode"
                 aria-describedby="branchCode"
                 />
