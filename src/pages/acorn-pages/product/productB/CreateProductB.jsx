@@ -16,14 +16,12 @@ function ProductBModal({ handleChange, handleInsertB, setShowModal }) {
                         <form>
                             <div className="mb-3">
                                 <label>대분류 코드</label>
-                                <input type="text" name="productBCode" onChange={handleChange}
-                                    className="form-control" placeholder="대분류 코드를 입력하세요." />
+                                <input type="text" name="productBCode" onChange={handleChange} className="form-control" placeholder="대분류 코드를 입력하세요." />
                             </div>
 
                             <div className="mb-3">
                                 <label>상품명</label>
-                                <input type="text" name="productBName" onChange={handleChange}
-                                    className="form-control" placeholder="대분류 이름을 입력하세요." />
+                                <input type="text" name="productBName" onChange={handleChange} className="form-control" placeholder="대분류 이름을 입력하세요." />
                             </div>
                         </form>
                     </div>

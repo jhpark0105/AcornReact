@@ -64,7 +64,6 @@ function PRODUCT() {
 
   //특정 상품의 상세 정보 표시
   const handleDetail = (product) => {
-    console.log(product);
     setSelectedProduct(product); // 선택한 상품 데이터를 상태에 저장
     setShowDetailModal(true); // 상세보기 모달 열기
     setIsEditing(false); //update모드 초기화

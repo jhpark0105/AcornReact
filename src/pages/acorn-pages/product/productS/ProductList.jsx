@@ -8,11 +8,8 @@ function ProductList({ handleDetail, setShowModal }) {
     const [products, setProducts] = useState([]); // 상품 목록 상태
     const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태 관리
     const [filteredData, setFilteredData] = useState([]); // 필터링된 데이터 상태 관리
-    const [productBList, setProductBList] = useState([]); // 대분류 코드 목록 상태
-    const [productBCode, setProductBCode] = useState(''); // 선택된 대분류 코드 상태
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
     const [itemsPerPage, setItemsPerPage] = useState(5); // 페이지당 항목 수 (기본값 5)
-
 
     // 대분류 코드 목록을 서버에서 받아오는 함수
     useEffect(() => {
@@ -51,20 +48,6 @@ function ProductList({ handleDetail, setShowModal }) {
         setCurrentPage(1); //검색 후 첫 페이지로 이동
     };
 
-    const fetchProductBList = async () => {
-        try {
-            const response = await axios.get('http://localhost:8080/productBList');  // 대분류 목록 API 경로로 수정
-            setProductBList(response.data);  // 대분류 목록 상태 업데이트
-        } catch (err) {
-            console.log('대분류 목록을 불러오는 데 실패했습니다 : ', err);
-        }
-    };
-
-    // 대분류 코드 변경 시 처리하는 함수
-    const handleSelectChange = (event) => {
-        setProductBCode(event.target.value);
-    };
-
     // 페이지별 데이터 계산
     const indexOfLastItem = currentPage * itemsPerPage; // itemsPerPage : 한 페이지에 표시할 서비스의 수를 정의
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -77,19 +60,12 @@ function ProductList({ handleDetail, setShowModal }) {
 
     return (
         <>
-            <h2 style={{ textAlign: "center" }}>소분류 목록</h2>
+            <h2 style={{ textAlign: "left", marginLeft: "10%" }}>소분류 목록</h2>
 
             <div style={{ width: "80%", margin: "0 auto", display: "flex", justifyContent: "flex-start", alignItems: "center", marginBottom: "20px" }}>
-                <ListSearch 
-                    searchTerm={searchTerm}
-                    onChange={onChange}
-                    handleSearchClick={handleSearchClick}
-                    handleSelectChange={handleSelectChange}  // 선택값 변경 처리 함수 전달
-                />
-                <div>
-                    <button className="btn btn-info" style={{ marginRight: "10px" }}>상품 발주</button>
-                    <button onClick={() => setShowModal(true)} className="btn btn-success">상품 등록</button>
-                </div>
+                <ListSearch searchTerm={searchTerm} onChange={onChange} handleSearchClick={handleSearchClick} />
+                
+                <button onClick={() => setShowModal(true)} className="btn btn-success" style={{ marginLeft: "auto" }}>상품 등록</button>
             </div>
 
             <table className="table table-bordered" style={{ margin: "0 auto", width: "80%", position: "relative" }}>
@@ -106,7 +82,7 @@ function ProductList({ handleDetail, setShowModal }) {
                     {currentItems.length > 0 ? (
                         currentItems.map((product) => (
                         <tr key={product.productCode}>
-                            <td>{product.productCode}</td>
+                            <td>{product.product_b.productBName}</td>
                             <td>{product.productCode}</td>
                             <td>
                                 <span
@@ -127,7 +103,10 @@ function ProductList({ handleDetail, setShowModal }) {
                 </tbody>
             </table>
 
-            {/* 페이지네이션 */}
+            <div style={{ display: "flex", justifyContent: "flex-end", width: "80%", margin: "0 auto" }}>
+                <button className="btn btn-info" style={{ marginTop: "20px" }}>상품 발주</button>
+            </div>
+
             <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
