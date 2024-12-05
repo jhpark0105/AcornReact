@@ -60,8 +60,6 @@ function ProductList({ handleDetail, setShowModal }) {
 
     return (
         <>
-            <h2 style={{ textAlign: "left", marginLeft: "10%" }}>소분류 목록</h2>
-
             <div style={{ width: "80%", margin: "0 auto", display: "flex", justifyContent: "flex-start", alignItems: "center", marginBottom: "20px" }}>
                 <ListSearch searchTerm={searchTerm} onChange={onChange} handleSearchClick={handleSearchClick} />
                 
@@ -82,7 +80,7 @@ function ProductList({ handleDetail, setShowModal }) {
                     {currentItems.length > 0 ? (
                         currentItems.map((product) => (
                         <tr key={product.productCode}>
-                            <td>{product.product_b.productBName}</td>
+                            <td>{product.productBName}</td>
                             <td>{product.productCode}</td>
                             <td>
                                 <span

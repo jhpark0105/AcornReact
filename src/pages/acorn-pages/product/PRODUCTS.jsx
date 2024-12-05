@@ -28,6 +28,7 @@ function PRODUCT() {
   const fetchProducts = () => {
     axios.get(`http://localhost:8080/product`)
       .then((response) => {
+        console.log(response.data);
         setProducts(response.data);
       })
       .catch((error) => {
