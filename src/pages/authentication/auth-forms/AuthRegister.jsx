@@ -120,7 +120,7 @@ export default function AuthRegister() {
             .matches(/^[a-zA-Z가-힣]{2,20}$/, '이름은 한글과 영어만 입력해야 합니다.')
             .required('이름은 필수 입력입니다.'),
           adminBirth: Yup.string()
-            .max(8)
+            .length(8, '생년월일은 숫자 8자리로 입력해야합니다.')
             .matches(/^\d{8}$/, '생년월일은 YYYYMMDD 형식이어야 합니다.')
             .required('생년월일은 필수 입력입니다.'),
           adminPhone: Yup.string()
@@ -295,7 +295,7 @@ export default function AuthRegister() {
                   </FormHelperText>
                 )}
               </Grid>
-              <Grid item xs={12} md={8}>
+              <Grid item xs={12} md={7.5}>
                 <Stack spacing={1}>
                   <InputLabel htmlFor="postcode-signup">우편번호</InputLabel>
                   <OutlinedInput
@@ -317,7 +317,7 @@ export default function AuthRegister() {
                   </FormHelperText>
                 )}
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={4.5}>
                 <Stack spacing={1}>
                   <InputLabel htmlFor="address1-signup">&nbsp;</InputLabel>
                   <Postcode setFieldValue={setFieldValue} />
