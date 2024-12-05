@@ -7,7 +7,8 @@ import { NumericFormat } from "react-number-format";
 import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import ListSearch from "../../../acorn-components/components/ListSearch" // ListSearch 컴포넌트 임포트
 
-// 정렬 로직
+// stableSort 까지 상단 페이지 구분하는 코드를 위한 함수
+// 정렬 로직 : 내림차순으로 수행
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -18,12 +19,14 @@ function descendingComparator(a, b, orderBy) {
   return 0;
 }
 
+// 정렬 방향과 기준에 따라 정렬을 수행하는 비교 함수 생성
 function getComparator(order, orderBy) {
   return order === "desc"
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
+// 데이터 배열을 안정적으로 정렬하는 함수
 function stableSort(array, comparator) {
   const stabilizedThis = array.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {
@@ -36,14 +39,20 @@ function stableSort(array, comparator) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-// 헤더 셀 정의
+// ----------------------------------------------------------------------------------------------
+// 테이블 헤더 : 컬럼 이름과 정렬 정보 포함
 const headCells = [
   { id: "serviceCode", align: "left", label: "서비스 코드" },
   { id: "serviceName", align: "left", label: "서비스 명" },
   { id: "servicePrice", align: "left", label: "서비스 금액" },
 ];
 
-// 테이블 헤더 컴포넌트
+
+/**
+ * 테이블 헤더
+ * @param {string} order - 정렬 방향 ("asc" 또는 "desc")
+ * @param {string} orderBy - 정렬 기준 필드
+ */
 function TestTableHead({ order, orderBy }) {
   return (
     <TableHead>
@@ -51,8 +60,8 @@ function TestTableHead({ order, orderBy }) {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.align}
-            sortDirection={orderBy === headCell.id ? order : false}
+            align={headCell.align} // 정렬 방식 설정
+            sortDirection={orderBy === headCell.id ? order : false} // 현재 정렬 기준 표시
           >
             {headCell.label}
           </TableCell>
@@ -62,10 +71,18 @@ function TestTableHead({ order, orderBy }) {
   );
 }
 
+// PropTypes 정의 (컴포넌트가 요구하는 속성들)
 TestTableHead.propTypes = {
   order: PropTypes.string.isRequired,
   orderBy: PropTypes.string.isRequired,
 };
+
+/**
+ * 서비스 목록
+ * @param {array} services - 서비스 데이터 배열
+ * @param {function} handleDetail - 서비스 상세 보기 함수
+ * @param {function} setShowModal - 모달 상태 변경 함수
+ */
 
 function ServiceList({ services, handleDetail, setShowModal }) {
   const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태
@@ -86,16 +103,21 @@ function ServiceList({ services, handleDetail, setShowModal }) {
   // 검색 실행
   const handleSearchClick = () => {
     const filtered = services.filter((item) =>
-      item.serviceName.toLowerCase().includes(searchTerm.toLowerCase())
+      // 대소문자를 구분하지 않고 serviceName에 검색어가 포함되어 있는지 확인
+      // .toLowerCase()로 검색어를 소문자로 변환
+      item.serviceName.toLowerCase().includes(searchTerm.toLowerCase()) // 서비스 이름으로 필터링
     );
     setFilteredData(filtered); // 필터링된 데이터 상태 업데이트
     setCurrentPage(1); // 검색 후 첫 페이지로 이동
   };
 
   // 현재 페이지 데이터 계산
-  const indexOfLastItem = currentPage * itemsPerPage;
+  // 현재 페이지의 마지막 항목의 인덱스(데이터를 페이지별로 나누기 위해 사용) = 현재 페이지 상태 * 한 페이지당 항목 수
+  const indexOfLastItem = currentPage * itemsPerPage; 
+
+  // 현재 페이지의 첫 번째 항목의 인덱스(현재 페이지에 표시할 데이터 범위를 지정) = 현재 페이지의 마지막 항목의 인덱스 - 한 페이지당 항목 수
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem); //  데이터 배열에서 현재 페이지에 해당하는 데이터만 추출 -> 추출된 데이터는 현재 페이지에 표시 
 
   // 총 페이지 수 계산
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
@@ -127,13 +149,14 @@ function ServiceList({ services, handleDetail, setShowModal }) {
         </button>
       </div>
 
-      {/* 테이블 */}
+      {/* 서비스 테이블 */}
       <TableContainer className={styles["table-container"]}>
         <Table>
+          {/* 테이블 헤더 */}
           <TestTableHead order="asc" orderBy="serviceCode" />
           <TableBody>
             {currentItems.length > 0 ? (
-              currentItems.map((row) => (
+              currentItems.map((row) => ( // 필터링된 데이터를 테이블로 렌더링
                 <TableRow key={row.serviceCode}>
                   <TableCell>
                     {row.serviceCode}
@@ -145,7 +168,7 @@ function ServiceList({ services, handleDetail, setShowModal }) {
                         cursor: "pointer",
                         textDecoration: "underline",
                       }}
-                      onClick={() => handleDetail(row)}
+                      onClick={() => handleDetail(row)} // 행 클릭 시 상세 보기
                     >
                       {row.serviceName}
                     </span>
@@ -179,9 +202,9 @@ function ServiceList({ services, handleDetail, setShowModal }) {
 }
 
 ServiceList.propTypes = {
-  services: PropTypes.array.isRequired,
-  handleDetail: PropTypes.func.isRequired,
-  setShowModal: PropTypes.func.isRequired,
+  services: PropTypes.array.isRequired, // 서비스 데이터 배열
+  handleDetail: PropTypes.func.isRequired, // 상세 보기 함수
+  setShowModal: PropTypes.func.isRequired, // 모달 상태 관리 함수
 };
 
 export default ServiceList;
