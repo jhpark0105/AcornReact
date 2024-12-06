@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box, Pagination, CircularProgress, Alert } from '@mui/material';
-
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box, Pagination, CircularProgress, PaginationItem } from '@mui/material';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForwardIos'; // 오른쪽 화살표 아이콘
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'; // 왼쪽 화살표 아이콘
+import CircleIcon from '@mui/icons-material/FiberManualRecord'; // 점 아이콘
 
 // 상품 데이터 가져오기
 export default function DashboardProduct() {
@@ -48,40 +50,71 @@ export default function DashboardProduct() {
   if (error) {
     return <Alert severity="error">Failed to load notices: {error.message}</Alert>;
   }
-
+  const handlePageChange = (event, value) => {
+    setPage(value);
+  };
   return (
     <Box sx={{ padding: 2 }}>
-      <Typography variant="h6" sx={{ marginBottom: 2 }}>
-        상품 목록
-      </Typography>
       <TableContainer sx={{ width: '100%' }}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>상품명</TableCell>
+              <TableCell align='center'>상품명</TableCell>
               <TableCell align="center">재고수량</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {list.map((product, index) => (
-              <TableRow key={index}>
-                <TableCell>{product.productName}</TableCell>
-                <TableCell align="center">{product.productEa}</TableCell>
-              </TableRow>
-            ))}
+            {list.length> 0 ?
+              (list.map((product, index) => (
+                <TableRow key={index}>
+                  <TableCell  sx={{maxWidth: '150px', // 최대 너비를 설정하여 텍스트가 넘어가는 시점을 조정
+                                    whiteSpace: 'nowrap', // 텍스트를 한 줄로 유지
+                                    overflow: 'hidden',   // 넘치는 텍스트를 숨김 처리
+                                    textOverflow: 'ellipsis', // 넘친 부분에 ... 표시
+                                  }} title={product.productName}>{product.productName}</TableCell>
+                  <TableCell align="center">{product.productEa}</TableCell>
+                </TableRow>
+              )))
+              :
+              (<TableRow>
+                <TableCell colSpan={2} align='center'>10개 미만인 상품이 없습니다.</TableCell>
+              </TableRow>)
+            }
           </TableBody>
         </Table>
       </TableContainer>
 
       {/* 페이지네이션 */}
       <Pagination
-        sx={{ marginTop: 2 }}
+        sx={{
+          marginTop: 2,
+          display: 'flex',
+          justifyContent: 'center'
+        }}
         count={endPage - startPage + 1}
         page={page}
-        onChange={(e, value) => setPage(value)}
-        variant="outlined"
-        shape="rounded"
-        color="primary"
+        onChange={handlePageChange}
+        renderItem={(item) => (
+          <PaginationItem
+            {...item}
+            sx={{
+              borderRadius: '50%',
+              margin: '0 2px',
+              '&.Mui-selected': {
+                backgroundColor: 'primary.main',
+                color: 'white',
+              },
+              '&.Mui-selected > svg': {
+                transform: 'scale(1.2)',
+              },
+            }}
+            children={item.page === page ? (
+              <ArrowForwardIcon fontSize="small" />
+            ) : (
+              <CircleIcon fontSize="small" />
+            )}
+          />
+        )}
       />
     </Box>
   );

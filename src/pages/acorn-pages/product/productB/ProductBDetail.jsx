@@ -15,22 +15,12 @@ function ProductBDetailModal({ selectedProductB, setShowDetailBModal, setShowDel
                         <form>
                             <div className="mb-3">
                                 <label>대분류 코드</label>
-                                <input
-                                    type="text"
-                                    name="productBCode"
-                                    value={selectedProductB.productBCode}
-                                    readOnly
-                                    className="form-control" />
+                                <input type="text" name="productBCode" value={selectedProductB.productBCode} readOnly className="form-control" />
                             </div>
 
                             <div className="mb-3">
                                 <label>상품명</label>
-                                <input
-                                    type="text"
-                                    name="productBName"
-                                    value={selectedProductB.productBName}
-                                    readOnly
-                                    className="form-control" />
+                                <input type="text" name="productBName" value={selectedProductB.productBName} readOnly className="form-control" />
                             </div>
                         </form>
                     </div>

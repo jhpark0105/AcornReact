@@ -5,6 +5,7 @@ import Pagination from 'utils/Pagination';
 import PushPinIcon from '@mui/icons-material/PushPin';
 import styles from '../../../styles/Pagination.module.css';
 import ListSearch from './ListSearch';
+import TableComponent from 'acorn-components/components/TableComponentGpt';
 
 export default function NoticeList() {
 	const [notices, setNotices] = useState([]);

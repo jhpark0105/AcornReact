@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -49,7 +51,23 @@ function a11yProps(index) {
 // ==============================|| HEADER CONTENT - PROFILE ||============================== //
 
 export default function Profile() {
+  // 데이터 매니저 갖고와서 마이페이지 간단히 보는 모달에 뿌려줄 용도
+  const [managerData, setManagerData] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/manager/mypage/B001`);
+        setManagerData(response.data);
+      } catch (error) {
+        console.error('데이터 로딩 중 오류:', error);
+      }
+    };
+    fetchData();
+  }, []);
+
   const theme = useTheme();
+  const navigate = useNavigate();
 
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
@@ -69,6 +87,19 @@ export default function Profile() {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const handleLogout = () => {
+    axios.post('http://localhost:8080/logoutProcess')
+    .then((response) => {
+      if (response.status === 200) {
+        //alert("로그아웃 성공");
+        navigate('/main/login');
+      }
+    })
+    .catch(error => {
+        console.error("로그아웃 에러 : ",error);
+    })
+  }
 
   const iconBackColorOpen = 'grey.100';
 
@@ -90,9 +121,9 @@ export default function Profile() {
       >
 
         <Stack direction="row" spacing={1.25} alignItems="center" sx={{ p: 0.5 }}>
-          <Avatar alt="profile user" /* src={avatar1} */ size="sm" />
+          <Avatar alt="profile user" /* src={avatar1}  */ size="sm" />
           <Typography variant="subtitle1" sx={{ textTransform: 'capitalize' }}>
-            Acorn
+            {managerData ? managerData.branchName : '로딩 중...'}
           </Typography>
         </Stack>
       </ButtonBase>
@@ -125,18 +156,20 @@ export default function Profile() {
                     <Grid container justifyContent="space-between" alignItems="center">
                       <Grid item>
                         <Stack direction="row" spacing={1.25} alignItems="center">
-                          <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
+                          <Avatar alt="profile user" /*src={avatar1}*/ sx={{ width: 32, height: 32 }} />
                           <Stack>
-                            <Typography variant="h6">John Doe</Typography>
+                            <Typography variant="h6">
+                              {managerData ? managerData.branchName : '로딩 중...'}
+                            </Typography>
                             <Typography variant="body2" color="text.secondary">
-                              UI/UX Designer
+                            담당 매니저 : {managerData ? managerData.managerName : '로딩 중...'}
                             </Typography>
                           </Stack>
                         </Stack>
                       </Grid>
                       <Grid item>
                         <Tooltip title="Logout">
-                          <IconButton size="large" sx={{ color: 'text.primary' }}>
+                          <IconButton size="large" sx={{ color: 'text.primary' }} onClick={handleLogout}>
                             <LogoutOutlined />
                           </IconButton>
                         </Tooltip>
