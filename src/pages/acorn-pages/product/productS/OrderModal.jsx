@@ -10,15 +10,15 @@ import Alert from '@mui/material/Alert';
 export default function OrderModal({handleClose}){
     const [error,setError]=useState(null);
     const [isLoading,setIsLoading]=useState(false);
-    const [showList,setShowList]=useState(false);
-    const [blist,setBlist]=useState(null);
-    const [list,setList]=useState([]);
-    const [showCartList,setShowCartList]=useState(false);
-    const [cart,setCart]=useState([]);
+    const [blist,setBlist]=useState(null);  //대분류 상품 목록
+    const [list,setList]=useState([]);  //대분류 별 소분류 상품 목록
+    const [showList,setShowList]=useState(false);   //소분류 목록 보이기
+    const [showCartList,setShowCartList]=useState(false);   //발주 목록 보이기
+    const [cart,setCart]=useState([]);  //발주 목록(장바구니)
     const [alertVisible, setAlertVisible] = useState(false); // Alert 상태 추가
     const [alertMessage, setAlertMessage] = useState(""); // Alert 메시지 상태
-    const [ordersEndDate, setOrdersEndDate] = useState("");
-    const [minDate, setMinDate] = useState("");
+    const [ordersEndDate, setOrdersEndDate] = useState(""); //발주 마감일
+    const [minDate, setMinDate] = useState(""); //발주 등록 가능일 
     const [total,setTotal] = useState(0);
     const getProductBCode=function(){
         axios.get('http://localhost:8080/productB')
