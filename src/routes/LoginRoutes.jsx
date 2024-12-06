@@ -21,7 +21,7 @@ const LoginRoutes = {
     {
       path: '/main/register',
       element: <AuthRegister />
-    }
+    },
   ]
 };
 
