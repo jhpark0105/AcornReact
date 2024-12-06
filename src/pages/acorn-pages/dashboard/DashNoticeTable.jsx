@@ -72,25 +72,31 @@ export default function DashboardNotice() {
         <Table aria-labelledby="tableTitle">
           <NoticeTableHead />
           <TableBody>
-            {list.map((notice, index) => (
-              <TableRow
-                hover
-                role="checkbox"
-                tabIndex={-1}
-                key={index}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell component="th" scope="row" title={notice.noticeTitle}
-                  sx={{maxWidth: '150px', // 최대 너비를 설정하여 텍스트가 넘어가는 시점을 조정
-                    whiteSpace: 'nowrap', // 텍스트를 한 줄로 유지
-                    overflow: 'hidden',   // 넘치는 텍스트를 숨김 처리
-                    textOverflow: 'ellipsis', // 넘친 부분에 ... 표시
-                  }}>
-                  <Link color="secondary" to={`/main/notice/${notice.noticeNo}`}>{notice.noticeTitle}</Link>
-                </TableCell>
-                <TableCell align="right">{notice.noticeReg}</TableCell>
-              </TableRow>
-            ))}
+            {list.length> 0 ?
+              (list.map((notice, index) => (
+                <TableRow
+                  hover
+                  role="checkbox"
+                  tabIndex={-1}
+                  key={index}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row" title={notice.noticeTitle}
+                    sx={{maxWidth: '150px', // 최대 너비를 설정하여 텍스트가 넘어가는 시점을 조정
+                      whiteSpace: 'nowrap', // 텍스트를 한 줄로 유지
+                      overflow: 'hidden',   // 넘치는 텍스트를 숨김 처리
+                      textOverflow: 'ellipsis', // 넘친 부분에 ... 표시
+                    }}>
+                    <Link color="secondary" to={`/main/notice/${notice.noticeNo}`}>{notice.noticeTitle}</Link>
+                  </TableCell>
+                  <TableCell align="right">{notice.noticeReg}</TableCell>
+                </TableRow>
+              )))
+              :
+              (<TableRow>
+                <TableCell colSpan={2} align='center'>중요 공지사항이 없습니다.</TableCell>
+              </TableRow>)
+            }
           </TableBody>
         </Table>
       </TableContainer>
