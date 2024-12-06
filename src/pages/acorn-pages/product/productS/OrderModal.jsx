@@ -46,12 +46,10 @@ export default function OrderModal({handleClose}){
     };
     const showCart=(e)=>{
         const selectedProduct = JSON.parse(e.target.value);
-        console.log(selectedProduct);
 
         const existingProduct = cart.find(product=>
             product.productDtoFO.productCode===selectedProduct.productCode
         );
-        console.log(existingProduct);
         if(!existingProduct){
             setCart(prevCart=>[
                 ...prevCart,
@@ -94,7 +92,7 @@ export default function OrderModal({handleClose}){
                 cart:cart,
                 ordersApplyDate:new Date().toISOString().split("T")[0],
                 ordersEndDate:ordersEndDate,
-                branchCode:"B001"
+                branchCode:"B004"
             })
             .then(res=>{
                 if(res){
@@ -177,6 +175,7 @@ export default function OrderModal({handleClose}){
                                 <span style={{ flex: 3 }}>{product.productDtoFO.productName}</span>&nbsp;&nbsp;
                                 <span style={{ flex: 1 }}>{product.productDtoFO.productPrice}원</span>&nbsp;&nbsp;
                                 <span style={{ flex: 1 }}>{product.ordersEa}개</span>&nbsp;
+                                <span style={{ flex: 1 }}>{product.productDtoFO.productPrice*product.ordersEa}개</span>&nbsp;
                                 <button onClick={()=>{
                                     updateOrders(index,1);
                                 }}>+</button>&nbsp;
