@@ -117,9 +117,6 @@ function ProductList({ handleDetail, setShowModal }) {
                     <Button variant="secondary" onClick={handleClose}>닫기</Button>
                 </Modal.Footer>
             </Modal>
-            <div style={{ display: "flex", justifyContent: "flex-end", width: "80%", margin: "0 auto" }}>
-                <button className="btn btn-info" style={{ marginTop: "20px" }}>상품 발주</button>
-            </div>
             <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
