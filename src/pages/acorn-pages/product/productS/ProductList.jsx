@@ -60,8 +60,6 @@ function ProductList({ handleDetail, setShowModal }) {
             <h2 style={{ textAlign: "left", marginLeft: "10%" }}>소분류 목록</h2>
             <div style={{ width: "80%", margin: "0 auto", display: "flex", justifyContent: "flex-start", alignItems: "center", marginBottom: "20px" }}>
                 <ListSearch searchTerm={searchTerm} onChange={onChange} handleSearchClick={handleSearchClick} />
-            <div style={{ width: "80%", margin: "0 auto", display: "flex", justifyContent: "flex-start", alignItems: "center", marginBottom: "20px" }}>
-                <ListSearch searchTerm={searchTerm} onChange={onChange} handleSearchClick={handleSearchClick} />
                 <button onClick={() => setShowModal(true)} className="btn btn-success" style={{ marginLeft: "auto" }}>상품 등록</button>
             </div>
             <table className="table table-bordered" style={{ margin: "0 auto", width: "80%", position: "relative" }}>
