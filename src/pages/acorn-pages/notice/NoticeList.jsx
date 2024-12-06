@@ -58,9 +58,9 @@ export default function NoticeList() {
 
 	// Table columns 정의
 	const columns = [
-		{ id: 'noticeNo', label: '공지 번호', width: '50px'},
-		{ id: 'noticeTitle', label: '제목', width: '400px'},
-		{ id: 'noticeReg', label: '작성일', width: '50px'}
+		{ id: 'noticeNo', label: '공지 번호', width: '50px' },
+		{ id: 'noticeTitle', label: '제목', width: '900px', align: 'center' },
+		{ id: 'noticeReg', label: '작성일', width: '50px', align: 'center' }
 	];
 
 	let rows; // 테이블 내용이 될 행을 조건에 따라 정의
@@ -76,11 +76,11 @@ export default function NoticeList() {
 		// 기본 출력
 		rows = notices.map((notice) => ({
 			noticeNo: (
-        <span>
-            {notice.noticeCheck && <PushPinIcon sx={{ verticalAlign: 'middle', fontSize: 'medium' }} />}
-            {notice.noticeNo}
-        </span>
-    ),
+				<span>
+					{notice.noticeCheck && <PushPinIcon sx={{ verticalAlign: 'middle', fontSize: 'medium' }} />}
+					{notice.noticeNo}
+				</span>
+			),
 			noticeTitle: (
 				<Link
 					to={`/main/notice/${notice.noticeNo}`}
@@ -97,11 +97,13 @@ export default function NoticeList() {
 		}));
 	} else if (searchedNotices.length === 0) {
 		// 일치하는 결과가 없습니다
-		rows = [{
-			noticeNo: '',
-			noticeTitle: <span>일치하는 결과가 없습니다.</span>,
-			noticeReg: ''
-		}];
+		rows = [
+			{
+				noticeNo: '',
+				noticeTitle: <span>일치하는 결과가 없습니다.</span>,
+				noticeReg: ''
+			}
+		];
 	} else {
 		// 검색결과 출력
 		rows = searchedNotices.map((notice) => ({

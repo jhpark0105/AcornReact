@@ -81,7 +81,7 @@ const pages = {
 				{
 					id: 'product_s',
 					title: '소분류',
-					url: '/main/product',
+					url: '/main/productS',
 					type: 'item'
 				}
 			]
