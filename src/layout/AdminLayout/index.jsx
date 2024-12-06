@@ -9,7 +9,7 @@ import Box from '@mui/material/Box';
 // project import
 import Drawer from './Drawer';
 import Header from './Header';
-import navigation from 'menu-items/pages';
+import navigation from 'menu-items/admin';
 import Loader from 'components/Loader';
 import Breadcrumbs from 'components/@extended/Breadcrumbs';
 
