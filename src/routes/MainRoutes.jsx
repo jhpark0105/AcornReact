@@ -22,7 +22,7 @@ const Member = Loadable(lazy(() => import('pages/acorn-pages/member/Member')));
 const Service = Loadable(lazy(() => import('pages/acorn-pages/service/Service')));
 const Reservation = Loadable(lazy(() => import('pages/acorn-pages/reservation/Reservation')));
 const ProductB = Loadable(lazy(() => import('pages/acorn-pages/product/PRODUCT_B')));
-const Product = Loadable(lazy(() => import('pages/acorn-pages/product/PRODUCTS')));
+const ProductS = Loadable(lazy(() => import('pages/acorn-pages/product/PRODUCT_S')));
 const Notice = Loadable(lazy(() => import('pages/acorn-pages/notice/Notice')));
 // ====================
 
@@ -79,8 +79,8 @@ const MainRoutes = {
               element: <ProductB/>
             },
             {
-              path: "product",
-              element: <Product/>
+              path: "productS",
+              element: <ProductS/>
             },
           ]
         },
