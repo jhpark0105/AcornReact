@@ -89,11 +89,11 @@ const MainRoutes = {
           element: <Notice />
         },
         {
-          path: 'manager/mypage/view/:branchCode',
+          path: 'manager/mypage/view',
           element: <MypageView />
         },
         {
-          path: 'manager/mypage/update/:branchCode',
+          path: 'manager/mypage/update',
           element: <MypageUpdate />
         },
       ]
