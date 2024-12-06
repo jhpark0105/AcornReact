@@ -15,6 +15,7 @@ const MemberDetailModal = ({updating, selectedMember, handleDetailChange, handle
     const handleJob = (value) => {
         handleDetailChange({target:{name:'memberJob', value}});
     }
+    console.log(selectedMember.memberName)
     return(
         <>
         {/* 모달 배경
@@ -96,7 +97,7 @@ const MemberDetailModal = ({updating, selectedMember, handleDetailChange, handle
 
                                 <label>직원 입사일</label>
                                 <DatePickerComponent
-                                    value={memberDate}
+                                    value={memberDate ? new Date(memberDate) : null}
                                     // LocalDate -> Date로 변환
                                     handleDate={handleDate}
                                     readOnly={true} // 항상 읽기전용으로 설정
