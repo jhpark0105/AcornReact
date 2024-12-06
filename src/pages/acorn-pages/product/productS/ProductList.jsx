@@ -1,6 +1,5 @@
 import axios from 'axios';
-import "../../../../styles/ListSearch.module.css";
-import ListSearch from './ListSearch';
+import ListSearch from 'acorn-components/components/ListSearch';
 import Pagination from "../../../../utils/Pagination";
 import { NumericFormat } from "react-number-format";
 import React, { useState, useEffect } from 'react';

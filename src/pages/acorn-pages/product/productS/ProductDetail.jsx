@@ -1,3 +1,5 @@
+import '../../../../styles/modal.css'
+
 function ProductDetailModal({ isEditing, selectedProduct, handleDetailChange, handleSave, handleEdit, setShowDetailModal, setShowDeleteModal }) {
   return (
     <div className="modal show" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }} tabIndex="-1">
