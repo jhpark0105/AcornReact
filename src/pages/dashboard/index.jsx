@@ -68,7 +68,7 @@ export default function DashboardDefault() {
       <Grid item xs={4} md={4} lg={4}>
         <Grid container alignItems="center" justifyContent="space-between">
           <Grid item>
-            <Typography variant="h5">상품 목록(재고10개 이하)<Link to='/main/product'><PageviewIcon/></Link></Typography>
+            <Typography variant="h5">상품 목록(재고10개 이하)<Link to='/main/productS'><PageviewIcon/></Link></Typography>
           </Grid>
           <Grid item />
         </Grid>

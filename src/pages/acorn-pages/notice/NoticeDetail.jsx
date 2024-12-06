@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, CardContent, Typography, Divider } from '@mui/material';
 import Grid from '@mui/material/Grid';
+import NavigateButton from './NavigateButton';
 
 export default function NoticeDetail() {
 	const params = useParams();
@@ -15,6 +16,7 @@ export default function NoticeDetail() {
 			.get(`http://localhost:8080/notice/${noticeNo}`)
 			.then((response) => {
 				setNotice(response.data);
+				console.log(response.data);
 			})
 			.catch((error) => {
 				console.error('Error searching notice: ', error);
@@ -23,22 +25,25 @@ export default function NoticeDetail() {
 	}, [noticeNo]);
 
 	return (
-		<Card sx={{ minWidth: 650, margin: 'auto', marginTop: 4 }}>
-			<CardContent>
-				<Typography variant="h5" gutterBottom>
-					{notice.noticeTitle}
-				</Typography>
-				<Grid container>
-					<Grid item xs={6}>
-						<Typography color="text.secondary"># {notice.noticeNo}</Typography>
+		<>
+			<Card sx={{ minWidth: 650, margin: 'auto', marginTop: 4 }}>
+				<CardContent>
+					<Typography variant="h5" gutterBottom>
+						{notice.noticeTitle}
+					</Typography>
+					<Grid container>
+						<Grid item xs={6}>
+							<Typography color="text.secondary"># {notice.noticeNo}</Typography>
+						</Grid>
+						<Grid item xs={6} sx={{ textAlign: 'right' }}>
+							<Typography color="text.secondary">작성일: {notice.noticeReg}</Typography>
+						</Grid>
 					</Grid>
-					<Grid item xs={6} sx={{ textAlign: 'right' }}>
-						<Typography color="text.secondary">작성일: {notice.noticeReg}</Typography>
-					</Grid>
-				</Grid>
-				<Divider sx={{ my: 2 }} />
-				<Typography gutterBottom>{notice.noticeContent}</Typography>
-			</CardContent>
-		</Card>
+					<Divider sx={{ my: 2 }} />
+					<Typography gutterBottom>{notice.noticeContent}</Typography>
+				</CardContent>
+			</Card>
+			<NavigateButton prevNo={notice.prevNo} nextNo={notice.nextNo} />
+		</>
 	);
 }

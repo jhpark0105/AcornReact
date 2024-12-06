@@ -1,4 +1,4 @@
-import styles from "../../../styles/ListSearch.module.css";
+import styles from "../../../../styles/ListSearch.module.css";
 import { RiSearchLine } from "react-icons/ri";
 
 const ListSearch = ({ searchTerm, handleSearchClick, onChange, selectedFilter, setSelectedFilter }) => {
@@ -17,8 +17,9 @@ const ListSearch = ({ searchTerm, handleSearchClick, onChange, selectedFilter, s
       value={selectedFilter}
       onChange={(e) => setSelectedFilter(e.target.value)}> 
       {/*필터 기준 상태 업데이트 */}
-        <option name="memberName">이름</option>
-        <option name="memberJob">직책</option>
+        <option value="customerName">이름</option>
+        <option value="customerTel">연락처</option>
+        <option value="customerRank">등급</option>
       </select>
       <input
         type="text"
