@@ -1,4 +1,5 @@
 import React from 'react';
+import '../../../../styles/modal.css'
 
 /**
  * 대분류 등록 모달

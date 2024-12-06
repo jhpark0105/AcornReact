@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import '../../../../styles/modal.css'
 
 /**
  * 상품 등록 모달

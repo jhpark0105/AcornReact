@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import ListSearch from "./ListSearch";
+import ListSearch from "acorn-components/components/ListSearch";
 import styles from "../../../../styles/ListSearch.module.css";
-import Pagination from "../../../../utils/Pagination";
+import Pagination from "acorn-components/components/Pagination";
 import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button } from "@mui/material";
 
 function ProductBList({ productBs, handleDetailB, setShowModal }) {
@@ -42,22 +42,16 @@ function ProductBList({ productBs, handleDetailB, setShowModal }) {
   return (
     <Box>
       {/* 검색 및 등록 버튼 */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between", // 버튼과 검색 필드를 일관되게 배치
-          alignItems: "center",
-          width: "100%", // 테이블 컨테이너에 width: 100%를 적용하여 테이블이 부모 컨테이너의 전체 너비를 차지
-        }}
-      >
-        <div style={{ width: "100%", margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+      <div className={styles.flexContainer} style={{width:"100%"}}>
+      <div className={styles["list-component-container"]} style={{ flex: "1" }}>
           <ListSearch
             searchTerm={searchTerm}
             onChange={onChange}
             handleSearchClick={handleSearchClick}
           />
         </div>
-
+        
+        <div className={styles.buttonBox}>
         <Button
           variant="contained"
           color="success"
@@ -69,6 +63,7 @@ function ProductBList({ productBs, handleDetailB, setShowModal }) {
         >
           대분류 등록
         </Button>
+        </div>
       </div>
 
       {/* 테이블 */}
