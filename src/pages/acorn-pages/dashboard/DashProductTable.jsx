@@ -1,29 +1,31 @@
 import { useState, useEffect } from 'react';
+import Pagination from "../../../acorn-components/components/Pagination";
 import axios from 'axios';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box, Pagination, CircularProgress, PaginationItem } from '@mui/material';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForwardIos'; // 오른쪽 화살표 아이콘
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'; // 왼쪽 화살표 아이콘
-import CircleIcon from '@mui/icons-material/FiberManualRecord'; // 점 아이콘
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Box,CircularProgress} from '@mui/material';
 
 // 상품 데이터 가져오기
 export default function DashboardProduct() {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [list, setList] = useState([]);
-  const [page, setPage] = useState(1);
-  const [startPage, setStartPage] = useState(1);
-  const [endPage, setEndPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
+  const [itemsPerPage, setItemsPerPage] = useState(5); // 한 페이지당 항목 수
+
+  // 현재 페이지 데이터 계산
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = list.slice(indexOfFirstItem, indexOfLastItem);
+
+  // 총 페이지 수 계산
+  const totalPages = Math.ceil(list.length / itemsPerPage);
 
   // 상품 목록 데이터를 가져오는 함수
-  const fetchData = (currentPage) => {
+  const fetchData = () => {
     setIsLoading(false); // 데이터 로딩 시작
     axios
-      .get(`http://localhost:8080/dashboard/product?page=${currentPage}`)
+      .get('http://localhost:8080/product/dashboard')
       .then((res) => {
-        setList(res.data.list.content);
-        setPage(res.data.nowPage);
-        setStartPage(res.data.startPage);
-        setEndPage(res.data.endPage);
+        setList(res.data);
         setIsLoading(true); // 데이터 로딩 완료
       })
       .catch((err) => {
@@ -34,8 +36,8 @@ export default function DashboardProduct() {
 
   // 페이지가 변경되면 fetchData 호출
   useEffect(() => {
-    fetchData(page);
-  }, [page]);
+    fetchData();
+  }, []);
 
   // 로딩 상태 처리
   if (!isLoading) {
@@ -48,11 +50,8 @@ export default function DashboardProduct() {
 
   // 에러 상태 처리
   if (error) {
-    return <Alert severity="error">Failed to load notices: {error.message}</Alert>;
+    return <Alert severity="error">네트워크 오류: {error.message}</Alert>;
   }
-  const handlePageChange = (event, value) => {
-    setPage(value);
-  };
   return (
     <Box sx={{ padding: 2 }}>
       <TableContainer sx={{ width: '100%' }}>
@@ -64,8 +63,8 @@ export default function DashboardProduct() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {list.length> 0 ?
-              (list.map((product, index) => (
+            {currentItems.length> 0 ?
+              (currentItems.map((product, index) => (
                 <TableRow key={index}>
                   <TableCell  sx={{maxWidth: '150px', // 최대 너비를 설정하여 텍스트가 넘어가는 시점을 조정
                                     whiteSpace: 'nowrap', // 텍스트를 한 줄로 유지
@@ -83,38 +82,13 @@ export default function DashboardProduct() {
           </TableBody>
         </Table>
       </TableContainer>
-
       {/* 페이지네이션 */}
       <Pagination
-        sx={{
-          marginTop: 2,
-          display: 'flex',
-          justifyContent: 'center'
-        }}
-        count={endPage - startPage + 1}
-        page={page}
-        onChange={handlePageChange}
-        renderItem={(item) => (
-          <PaginationItem
-            {...item}
-            sx={{
-              borderRadius: '50%',
-              margin: '0 2px',
-              '&.Mui-selected': {
-                backgroundColor: 'primary.main',
-                color: 'white',
-              },
-              '&.Mui-selected > svg': {
-                transform: 'scale(1.2)',
-              },
-            }}
-            children={item.page === page ? (
-              <ArrowForwardIcon fontSize="small" />
-            ) : (
-              <CircleIcon fontSize="small" />
-            )}
-          />
-        )}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+        itemsPerPage={itemsPerPage}
+        setItemsPerPage={setItemsPerPage}
       />
     </Box>
   );
