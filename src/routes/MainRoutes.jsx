@@ -6,6 +6,9 @@ import Main from 'layout/Dashboard';
 import { element } from 'prop-types';
 import Login from 'pages/authentication/login';
 import MainCard from 'components/MainCard';
+// 마이페이지
+import MypageView from '../pages/acorn-pages/mypage/MypageView';
+import MypageUpdate from '../pages/acorn-pages/mypage/MypageUpdate';
 
 // =====
 
@@ -19,7 +22,7 @@ const Member = Loadable(lazy(() => import('pages/acorn-pages/member/Member')));
 const Service = Loadable(lazy(() => import('pages/acorn-pages/service/Service')));
 const Reservation = Loadable(lazy(() => import('pages/acorn-pages/reservation/Reservation')));
 const ProductB = Loadable(lazy(() => import('pages/acorn-pages/product/PRODUCT_B')));
-const Product = Loadable(lazy(() => import('pages/acorn-pages/product/PRODUCTS')));
+const ProductS = Loadable(lazy(() => import('pages/acorn-pages/product/PRODUCT_S')));
 const Notice = Loadable(lazy(() => import('pages/acorn-pages/notice/Notice')));
 // ====================
 
@@ -76,14 +79,22 @@ const MainRoutes = {
               element: <ProductB/>
             },
             {
-              path: "product",
-              element: <Product/>
+              path: "productS",
+              element: <ProductS/>
             },
           ]
         },
         {
           path: 'notice/*',
           element: <Notice />
+        },
+        {
+          path: 'manager/mypage/view',
+          element: <MypageView />
+        },
+        {
+          path: 'manager/mypage/update',
+          element: <MypageUpdate />
         },
       ]
     }

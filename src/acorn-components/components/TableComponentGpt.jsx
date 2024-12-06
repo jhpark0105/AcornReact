@@ -25,7 +25,9 @@ export default function TableComponent({ columns, rows, onRowClick }) {
           <TableHead>
             <TableRow>
               {columns.map((column) => (
-                <TableCell key={column.id} align={column.align || 'left'}>
+                <TableCell key={column.id} align={column.align || 'left'}
+                sx={{ width: column.width }}
+                >
                   {column.label}
                 </TableCell>
               ))}

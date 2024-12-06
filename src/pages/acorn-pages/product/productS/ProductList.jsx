@@ -1,18 +1,22 @@
 import axios from 'axios';
-import styles from "../../../../styles/ListSearch.module.css";
+import ListSearch from 'acorn-components/components/ListSearch';
 import Pagination from "../../../../utils/Pagination";
+import { NumericFormat } from "react-number-format";
 import React, { useState, useEffect } from 'react';
-import ListSearch from './ListSearch';
+import { Button, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import Modal from 'react-bootstrap/Modal';
+import OrderModal from './OrderModal';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './modal.css';
+import styles from "../../../../styles/ListSearch.module.css";
 
 function ProductList({ handleDetail, setShowModal }) {
     const [products, setProducts] = useState([]); // 상품 목록 상태
     const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태 관리
     const [filteredData, setFilteredData] = useState([]); // 필터링된 데이터 상태 관리
-    const [productBList, setProductBList] = useState([]); // 대분류 코드 목록 상태
-    const [productBCode, setProductBCode] = useState(''); // 선택된 대분류 코드 상태
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
     const [itemsPerPage, setItemsPerPage] = useState(5); // 페이지당 항목 수 (기본값 5)
-
+    const [show, setShow] = useState(false);
 
     // 대분류 코드 목록을 서버에서 받아오는 함수
     useEffect(() => {
@@ -24,7 +28,6 @@ function ProductList({ handleDetail, setShowModal }) {
                 console.error('대분류 데이터를 가져오는 데 실패했습니다:', error);
             }
         };
-    
         fetchProducts();
     }, []);
 
@@ -43,7 +46,6 @@ function ProductList({ handleDetail, setShowModal }) {
         const filtered = products.filter((item) => {
             const isProductNameMatch = item.productName && item.productName.toLowerCase().includes(searchTerm.toLowerCase());
             const isProductBNameMatch = item.product_b && item.product_b.productBName && item.product_b.productBName.toLowerCase().includes(searchTerm.toLowerCase());
-    
             // 상품명이나 대분류명이 일치하면 필터링
             return isProductNameMatch || isProductBNameMatch;
         });
@@ -51,81 +53,95 @@ function ProductList({ handleDetail, setShowModal }) {
         setCurrentPage(1); //검색 후 첫 페이지로 이동
     };
 
-    const fetchProductBList = async () => {
-        try {
-            const response = await axios.get('http://localhost:8080/productBList');  // 대분류 목록 API 경로로 수정
-            setProductBList(response.data);  // 대분류 목록 상태 업데이트
-        } catch (err) {
-            console.log('대분류 목록을 불러오는 데 실패했습니다 : ', err);
-        }
-    };
-
-    // 대분류 코드 변경 시 처리하는 함수
-    const handleSelectChange = (event) => {
-        setProductBCode(event.target.value);
-    };
-
     // 페이지별 데이터 계산
     const indexOfLastItem = currentPage * itemsPerPage; // itemsPerPage : 한 페이지에 표시할 서비스의 수를 정의
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-
-    //currentItems : filteredData를 기준으로 현재 페이지에 해당하는 데이터를 계산
-    const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
-
-    // 총 페이지 수 계산
-    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+    const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem); // 데이터 배열에서 현재 페이지에 해당하는 데이터만 추출
+    const totalPages = Math.ceil(filteredData.length / itemsPerPage); // 총 페이지 수 계산
 
     return (
         <>
-            <h2 style={{ textAlign: "center" }}>소분류 목록</h2>
-
-            <div style={{ width: "80%", margin: "0 auto", display: "flex", justifyContent: "flex-start", alignItems: "center", marginBottom: "20px" }}>
-                <ListSearch 
-                    searchTerm={searchTerm}
-                    onChange={onChange}
-                    handleSearchClick={handleSearchClick}
-                    handleSelectChange={handleSelectChange}  // 선택값 변경 처리 함수 전달
-                />
-                <div>
-                    <button className="btn btn-info" style={{ marginRight: "10px" }}>상품 발주</button>
-                    <button onClick={() => setShowModal(true)} className="btn btn-success">상품 등록</button>
-                </div>
+            {/* 검색 및 등록 버튼 */}
+            <div style={{ width: "100%", margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                <ListSearch searchTerm={searchTerm} onChange={onChange} handleSearchClick={handleSearchClick} />
+                <Button variant="contained" color="success" onClick={() => setShowModal(true)}>
+                    상품 등록
+                </Button>
             </div>
 
-            <table className="table table-bordered" style={{ margin: "0 auto", width: "80%", position: "relative" }}>
-                <thead>
-                    <tr>
-                        <th>대분류</th>
-                        <th>상품 코드</th>
-                        <th>상품명</th>
-                        <th>상품 금액</th>
-                        <th>상품 수량</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {currentItems.length > 0 ? (
-                        currentItems.map((product) => (
-                        <tr key={product.productCode}>
-                            <td>{product.productCode}</td>
-                            <td>{product.productCode}</td>
-                            <td>
-                                <span
-                                    style={{ color: "blue", cursor: "pointer", textDecoration: "underline" }}
-                                    onClick={() => handleDetail(product)}>
-                                    {product.productName}
-                                </span>
-                            </td>
-                            <td>{product.productPrice.toLocaleString()} 원</td>
-                            <td>{product.productEa}</td>
-                        </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan="5">등록된 상품이 없습니다.</td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
+            {/* 테이블 */}
+            <Box>
+                <TableContainer className={styles["table-container"]}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>대분류</TableCell>
+                                <TableCell>상품 코드</TableCell>
+                                <TableCell>상품명</TableCell>
+                                <TableCell>상품 금액</TableCell>
+                                <TableCell>상품 수량</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {currentItems.length > 0 ? (
+                                currentItems.map((product) => (
+                                    <TableRow key={product.productCode}>
+                                        <TableCell>{product.product_b.productBName}</TableCell>
+                                        <TableCell>{product.productCode}</TableCell>
+                                        <TableCell>
+                                            <span
+                                                style={{ color: "blue", 
+                                                cursor: "pointer", 
+                                                textDecoration: "underline" }}
+                                                onClick={() => handleDetail(product)}
+                                            >
+                                                {product.productName}
+                                            </span>
+                                        </TableCell>
+                                        <TableCell>
+                                            <NumericFormat value={product.productPrice} displayType="text" thousandSeparator suffix=" 원" />
+                                        </TableCell>
+                                        <TableCell>{product.productEa}</TableCell>
+                                    </TableRow>
+                                ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={5} align="center">
+                                        등록된 상품이 없습니다.
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Box>
+
+            {/* 상품 발주 버튼 - 테이블 우측 하단에 배치 */}
+            <div style={{ width: "100%", margin: "20px 0", display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => setShow(true)}
+                    sx={{ width: "auto" }} // 버튼 크기를 자동으로 설정
+                >
+                    상품 발주
+                </Button>
+            </div>
+
+            {/* 발주 모달 */}
+            <Modal show={show} onHide={() => setShow(false)} dialogClassName="custom-modal" style={{ zIndex: 1500, overflowY: 'auto' }}>
+                <Modal.Header closeButton>
+                    <Modal.Title>발주 화면</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <OrderModal handleClose={() => setShow(false)} />
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShow(false)}>
+                        닫기
+                    </Button>
+                </Modal.Footer>
+            </Modal>
 
             {/* 페이지네이션 */}
             <Pagination
