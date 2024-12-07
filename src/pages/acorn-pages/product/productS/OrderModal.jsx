@@ -1,13 +1,15 @@
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
-import { useState,useEffect } from 'react';
+import { useRef,useState,useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import axios from 'axios';
-import { Box, Button,CircularProgress } from '@mui/material';
+import { Box, Button,CircularProgress, Alert } from '@mui/material';
 import CustomDialog from '../../../../acorn-components/components/Dialog'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './OrderModal.css';
 export default function OrderModal({handleClose}){
     const [dialogVisible, setDialogVisible] = useState(false);  //다이어로그 띄우기
-    const [dialogContent, setDialogContent] = useState(''); //다이어로그 내용 변경
+    const dialogContent = useRef(""); // 다이얼로그 내용 저장용
     const [error,setError]=useState(null);
     const [isLoading,setIsLoading]=useState(false);
     const [blist,setBlist]=useState(null);  //대분류 상품 목록
@@ -21,11 +23,10 @@ export default function OrderModal({handleClose}){
     const [minDate, setMinDate] = useState(""); //발주 등록 가능일 
     const [total,setTotal] = useState(0);   //발주 목록 총 금액
     const handleDialogOpen = (content) => {
-        setDialogContent(content);
-        setDialogVisible(true);
-      };    
-      const handleDialogClose = () => {
-        setDialogVisible(false);
+        dialogContent.current=content;
+        setTimeout(() => {
+            setDialogVisible(true); // content 설정 이후에 다이얼로그 표시
+        }, 0);
       };
     const getProductBCode=function(){
         axios.get('http://localhost:8080/productB')
@@ -69,7 +70,6 @@ export default function OrderModal({handleClose}){
             setShowCartList(true);
         }else{
             handleDialogOpen("이미 포함된 상품입니다.");
-            handleDialogOpen();
         }
     };
     const updateOrders=(index,num)=>{
@@ -89,11 +89,9 @@ export default function OrderModal({handleClose}){
             setAlertVisible(true);
         }else{
             handleDialogOpen("발주 마감일은 필수 선택사항입니다.");
-            handleDialogOpen();
         }
     }
     const handleAlertClose = (confirm) => {
-        //setAlertVisible(false);
         if (confirm) {
             axios.post('http://localhost:8080/order',{
                 cart:cart,
@@ -111,8 +109,9 @@ export default function OrderModal({handleClose}){
             .catch(err=>{
                 setIsLoading(true);
                 handleDialogOpen("발주 신청에 실패했습니다.");
-                handleDialogOpen();
             })
+        }else{
+            setAlertVisible(false);
         }
     };
     const CompareDate=(e)=>{
@@ -224,13 +223,16 @@ export default function OrderModal({handleClose}){
                     {alertMessage}
                 </Alert>
             )}
-            {dialogVisible&&(
+            {dialogVisible&&
+                ReactDOM.createPortal(
                 <CustomDialog
-                    open={handleDialogOpen}
-                    onClose={handleDialogClose}
+                    open={dialogVisible}
+                    onClose={()=>setDialogVisible(false)}
                     title="*! 경고 !*"
-                    content={dialogContent}
-                />
+                    content={dialogContent.current}
+                    dialogClassName="custom-dialog"
+                />,
+                document.body
             )}
         </article>
     );}
