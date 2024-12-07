@@ -72,13 +72,24 @@ export default function OrderModal({handleClose}){
             handleDialogOpen("이미 포함된 상품입니다.");
         }
     };
-    const updateOrders=(index,num)=>{
+    const updateBtnOrders=(index,num)=>{
         setCart(prevCart=>
             prevCart.map((product,idx)=>
                 idx===index ? {
                     ...product,
                     ordersEa:product.ordersEa+num,
                     ordersPrice:parseInt(product.productDtoFO.productPrice)*(product.ordersEa+num)
+                } :product
+            )
+        );        
+    }
+    const updateInputOrders=(index,num)=>{
+        setCart(prevCart=>
+            prevCart.map((product,idx)=>
+                idx===index ? {
+                    ...product,
+                    ordersEa:num,
+                    ordersPrice:parseInt(product.productDtoFO.productPrice)*num
                 } :product
             )
         );        
@@ -148,9 +159,9 @@ export default function OrderModal({handleClose}){
                 aria-describedby="branchCode"
                 />
             </InputGroup>
-            <div>
+            <div className="date-picker-container">
                 발주 마감일&nbsp;&nbsp;&nbsp;
-                <input type='date' min={minDate} required onChange={CompareDate}></input>
+                <input type='date' style={{width:'10rem'}} className="form-control" min={minDate} required onChange={CompareDate}></input>
             </div>
             <Form.Label htmlFor="productB">대분류</Form.Label>
             <InputGroup className="mb-3">
@@ -159,7 +170,7 @@ export default function OrderModal({handleClose}){
                     {blist.map((productB,index)=>
                             <option key={index} value={productB.productBCode}>{productB.productBName}</option>
                         )}
-                </Form.Select>                
+                </Form.Select>
             </InputGroup>
             {showList&&
                 <>
@@ -182,16 +193,16 @@ export default function OrderModal({handleClose}){
                             <li key={index} style={{ display: 'flex', alignItems: 'center' }}>
                                 <span style={{ flex: 3 }}>{product.productDtoFO.productName}</span>&nbsp;&nbsp;
                                 <span style={{ flex: 1 }}>{product.productDtoFO.productPrice}원</span>&nbsp;&nbsp;
-                                <span style={{ flex: 1 }}>{product.ordersEa}개</span>&nbsp;
-                                <span style={{ flex: 1 }}>{product.productDtoFO.productPrice*product.ordersEa}개</span>&nbsp;
                                 <button onClick={()=>{
-                                    updateOrders(index,1);
+                                    if(product.ordersEa>1) updateBtnOrders(index,-1);
+                                }}>-</button>&nbsp;
+                                <span>{product.ordersEa}개</span>&nbsp;
+                                <button onClick={()=>{
+                                    updateBtnOrders(index,1);
                                 }}>+</button>&nbsp;
-                                <button onClick={()=>{
-                                    if(product.ordersEa>1) updateOrders(index,-1);
-                                }}>-</button>&nbsp;&nbsp;&nbsp;
-                                <input type='number' min={1} placeholder='개수' style={{ width: '4em'}} onBlur={(e)=>{
-                                    updateOrders(index,parseInt(e.target.value));
+                                <span >{product.productDtoFO.productPrice*product.ordersEa}원</span>&nbsp;
+                                <input type='number' value={product.ordersEa} min={1} placeholder='개수' style={{ width: '4em'}} onChange={(e)=>{
+                                    updateInputOrders(index,parseInt(e.target.value));
                                 }}></input>&nbsp;&nbsp;&nbsp;
                                 <button onClick={() =>
                                         setCart((prevCart) => prevCart.filter((_, idx) => idx !== index))
