@@ -19,7 +19,7 @@ import { RiSearchLine } from "react-icons/ri";
 import CustomerInsForm from "./CustomerInsForm"; // 이 경로 맞게 수정 필요
 import CustomerDetail from "./CustomerDetail"; // 이 경로 맞게 수정 필요
 
-function CustomerList({ handleDetail }) {
+function CustomerList({ handleDetail, refresh }) {
   const [customers, setCustomers] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
@@ -27,10 +27,11 @@ function CustomerList({ handleDetail }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 15;
+  const itemsPerPage = 10;
   const [selectedFilter, setSelectedFilter] = useState("customerName");
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+
 
   // 고객 데이터를 서버에서 불러오는 함수
   useEffect(() => {
@@ -45,6 +46,8 @@ function CustomerList({ handleDetail }) {
       });
   }, []);
 
+
+
   // 이름, 등급, 번호 검색
   const handleSearchClick = () => {
     const filtered = customers.filter((item) =>
@@ -53,6 +56,17 @@ function CustomerList({ handleDetail }) {
     setFilteredData(filtered); // 필터링된 데이터 상태 업데이트
     setCurrentPage(1); // 검색 후 첫 페이지로 이동
   };
+
+  // 고객 이름 클릭하면 모달창으로 상세정보
+  // const handleDetail = (customer) => {
+  //   setSelectedCustomer(customer);
+  //   setShowDetailModal(true);
+  //   setIsEditing(false);
+  // }
+  // const handleEdit = () => {
+  //     setIsEditing(true);
+  // }
+
 
   // 기간 검색용
   const handleSearch = () => {
@@ -213,6 +227,7 @@ function CustomerList({ handleDetail }) {
         <CustomerDetail
           selectedCustomer={selectedCustomer}
           setShowDetailModal={setShowDetailModal}
+          refresh={refresh}
         />
       )}
     </Box>

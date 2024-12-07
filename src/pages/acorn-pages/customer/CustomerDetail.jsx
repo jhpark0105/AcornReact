@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ToastContainer,toast } from 'react-toastify';
 import axios from "axios";
 import DatePicker from "react-datepicker";
@@ -7,7 +7,6 @@ import DatePickerComponent from "./Picker/DatePicker";
 import 'rsuite/dist/rsuite.min.css';
 import SelectPickerComponent from "./Picker/SelectPicker";
 import GenderPickerComponent from "./Picker/GenderPicker";
-import '../../../styles/modal.css';
 
 export default function CustomerDetail({selectedCustomer, setShowDetailModal, refresh}) {
     const [isEditing, setIsEditing] = useState(false); // 수정 모드 상태
@@ -35,6 +34,33 @@ export default function CustomerDetail({selectedCustomer, setShowDetailModal, re
             console.error("Error:", error);
           });
     };
+  //   const handleSave = async () => {
+  //     try {
+  //         const res = await axios.put(
+  //             `http://localhost:8080/customer/${customer.customerId}`,
+  //             customer
+  //         );
+  
+  //         if (res.data.isSuccess) {
+  //             toast.success("고객 수정 성공!");
+  //             setIsEditing(false);
+  //             setShowDetailModal(false);
+  //             await refresh(); // 저장 후 리스트 새로고침
+  //         } else {
+  //             toast.error("수정에 실패했습니다.");
+  //         }
+  //     } catch (error) {
+  //         toast.error("수정 중 오류가 발생했습니다.");
+  //         console.error("Error:", error);
+  //     }
+  // };
+  
+  
+  
+  
+  
+
+
 
     // 수정된 값 저장
     // const handleDetailChange = (e) => {
@@ -92,7 +118,7 @@ export default function CustomerDetail({selectedCustomer, setShowDetailModal, re
                   <div className="mb-3">
                     <label>이름</label>
                     <input type="text" name="customerName" className="form-control"
-                      value={customer.customerName} onChange={(e) => handleDetailChange(e.target.value, "customerName")} disabled={!isEditing}/>
+                      value={customer.customerName} onChange={(e) => handleDetailChange(e.target.value, "customerName")} readOnly={!isEditing}/>
                   </div>
 
                   <div className="mb-3">
@@ -111,7 +137,7 @@ export default function CustomerDetail({selectedCustomer, setShowDetailModal, re
                             type="text"
                             className="form-control"
                             value={customer.customerGender}
-                            disabled
+                            readOnly
                         />
                     )}
                   </div>
@@ -119,13 +145,13 @@ export default function CustomerDetail({selectedCustomer, setShowDetailModal, re
                   <div className="mb-3">
                     <label>연락처</label>
                     <input type="text" name="customerTel" className="form-control"
-                      value={customer.customerTel} onChange={(e) => handleDetailChange(e.target.value, "customerTel")} disabled={!isEditing}/>
+                      value={customer.customerTel} onChange={(e) => handleDetailChange(e.target.value, "customerTel")} readOnly={!isEditing}/>
                   </div>
 
                   <div className="mb-3">
                     <label>e-mail</label>
                     <input type="text" name="customerMail" className="form-control"
-                      value={customer.customerMail} onChange={(e) => handleDetailChange(e.target.value, "customerMail")} disabled={!isEditing}/>
+                      value={customer.customerMail} onChange={(e) => handleDetailChange(e.target.value, "customerMail")} readOnly={!isEditing}/>
                   </div>
 
                   <div className="mb-3">
@@ -186,7 +212,7 @@ export default function CustomerDetail({selectedCustomer, setShowDetailModal, re
                         type="text" 
                         className="form-control" 
                         value={customer.customerRank} 
-                        disabled
+                        readOnly
                       />
                     )}
                   </div>
@@ -194,7 +220,7 @@ export default function CustomerDetail({selectedCustomer, setShowDetailModal, re
                   <div className="mb-3">
                     <label>특이사항</label>
                     <input type="text" name="customerNote" className="form-control"
-                      value={customer.customerNote} onChange={(e) => handleDetailChange(e.target.value, "customerNote")} disabled={!isEditing}/>
+                      value={customer.customerNote} onChange={(e) => handleDetailChange(e.target.value, "customerNote")} readOnly={!isEditing}/>
                   </div>
 
                 </form>

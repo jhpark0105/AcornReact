@@ -8,6 +8,7 @@ import ReservationDetail from './ReservationDetail';
 import ReservationDelete from './ReservationDelete';
 import CreateReservation from './CreateReservation';
 import 'rsuite/dist/rsuite.min.css';
+import './App.css';
 
 
 function Reservation() {
