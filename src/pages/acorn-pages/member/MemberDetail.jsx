@@ -6,16 +6,21 @@ const MemberDetailModal = ({updating, selectedMember, handleDetailChange, handle
 
     const handleDate = (date) => {
         handleDetailChange({target:{name:'memberDate', value:date}});
-    }
+    };
     //console.log(selectedMember.memberDate)
+     // 서버에서 전달된 날짜를 로컬 타임존으로 변환하여 YYYY-MM-DD 형식으로 표시
+  const memberDate = selectedMember.memberDate
+  ? new Date(selectedMember.memberDate).toLocaleDateString("en-CA") // YYYY-MM-DD 형식
+  : "";
 
-    const memberDate = selectedMember.memberDate ? new Date(selectedMember.memberDate) : null;
+    //const memberDate = selectedMember.memberDate ? new Date(selectedMember.memberDate) : null;
     // Date 객체로 반환
 
     const handleJob = (value) => {
         handleDetailChange({target:{name:'memberJob', value}});
     }
     console.log(selectedMember.memberName)
+    console.log(selectedMember.memberDate)
     return(
         <>
         {/* 모달 배경
@@ -97,13 +102,8 @@ const MemberDetailModal = ({updating, selectedMember, handleDetailChange, handle
 
                                 <label>직원 입사일</label>
                                 <DatePickerComponent
-                                    value={memberDate ? new Date(memberDate) : null}
-                                    // LocalDate -> Date로 변환
-                                    handleDate={handleDate}
-                                    readOnly={true} // 항상 읽기전용으로 설정
-                                    // -> datepicker 컴포에 
-                                    dateFormat="yyyy-MM-dd"
-                                    className="form-control"
+                                value={selectedMember.memberDate} // YYYY-MM-DD 형식의 문자열 전달
+                                handleDate={(date) => handleDetailChange({ target: { name: "memberDate", value: date } })}
                                 />
                                 </div>
 

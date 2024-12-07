@@ -56,7 +56,7 @@ function MemberList({ members, handleDetail, setShowModal }) {
   const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태
   const [filteredData, setFilteredData] = useState([]); // 필터링된 데이터
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
-  const [itemsPerPage, setItemsPerPage] = useState(5); // 한 페이지당 항목 수
+  const [itemsPerPage, setItemsPerPage] = useState(10); // 한 페이지당 항목 수
 
   // 초기 렌더링: 데이터 정렬 후 필터링 상태 설정
   useEffect(() => {
