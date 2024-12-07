@@ -177,7 +177,7 @@ export default function Profile() {
                               {managerData ? managerData.branchName : '로딩 중...'}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
-                            담당 매니저 : {managerData ? managerData.managerName : '로딩 중...'}
+                            담당 관리자 : {managerData ? managerData.managerName : '로딩 중...'}
                             </Typography>
                           </Stack>
                         </Stack>

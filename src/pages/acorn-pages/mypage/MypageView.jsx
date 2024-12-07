@@ -64,7 +64,7 @@ const MypageView = () => {
               InputProps={{ readOnly: true }}
             />
             <TextField
-              label="연락처"
+              label="관리자 연락처"
               name="managerTel"
               value={managerData.managerTel}
               fullWidth
@@ -72,7 +72,7 @@ const MypageView = () => {
               InputProps={{ readOnly: true }}
             />
             <TextField
-              label="이메일"
+              label="관리자 이메일"
               name="managerMail"
               value={managerData.managerMail}
               fullWidth
