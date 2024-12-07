@@ -44,7 +44,7 @@ const MypageUpdate = () => {
         withCredentials: true // 쿠키 포함 설정
       });
       setShowModal(false);
-      navigate(`/main/manager/mypage/view/${branchCode}`);
+      navigate(`/main/manager/mypage/view`);
     } catch (error) {
       console.error('매니저 수정 중 오류:', error);
     }
