@@ -1,14 +1,8 @@
-.custom-modal {
-    position: absolute; /* 기본 중앙 정렬 제거 */
-    top: 20%; /* 원하는 위치로 설정 */
-    left: 20%;
-    transform: translate(-50%, 0); /* 수평 중앙 정렬 */
-    width: 90%;
-    max-width: 800px;
-  }
 .custom-modal .modal-content {
     height: 100%; /* 모달 내용도 100% 채움 */
+    left: -40%;
     overflow-y: auto; /* 필요 시 스크롤 가능 */
+    width: 70rem;
   }
 .custom-dialog {
     position: fixed; /* 기본 중앙 정렬 제거 */
