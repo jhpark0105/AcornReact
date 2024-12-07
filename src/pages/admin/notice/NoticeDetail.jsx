@@ -14,7 +14,7 @@ export default function NoticeDetail() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/notice/${noticeNo}`)
+      .get(`http://localhost:8080/admin-notice/${noticeNo}`)
       .then((response) => {
         setNotice(response.data);
         console.log(response.data);
@@ -45,13 +45,13 @@ export default function NoticeDetail() {
         </CardContent>
       </Card>
       <Stack spacing={2} direction="row" sx={{ marginTop: '20px', justifyContent: 'center' }}>
-        <Button variant="contained" onClick={() => navigate(`/main/notice/${notice.prevNo}`)} disabled={!notice.prevNo}>
+        <Button variant="contained" onClick={() => navigate(`/admin/notice/${notice.prevNo}`)} disabled={!notice.prevNo}>
           이전
         </Button>
-        <Button variant="contained" onClick={() => navigate('/main/notice')}>
+        <Button variant="contained" onClick={() => navigate('/admin/notice')}>
           목록
         </Button>
-        <Button variant="contained" onClick={() => navigate(`/main/notice/${notice.nextNo}`)} disabled={!notice.nextNo}>
+        <Button variant="contained" onClick={() => navigate(`/admin/notice/${notice.nextNo}`)} disabled={!notice.nextNo}>
           다음
         </Button>
       </Stack>
