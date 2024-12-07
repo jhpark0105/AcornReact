@@ -130,7 +130,7 @@ function ProductList({ handleDetail, setShowModal }) {
                 </Button>
             </div>
             {/* 발주 모달 */}
-            <Modal show={show} onHide={handleClose} dialogClassName="custom-modal" style={{ zIndex: 1500, overflowY: 'auto'}}backdrop={{style: { zIndex: 1200 }> // 다이얼로그보다 낮게 설정
+            <Modal show={show} onHide={handleClose} dialogClassName="custom-modal" style={{zIndex: 1500,overflowY: 'auto'}}backdrop={{style: { zIndex: 1200 }}}> // 다이얼로그보다 낮게 설정               
                 <Modal.Header closeButton>
                     <Modal.Title>발주 화면</Modal.Title>
                 </Modal.Header>
