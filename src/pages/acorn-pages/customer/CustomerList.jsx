@@ -45,6 +45,34 @@ function CustomerList({ handleDetail }) {
       });
   }, []);
 
+  // 이름, 등급, 번호 검색
+  const handleSearchClick = () => {
+    const filtered = customers.filter((item) =>
+      item[selectedFilter]?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredData(filtered); // 필터링된 데이터 상태 업데이트
+    setCurrentPage(1); // 검색 후 첫 페이지로 이동
+  };
+
+  // 기간 검색용
+  const handleSearch = () => {
+    if (!startDate || !endDate) {
+      alert("시작 날짜와 종료 날짜를 모두 선택해주세요.");
+      return;
+    }
+
+    const formattedStartDate = new Date(startDate).toISOString().slice(0, 10);
+    const formattedEndDate = new Date(endDate).toISOString().slice(0, 10);
+
+    const filteredCustomers = customers.filter((customer) => {
+      const customerRegDate = customer.customerReg.slice(0, 10);
+      return customerRegDate >= formattedStartDate && customerRegDate <= formattedEndDate;
+    });
+
+    setFilteredData(filteredCustomers);
+    setCurrentPage(1);
+  };
+
   // 페이지네이션을 위한 계산
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -73,8 +101,9 @@ function CustomerList({ handleDetail }) {
           textDecoration: "underline",
         }}
         onClick={() => {
-          setSelectedCustomer(customer);  // 선택된 고객 저장
-          setShowDetailModal(true);  // 고객 상세 모달 열기
+          setSelectedCustomer(customer);
+          setShowDetailModal(true);
+          handleDetail(customer); // 부모 컴포넌트로 고객 상세 정보 전달
         }}
       >
         {customer.customerName}
@@ -90,7 +119,6 @@ function CustomerList({ handleDetail }) {
 
   return (
     <Box sx={{ width: "100%", margin: "0 auto", padding: "16px" }}>
-      {/* 날짜 검색 및 필터링 부분 */}
       <Box
         sx={{
           display: "flex",
@@ -103,25 +131,20 @@ function CustomerList({ handleDetail }) {
           <DateSearch selectedDate={startDate} setSelectedDate={setStartDate} />
           <span>-</span>
           <DateSearch selectedDate={endDate} setSelectedDate={setEndDate} />
-          <button
-            className={styles.searchButton}
-            onClick={() => setShowModal(true)} // 고객 등록 모달 열기
-          >
+          <button className={styles.searchButton} onClick={handleSearch}>
             <RiSearchLine />
           </button>
         </Box>
+
         <ListSearch
           searchTerm={searchTerm}
           onChange={setSearchTerm}
-          handleSearchClick={() => {}}
+          handleSearchClick={handleSearchClick}
           selectedFilter={selectedFilter}
           setSelectedFilter={setSelectedFilter}
         />
-        <Button
-          variant="contained"
-          color="success"
-          onClick={() => setShowModal(true)} // 고객 등록 모달 열기
-        >
+
+        <Button variant="contained" color="success" onClick={() => setShowModal(true)}>
           고객 등록
         </Button>
       </Box>
@@ -161,7 +184,6 @@ function CustomerList({ handleDetail }) {
         onPageChange={setCurrentPage}
       />
 
-      {/* 고객 등록 모달 */}
       {showModal && (
         <div
           className="modal show"
@@ -175,7 +197,7 @@ function CustomerList({ handleDetail }) {
                 <button
                   type="button"
                   className="btn-close"
-                  onClick={() => setShowModal(false)} // 모달 닫기
+                  onClick={() => setShowModal(false)}
                 ></button>
               </div>
 
@@ -187,7 +209,6 @@ function CustomerList({ handleDetail }) {
         </div>
       )}
 
-      {/* 고객 상세 모달 */}
       {showDetailModal && selectedCustomer && (
         <CustomerDetail
           selectedCustomer={selectedCustomer}
