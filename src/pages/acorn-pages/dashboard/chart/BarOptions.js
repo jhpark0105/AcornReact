@@ -1,12 +1,12 @@
 export const colors = {
-    color_main : "#435ebe",
     color_blue : "#7BD3EA",
-    color_red : "#F6D6D6",
     color_green : "#A1EEBD",
     color_yellow : "#F6F7C4",
+    color_red : "#F6D6D6",
+    color_main : "#435ebe",
 }
 
-export const colorArr = ["#435ebe", "#7BD3EA", "#F6D6D6", "#A1EEBD", "#F6F7C4"];
+export const colorArr = ["#7BD3EA", "#A1EEBD", "#F6F7C4", "#F6D6D6", "#435ebe"];
 
 export const barOptions = {
     // 막대 색상 배열
@@ -107,8 +107,8 @@ export const barOptions = {
           fontSize: 10,
           fontWeight: "bold", 
         },
-        rotate: 0, // 수평. 설정 없으면 차트가 틀어진다.
-        offsetX: 15,
+        // rotate: 0, // 수평. 설정 없으면 차트가 틀어진다.
+        // offsetX: 0,
         // offsetY: -180,
       },
       // y축 데이터 값 

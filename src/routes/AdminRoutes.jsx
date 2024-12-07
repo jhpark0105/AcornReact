@@ -12,8 +12,6 @@ const Notice = Loadable(lazy(() => import('pages/admin/notice')));
 const MypageView = Loadable(lazy(() => import('pages/admin/mypage/MypageView')));
 const MypageUpdate = Loadable(lazy(() => import('pages/admin/mypage/MypageUpdate')));
 
-// ==============================|| ADMIN ROUTING ||============================== //
-
 const AdminRoutes = {
   path: '/admin/*',
   element: <Admin />,

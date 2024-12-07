@@ -52,12 +52,27 @@ function a11yProps(index) {
 
 export default function Profile() {
   // 데이터 매니저 갖고와서 마이페이지 간단히 보는 모달에 뿌려줄 용도
-  const [managerData, setManagerData] = useState(null);
+   const [managerData, setManagerData] = useState(null);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.get(`http://localhost:8080/manager/mypage/B004`);
+  //       setManagerData(response.data);
+  //     } catch (error) {
+  //       console.error('데이터 로딩 중 오류:', error);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await axios.get(`http://localhost:8080/manager/mypage/B001`);
+      try {      
+        // URL 파라미터 제거, 쿠키를 자동으로 포함하여 요청
+        const response = await axios.get(`http://localhost:8080/manager/mypage`, {
+          withCredentials: true // 크로스 도메인 요청 시 쿠키 포함
+        });
         setManagerData(response.data);
       } catch (error) {
         console.error('데이터 로딩 중 오류:', error);
@@ -162,7 +177,7 @@ export default function Profile() {
                               {managerData ? managerData.branchName : '로딩 중...'}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
-                            담당 매니저 : {managerData ? managerData.managerName : '로딩 중...'}
+                            담당 관리자 : {managerData ? managerData.managerName : '로딩 중...'}
                             </Typography>
                           </Stack>
                         </Stack>

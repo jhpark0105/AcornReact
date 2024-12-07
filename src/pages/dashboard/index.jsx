@@ -12,24 +12,6 @@ import DashboardProductTable from '../acorn-pages/dashboard/DashProductTable';
 import {Link} from 'react-router-dom';
 import AnalyticEcommerce from 'components/cards/statistics/AnalyticEcommerce';
 import DashboardReservation from 'pages/acorn-pages/dashboard/DashboardReservation';
-// css
-import './dashboard.css'
-// avatar style
-const avatarSX = {
-  width: 36,
-  height: 36,
-  fontSize: '1rem'
-};
-
-// action style
-const actionSX = {
-  mt: 0.75,
-  ml: 1,
-  top: 'auto',
-  right: 'auto',
-  alignSelf: 'flex-start',
-  transform: 'none'
-};
 
 // ==============================|| DASHBOARD - DEFAULT ||============================== //
 
@@ -68,7 +50,7 @@ export default function DashboardDefault() {
       <Grid item xs={4} md={4} lg={4}>
         <Grid container alignItems="center" justifyContent="space-between">
           <Grid item>
-            <Typography variant="h5">상품 목록(재고10개 이하)<Link to='/main/product'><PageviewIcon/></Link></Typography>
+            <Typography variant="h5">상품 목록(재고10개 이하)<Link to='/main/productS'><PageviewIcon/></Link></Typography>
           </Grid>
           <Grid item />
         </Grid>

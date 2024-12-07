@@ -1,0 +1,70 @@
+.App {
+    text-align: center;
+  }
+  
+  .App-logo {
+    height: 40vmin;
+    pointer-events: none;
+  }
+  
+  @media (prefers-reduced-motion: no-preference) {
+    .App-logo {
+      animation: App-logo-spin infinite 20s linear;
+    }
+  }
+  
+  .App-header {
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+  }
+  
+  .App-link {
+    color: #61dafb;
+  }
+  
+  @keyframes App-logo-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* CustomerInsForm.js에서 picker 모달 위에 */
+  .modal-dialog {
+    position: relative;
+    z-index: 1000;
+  }
+  .rs-picker-popup {
+    z-index: 9999 !important;
+  }
+  .modal-content {
+    position: relative;
+    z-index: 1050;
+  }
+
+  /* App.css 또는 모달 관련 CSS 파일에서 스타일 확인 */
+  .modal {
+    display: flex !important; /* Ensure modal is shown */
+    align-items: center; /* Center the modal vertically */
+    justify-content: center; /* Center the modal horizontally */
+  }
+
+  .modal-body {
+    overflow-y: auto; /* If content is long */
+    max-height: calc(100vh - 200px); /* Prevent the modal from exceeding the viewport height */
+  }
+
+  .datepicker-dropdown, .genderpicker-dropdown {
+    z-index: 1060; /* 모달보다 높은 값으로 설정 */
+  }
+  
+    
+  

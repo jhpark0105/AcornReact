@@ -1,6 +1,5 @@
 // project import
 
-// 테스트용
 import pages from "./pages";
 
 // ==============================|| MENU ITEMS ||============================== //
