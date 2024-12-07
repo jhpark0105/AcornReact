@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Pagination from "../../../acorn-components/components/Pagination";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Button from '@mui/material/Button';
 import styles from "../../../styles/ListSearch.module.css";  // 수정: .modul.css -> .module.css
 import { NumericFormat } from "react-number-format";
 import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
@@ -88,7 +89,7 @@ function ServiceList({ services, handleDetail, setShowModal }) {
   const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태
   const [filteredData, setFilteredData] = useState([]); // 필터링된 데이터 상태
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
-  const [itemsPerPage, setItemsPerPage] = useState(5); // 한 페이지당 항목 수
+  const [itemsPerPage, setItemsPerPage] = useState(10); // 한 페이지당 항목 수
 
   // 초기 렌더링 시 filteredData를 services로 설정
   useEffect(() => {
@@ -144,9 +145,13 @@ function ServiceList({ services, handleDetail, setShowModal }) {
           />
         </div>
 
-        <button onClick={() => setShowModal(true)} className="btn btn-success mb-3">
-          서비스 등록
-        </button>
+        <Button
+          variant="contained"
+          color="success"
+          onClick={() => setShowModal(true)}
+        >
+        서비스 등록
+      </Button>
       </div>
 
       {/* 서비스 테이블 */}
