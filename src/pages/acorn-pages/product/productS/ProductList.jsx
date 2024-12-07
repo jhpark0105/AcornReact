@@ -7,7 +7,7 @@ import { Button, Box, Table, TableBody, TableCell, TableContainer, TableHead, Ta
 import Modal from 'react-bootstrap/Modal'; // 모달 컴포넌트
 import OrderModal from './OrderModal'; // 발주 모달 컴포넌트
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './modal.css';
+import './OrderModal.css';
 import styles from "../../../../styles/ListSearch.module.css";
 
 function ProductList({ handleDetail, setShowModal }) {
@@ -129,9 +129,8 @@ function ProductList({ handleDetail, setShowModal }) {
                     상품 발주
                 </Button>
             </div>
-
             {/* 발주 모달 */}
-            <Modal show={show} onHide={() => setShow(false)} dialogClassName="custom-modal" style={{ zIndex: 1500, overflowY: 'auto' }}>
+            <Modal show={show} onHide={handleClose} dialogClassName="custom-modal" style={{ zIndex: 1500, overflowY: 'auto'}}backdrop={{style: { zIndex: 1200 }> // 다이얼로그보다 낮게 설정
                 <Modal.Header closeButton>
                     <Modal.Title>발주 화면</Modal.Title>
                 </Modal.Header>
