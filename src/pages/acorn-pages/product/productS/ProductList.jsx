@@ -1,9 +1,14 @@
-import React, { useState, useEffect } from "react";
-import ListSearch from "acorn-components/components/ListSearch";
+import axios from 'axios';
+import ListSearch from 'acorn-components/components/ListSearch'; // 검색 컴포넌트
+import Pagination from "../../../../utils/Pagination";
+import { NumericFormat } from "react-number-format"; // 숫자 포맷팅 컴포넌트
+import React, { useState, useEffect } from 'react';
+import { Button, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import styles from "../../../../styles/ListSearch.module.css";
-import Pagination from "acorn-components/components/Pagination";
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button } from "@mui/material";
-import { NumericFormat } from "react-number-format";
+import OrderModal from './OrderModal'; // 발주 모달 컴포넌트
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './OrderModal.css';
+import { Modal } from 'react-bootstrap';
 
 function ProductList({ products, handleDetail, setShowModal }) {
   const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태 관리
@@ -16,7 +21,6 @@ function ProductList({ products, handleDetail, setShowModal }) {
     const fetchProducts = async () => {
         try {
             const response = await axios.get('http://localhost:8080/product'); // 상품 API 경로
-            setProducts(response.data); // 상품 데이터 상태 업데이트
         } catch (error) {
             console.error('대분류 데이터를 가져오는 데 실패했습니다:', error);
         }
