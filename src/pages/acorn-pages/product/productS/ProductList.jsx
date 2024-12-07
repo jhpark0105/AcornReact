@@ -10,6 +10,21 @@ function ProductList({ products, handleDetail, setShowModal }) {
   const [filteredData, setFilteredData] = useState([]); // 필터링된 데이터 상태 관리
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
   const [itemsPerPage, setItemsPerPage] = useState(10); // 페이지당 항목 수 (기본값 10)
+    const [show, setShow] = useState(false); // 발주 모달 상태
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+    const fetchProducts = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/product'); // 상품 API 경로
+            setProducts(response.data); // 상품 데이터 상태 업데이트
+        } catch (error) {
+            console.error('대분류 데이터를 가져오는 데 실패했습니다:', error);
+        }
+    };
+    // 대분류 코드 목록을 서버에서 받아오는 함수
+    useEffect(() => {
+        fetchProducts(); // 컴포넌트가 마운트될 때 데이터 로딩
+    }, [products]);
 
   // products 데이터가 변경되면 필터링 데이터를 갱신
   useEffect(() => {
@@ -37,7 +52,6 @@ function ProductList({ products, handleDetail, setShowModal }) {
 
   // 현재 페이지에 해당하는 데이터를 계산
   const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
-
   // 총 페이지 수 계산
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
@@ -117,7 +131,26 @@ function ProductList({ products, handleDetail, setShowModal }) {
           </TableBody>
         </Table>
       </TableContainer>
-
+      {/* 상품 발주 버튼 - 테이블 우측 하단에 배치 */}
+      <div style={{ width: "100%", margin: "20px 0", display: "flex", justifyContent: "flex-end", alignItems: "center" }}>               
+          <Button variant="contained" color="primary" onClick={handleShow} sx={{ width: "auto" }}>
+              상품 발주
+          </Button>
+      </div>
+      {/* 발주 모달 */}
+      <Modal show={show} onHide={handleClose} className='custom-modal'backdrop={{style: {zIndex: 1200 }}}>
+          <Modal.Header closeButton>
+          <Modal.Title>발주 화면</Modal.Title>
+          </Modal.Header>
+          <Modal.Body >
+              <OrderModal handleClose={handleClose}></OrderModal>
+          </Modal.Body>
+          <Modal.Footer>
+              <button type="button" className="btn btn-secondary" onClick={handleClose}>
+                      닫기
+              </button>
+          </Modal.Footer>
+      </Modal>
       {/* 페이지네이션 */}
       <Pagination
         currentPage={currentPage}
