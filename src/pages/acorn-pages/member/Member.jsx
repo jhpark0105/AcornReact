@@ -36,11 +36,13 @@ function App() {
     });
   };
 
+  state.memberJoinDate = new Date().toISOString();
   // 입력 폼에서 값 변경 시 상태 업데이트
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setState({
       ...state,
-      [e.target.name]: e.target.value // 변경된 값 상태 반영
+      [name]: name ===  "memberJoinDate" ? new Date(value).toISOString() : value// 변경된 값 상태 반영
     });
   };
 

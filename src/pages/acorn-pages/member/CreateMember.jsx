@@ -20,7 +20,6 @@ const MemberModal = ({handleChange, insertProcess, setShowModal, show}) => {
     }
 
     const handleDate = (date) => {
-      // 
       // // 선택된 날짜도 시간 초기화
       // date.setHours(0,0,0,0);
       // setSelectedDate(date);
