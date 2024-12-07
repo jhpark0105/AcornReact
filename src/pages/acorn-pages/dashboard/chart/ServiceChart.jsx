@@ -32,7 +32,7 @@ const ServiceChart = () => {
         colors={colors}
         type="bar"
         // width="500"
-        height={500}
+        height={250}
       />
   );
 };

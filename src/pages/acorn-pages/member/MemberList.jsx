@@ -31,6 +31,7 @@ function MemberTableHead({ order, orderBy }) {
             key={headCell.id}
             align={headCell.align}
             sortDirection={orderBy === headCell.id ? order : false}
+            sx={{width:headCell.width}}
           >
             {headCell.label}
           </TableCell>

@@ -10,7 +10,8 @@ const MemberModal = ({handleChange, insertProcess, setShowModal, show}) => {
     const modalRef = useRef(null); // modal DOM 참조
   
     const today = new Date(); // 오늘 날짜 가져오기 
-    const [selectedDate, setSelectedDate] = useState(new Date());
+    today.setHours(0,0,0,0); // mindate 설정에 시간까지 들어가서 오늘날짜 선택 안됌 -> 시간 정보 제거
+    const [selectedDate, setSelectedDate] = useState("입사일을 선택해주세요");
    
     // handleChange에 직책저장하는 이벤트 추가해주기
     const handleJob = (value) => {
@@ -19,7 +20,9 @@ const MemberModal = ({handleChange, insertProcess, setShowModal, show}) => {
     }
 
     const handleDate = (date) => {
-      console.log(date)
+      console.log("selected date",date);
+      // 선택된 날짜도 시간 초기화
+      date.setHours(0,0,0,0);
       setSelectedDate(date);
       handleChange({target : {name:'memberDate', value:date}}); // 부모로 전달된 handleChange함수 호출
       console.log('update date',date)
@@ -78,7 +81,7 @@ const MemberModal = ({handleChange, insertProcess, setShowModal, show}) => {
                     <label>입사일</label>
                     <DatePickerComponent
                      name="memberDate"
-                     mindate={today.toISOString().split("T")[0]} 
+                     mindate={today} // Date 객체로 전달 
                      handleDate={handleDate}
                      
                      value={selectedDate}

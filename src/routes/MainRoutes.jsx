@@ -3,19 +3,13 @@ import { lazy } from 'react';
 // project import
 import Loadable from 'components/Loadable';
 import Main from 'layout/Dashboard';
-import { element } from 'prop-types';
 import Login from 'pages/authentication/login';
-import MainCard from 'components/MainCard';
 // 마이페이지
 import MypageView from '../pages/acorn-pages/mypage/MypageView';
 import MypageUpdate from '../pages/acorn-pages/mypage/MypageUpdate';
 
 // =====
-
-
-// 테스트용 
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard/index')));
-const DashboardReservation = Loadable(lazy(() => import('pages/acorn-pages/dashboard/DashboardReservation')));
 
 const Customer = Loadable(lazy(() => import('pages/acorn-pages/customer/Customer')));
 const Member = Loadable(lazy(() => import('pages/acorn-pages/member/Member')));
@@ -67,7 +61,7 @@ const MainRoutes = {
               element: <Reservation/>
             },
             {
-              path: "reservation/reservation",
+              path: "payment",
               element: <Reservation/>
             },
           ]
