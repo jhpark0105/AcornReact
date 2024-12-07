@@ -15,9 +15,9 @@ import { useSelector } from "react-redux";
 import * as dateTools from '../../../../libs/dateTools';
 import { isEmptyObject } from '../../../../libs/jsonTools';
 
-// reservationListSub 폴더명이어야 함. git 테스트
-import ReservationTitle from "./reservationListSub/ReservationTitle";
-import ReservationData from "./reservationListSub/ReservationData";
+// ReservationListSub 폴더명이어야 함. git 테스트
+import ReservationTitle from "./ReservationListSub/ReservationTitle";
+import ReservationData from "./ReservationListSub/ReservationData";
 
 const ReservationTable = () => {
   const CELL_ALIGN = "center";
