@@ -2,9 +2,28 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Paper, Grid, Avatar, TextField, Box, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
+
+// readonly 상태의 TextField를 위한 커스텀 스타일 컴포넌트
+const ReadOnlyTextField = styled(TextField)({
+  '& .MuiOutlinedInput-root': {
+    '& fieldset': {
+      borderColor: 'rgba(0, 0, 0, 0.23)', // 기본 테두리 색상
+    },
+    '&:hover fieldset': {
+      borderColor: 'rgba(0, 0, 0, 0.23)', // 호버 시 테두리 색상 변경 방지
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: 'rgba(0, 0, 0, 0.23)', // 포커스 시 테두리 색상 변경 방지
+    },
+  },
+  '& .MuiInputBase-input.Mui-disabled': {
+    WebkitTextFillColor: 'rgba(0, 0, 0, 0.87)', // 텍스트 색상 유지
+    cursor: 'default', // 커서 스타일 변경
+  },
+});
 
 const MypageView = () => {
-  //const { branchCode } = useParams();
   const navigate = useNavigate();
   const [managerData, setManagerData] = useState(null);
 
@@ -39,54 +58,54 @@ const MypageView = () => {
         </Grid>
         <Grid item xs={8}>
           <form>
-            <TextField
+            <ReadOnlyTextField
               label="지점명"
               name="branchName"
               value={managerData.branchName}
               fullWidth
               margin="normal"
               InputProps={{ readOnly: true }}
+              disabled
             />
-            <TextField
+            <ReadOnlyTextField
               label="지점 코드"
               name="branchCode"
               value={managerData.branchCode}
               fullWidth
               margin="normal"
               InputProps={{ readOnly: true }}
+              disabled
             />
-            <TextField
+            <ReadOnlyTextField
               label="관리자 이름"
               name="managerName"
               value={managerData.managerName}
               fullWidth
               margin="normal"
               InputProps={{ readOnly: true }}
+              disabled
             />
-            <TextField
+            <ReadOnlyTextField
               label="관리자 연락처"
               name="managerTel"
               value={managerData.managerTel}
               fullWidth
               margin="normal"
               InputProps={{ readOnly: true }}
+              disabled
             />
-            <TextField
+            <ReadOnlyTextField
               label="관리자 이메일"
               name="managerMail"
               value={managerData.managerMail}
               fullWidth
               margin="normal"
               InputProps={{ readOnly: true }}
+              disabled
             />
           </form>
         </Grid>
       </Grid>
-      {/* <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-        <Button variant="contained" color="primary" onClick={() => navigate(-1)}>
-          뒤로가기
-        </Button>
-      </Box> */}
     </Paper>
   );
 };
