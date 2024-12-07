@@ -1,16 +1,13 @@
-import { List, FlexboxGrid } from "rsuite";
-import React from "react";
+import TableRow from "@mui/material/TableRow";
+import TableCell from "@mui/material/TableCell";
 
-const DisplayNoData = () => {
-    return (
-      <List.Item>
-        <FlexboxGrid justify="center">
-          <FlexboxGrid.Item>
-            현재 날짜에서 조회된 예약현황이 없습니다.
-          </FlexboxGrid.Item>
-        </FlexboxGrid>
-      </List.Item>
-    );
+const DisplayNoData = ({ align = "center" }) => {
+
+  return (
+    <TableRow>
+      <TableCell colSpan={4} align={align}>조회된 데이터가 없습니다.</TableCell>
+    </TableRow>
+  );
 };
 
-export default React.memo(DisplayNoData);
+export default DisplayNoData;

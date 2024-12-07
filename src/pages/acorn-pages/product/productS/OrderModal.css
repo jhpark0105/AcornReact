@@ -1,8 +1,10 @@
 .custom-modal .modal-content {
     height: 100%; /* 모달 내용도 100% 채움 */
-    left: -40%;
+    left: -30%;
     overflow-y: auto; /* 필요 시 스크롤 가능 */
-    width: 70rem;
+    width: 60rem;
+    z-index: 1500;
+    overflow-y: auto;
   }
 .custom-dialog {
     position: fixed; /* 기본 중앙 정렬 제거 */
