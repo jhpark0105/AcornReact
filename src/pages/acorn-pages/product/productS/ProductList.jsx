@@ -1,11 +1,11 @@
 import axios from 'axios';
-import ListSearch from 'acorn-components/components/ListSearch';
+import ListSearch from 'acorn-components/components/ListSearch'; // 검색 컴포넌트
 import Pagination from "../../../../utils/Pagination";
-import { NumericFormat } from "react-number-format";
+import { NumericFormat } from "react-number-format"; // 숫자 포맷팅 컴포넌트
 import React, { useState, useEffect } from 'react';
 import { Button, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-import Modal from 'react-bootstrap/Modal';
-import OrderModal from './OrderModal';
+import Modal from 'react-bootstrap/Modal'; // 모달 컴포넌트
+import OrderModal from './OrderModal'; // 발주 모달 컴포넌트
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './modal.css';
 import styles from "../../../../styles/ListSearch.module.css";
@@ -16,7 +16,7 @@ function ProductList({ handleDetail, setShowModal }) {
     const [filteredData, setFilteredData] = useState([]); // 필터링된 데이터 상태 관리
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
     const [itemsPerPage, setItemsPerPage] = useState(5); // 페이지당 항목 수 (기본값 5)
-    const [show, setShow] = useState(false);
+    const [show, setShow] = useState(false); // 발주 모달 상태
 
     // 대분류 코드 목록을 서버에서 받아오는 함수
     useEffect(() => {
@@ -28,17 +28,17 @@ function ProductList({ handleDetail, setShowModal }) {
                 console.error('대분류 데이터를 가져오는 데 실패했습니다:', error);
             }
         };
-        fetchProducts();
+        fetchProducts(); // 컴포넌트가 마운트될 때 데이터 로딩
     }, []);
 
     // products 상태가 업데이트되면 filteredData도 갱신
     useEffect(() => {
-        setFilteredData(products || []);
+        setFilteredData(products || []); // 제품 목록이 변경될 때마다 필터링된 데이터 업데이트
     }, [products]);
 
     // 검색어 상태를 업데이트 해주는 함수
     const onChange = (term) => {
-        setSearchTerm(term);
+        setSearchTerm(term); // 입력된 검색어 상태 업데이트
     };
 
     // 버튼 클릭 시 필터링 처리(상품명과 대분류명으로 상품 찾기)
@@ -49,7 +49,7 @@ function ProductList({ handleDetail, setShowModal }) {
             // 상품명이나 대분류명이 일치하면 필터링
             return isProductNameMatch || isProductBNameMatch;
         });
-        setFilteredData(filtered);
+        setFilteredData(filtered); // 필터링된 데이터 상태 업데이트
         setCurrentPage(1); //검색 후 첫 페이지로 이동
     };
 
@@ -69,7 +69,7 @@ function ProductList({ handleDetail, setShowModal }) {
                 </Button>
             </div>
 
-            {/* 테이블 */}
+            {/* 상품 리스트 테이블 */}
             <Box>
                 <TableContainer className={styles["table-container"]}>
                     <Table>
@@ -84,6 +84,7 @@ function ProductList({ handleDetail, setShowModal }) {
                         </TableHead>
                         <TableBody>
                             {currentItems.length > 0 ? (
+                                // 상품 데이터가 있을 경우
                                 currentItems.map((product) => (
                                     <TableRow key={product.productCode}>
                                         <TableCell>{product.product_b.productBName}</TableCell>
@@ -93,7 +94,7 @@ function ProductList({ handleDetail, setShowModal }) {
                                                 style={{ color: "blue", 
                                                 cursor: "pointer", 
                                                 textDecoration: "underline" }}
-                                                onClick={() => handleDetail(product)}
+                                                onClick={() => handleDetail(product)} // 상품명 클릭 시 상세보기
                                             >
                                                 {product.productName}
                                             </span>
@@ -106,6 +107,7 @@ function ProductList({ handleDetail, setShowModal }) {
                                 ))
                             ) : (
                                 <TableRow>
+                                    {/* 데이터가 없을 경우 표시할 메시지 */}
                                     <TableCell colSpan={5} align="center">
                                         등록된 상품이 없습니다.
                                     </TableCell>
@@ -121,7 +123,7 @@ function ProductList({ handleDetail, setShowModal }) {
                 <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => setShow(true)}
+                    onClick={() => setShow(true)} // 발주 모달 열기
                     sx={{ width: "auto" }} // 버튼 크기를 자동으로 설정
                 >
                     상품 발주
@@ -134,6 +136,7 @@ function ProductList({ handleDetail, setShowModal }) {
                     <Modal.Title>발주 화면</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+                    {/* 발주 모달 내용 */}
                     <OrderModal handleClose={() => setShow(false)} />
                 </Modal.Body>
                 <Modal.Footer>
@@ -145,9 +148,9 @@ function ProductList({ handleDetail, setShowModal }) {
 
             {/* 페이지네이션 */}
             <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
+                currentPage={currentPage} // 현재 페이지
+                totalPages={totalPages} // 총 페이지 수
+                onPageChange={setCurrentPage} // 페이지 변경 시 호출
                 itemsPerPage={itemsPerPage} // 현재 상태 값 전달
                 setItemsPerPage={setItemsPerPage} // setItemsPerPage 함수 전달
             />

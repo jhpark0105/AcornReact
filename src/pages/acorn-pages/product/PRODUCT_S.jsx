@@ -28,7 +28,6 @@ function PRODUCT() {
   const fetchProducts = () => {
     axios.get(`http://localhost:8080/product`)
       .then((response) => {
-        console.log(response.data);
         setProducts(response.data);
       })
       .catch((error) => {
@@ -152,7 +151,7 @@ function PRODUCT() {
 
       {showDeleteModal && (
         <ProductDelete
-          selectedProduct={selectedProduct}
+          selectedProduct={selectedProduct} // 선택된 대분류 데이터
           handleDelete={handleDelete} // 삭제 작업을 처리
           setShowDeleteModal={setShowDeleteModal} // 삭제 모달을 닫는 함수
         />
