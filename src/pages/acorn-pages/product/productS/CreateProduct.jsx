@@ -3,15 +3,18 @@ import '../../../../styles/modal.css'
 
 /**
  * 상품 등록 모달
+ * (JSDoc 주석. 자바스크립트 코드에서 함수, 변수, 매개변수, 클래스 등의 설명을 추가하기 위해 사용)
  * @param {function} handleChange - 입력값 변경을 처리하는 함수
  * @param {function} handleInsert - 등록 버튼 선택 시 실행되는 함수
  * @param {function} setShowModal - 모달 상태를 변경하는 함수 (열기/닫기)
  */
+
 const ProductModal = ({ handleChange, handleInsert, setShowModal }) => {
     const [productbs, setProductbs] = useState([]); // 대분류 목록 상태
     const [loading, setLoading] = useState(true); // 로딩 상태
     const [selectedCategory, setSelectedCategory] = useState(''); // 선택된 대분류 초기값
 
+    // 대분류 목록을 서버에서 받아오기
     useEffect(() => {
         const fetchProductB = async () => {
             try {
@@ -23,28 +26,29 @@ const ProductModal = ({ handleChange, handleInsert, setShowModal }) => {
                     console.error('데이터 형식 오류: 배열이 아닙니다.', data);
                 }
             } catch (error) {
-                console.error('Error fetching product_b:', error);
+                console.error('Error fetching product_b:', error); // API 호출 에러 처리
             } finally {
-                setLoading(false); // 로딩 완료
+                setLoading(false); // 로딩 완료 상태 설정
             }
         };
-        fetchProductB();
+        fetchProductB(); // 컴포넌트 마운트 시 대분류 데이터 로딩
     }, []);
 
+    // 로딩 중인 경우 로딩 텍스트 출력
     if (loading) {
-        return <div>Loading...</div>; // 로딩 중일 때
+        return <div>Loading...</div>;
     }
 
     // 대분류 선택 시 처리
     const handleCategoryChange = (e) => {
         const selectedCode = e.target.value; // 선택된 대분류 코드
-        setSelectedCategory(selectedCode);
-        handleChange({ target: { name: 'productBCode', value: selectedCode } }); // 대분류 코드 전달
+        setSelectedCategory(selectedCode); // 선택된 대분류 코드 상태 업데이트
+        handleChange({ target: { name: 'productBCode', value: selectedCode } }); // 대분류 코드 변경을 상위 컴포넌트로 전달
     };
 
     // 상품 등록 처리
     const handleProductInsert = () => {
-        handleInsert(selectedCategory); // 대분류 코드와 함께 등록
+        handleInsert(selectedCategory); // 대분류 코드와 함께 상품 등록 처리 함수 호출
         setShowModal(false); // 모달 닫기
     };
 
@@ -54,7 +58,7 @@ const ProductModal = ({ handleChange, handleInsert, setShowModal }) => {
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title">상품 등록</h5>
-                        {/* 모달 닫기 */}
+                        {/* 모달 닫기 버튼 */}
                         <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
                     </div>
                     <div className="modal-body">
@@ -65,13 +69,13 @@ const ProductModal = ({ handleChange, handleInsert, setShowModal }) => {
                                 <select
                                     name="productBCode"
                                     value={selectedCategory}
-                                    onChange={handleCategoryChange}
+                                    onChange={handleCategoryChange} // 대분류 선택 시 처리
                                     className="form-control"
                                 >
                                     <option value="">대분류를 선택하세요</option>
                                     {productbs.map((productb) => (
                                         <option key={productb.productBCode} value={productb.productBCode}>
-                                            {productb.productBName}
+                                            {productb.productBName} {/* 대분류 이름 출력 */}
                                         </option>
                                     ))}
                                 </select>
@@ -132,7 +136,7 @@ const ProductModal = ({ handleChange, handleInsert, setShowModal }) => {
                             닫기
                         </button>
 
-                        {/* 등록 버튼 */}
+                        {/* 소분류(상품) 등록 버튼 */}
                         <button type="button" className="btn btn-primary" onClick={handleProductInsert}>
                             등록
                         </button>
