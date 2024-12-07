@@ -1,56 +1,102 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router';
+import { TextField, Checkbox, FormControlLabel, Button, Box, Typography, Container, Paper } from '@mui/material';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function NoticeCreate() {
-	const [formData, setFormData] = useState({
-		title: '',
-		check: false,
-		content: ''
-	});
+  const navigate = useNavigate();
 
-	const handleChange = (e) => {
-		const { name, value, type, checked } = e.target;
-		setFormData({
-			...formData,
-			[name]: type === 'checkbox' ? checked : value
-		});
-	};
+  const [formData, setFormData] = useState({
+    noticeTitle: '',
+    noticeCheck: false,
+    noticeContent: ''
+  });
 
-	const handleSubmit = async (e) => {
-		e.preventDefault(); // 기본 폼 제출 동작 방지
-		try {
-			const response = await axios.post('YOUR_API_ENDPOINT', formData);
-			console.log('서버 응답:', response.data);
-			// 성공적인 응답 처리 (예: 알림 메시지 표시)
-		} catch (error) {
-			console.error('서버 오류:', error);
-			// 오류 처리 (예: 오류 메시지 표시)
-		}
-	};
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === 'checkbox' ? checked : value
+    });
+  };
 
-	return (
-		<form onSubmit={handleSubmit}>
-			<div>
-				공지 제목:
-				<input type="text" name="title" value={formData.title} onChange={handleChange} required />
-			</div>
-			<div>
-				중요도:
-				<input type="checkbox" name="important" checked={formData.important} onChange={handleChange} />
-			</div>
-			<div>
-				본문:
-				<input type="text" name="content" value={formData.content} onChange={handleChange} required />
-			</div>
-			<button type="submit">작성</button>
-			<button
-				type="button"
-				onClick={() => {
-					history.back();
-				}}
-			>
-				취소
-			</button>
-		</form>
-	);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!formData.noticeTitle.trim().length || !formData.noticeContent.trim().length) {
+      toast.error('제목과 내용을 모두 입력해주세요.');
+      return;
+    }
+    console.log('Sending data:', formData); // 전송하는 데이터 확인
+
+    axios
+      .post('http://localhost:8080/notice', formData)
+      .then((response) => {
+        if (response.data.isSuccess) {
+          console.log(response.data);
+          console.log(response.data.message);
+          return axios.get('http://localhost:8080/notice/latest');
+        } else {
+          throw new Error(response.data.message);
+        }
+      })
+      .then((latestNoResponse) => {
+        const latestNoticeNo = latestNoResponse.data.noticeNo;
+        navigate(`/main/notice/${latestNoticeNo}`);
+      })
+      .catch((err) => {
+        console.error('notice insert:', err);
+      });
+  };
+
+  return (
+    <>
+      <ToastContainer />
+      <Container maxWidth="sm">
+        <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
+          <Typography variant="h5" component="h2" gutterBottom>
+            공지사항 작성
+          </Typography>
+          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="noticeTitle"
+              label="공지 제목"
+              name="noticeTitle"
+              value={formData.noticeTitle}
+              onChange={handleChange}
+              autoFocus
+            />
+            <FormControlLabel
+              control={<Checkbox checked={formData.noticeCheck} onChange={handleChange} name="noticeCheck" />}
+              label="중요한 공지"
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="noticeContent"
+              label="본문"
+              id="noticeContent"
+              multiline
+              rows={4}
+              value={formData.noticeContent}
+              onChange={handleChange}
+            />
+            <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
+              <Button type="button" variant="outlined" onClick={() => navigate(-1)}>
+                취소
+              </Button>
+              <Button type="submit" variant="contained">
+                작성
+              </Button>
+            </Box>
+          </Box>
+        </Paper>
+      </Container>
+    </>
+  );
 }
