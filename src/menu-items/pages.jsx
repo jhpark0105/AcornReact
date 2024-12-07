@@ -78,6 +78,12 @@ const pages = {
 			]
 		},
 		{
+			id: 'order',
+			title: '발주 관리',
+			url: '/main/order',
+			type: 'item'
+		},
+		{
 			id: 'notice',
 			title: '공지사항',
 			url: '/main/notice',
