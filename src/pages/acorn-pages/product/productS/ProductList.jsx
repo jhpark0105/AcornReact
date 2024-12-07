@@ -4,11 +4,11 @@ import Pagination from "../../../../utils/Pagination";
 import { NumericFormat } from "react-number-format"; // 숫자 포맷팅 컴포넌트
 import React, { useState, useEffect } from 'react';
 import { Button, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-import Modal from 'react-bootstrap/Modal'; // 모달 컴포넌트
 import OrderModal from './OrderModal'; // 발주 모달 컴포넌트
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './OrderModal.css';
 import styles from "../../../../styles/ListSearch.module.css";
+import { Modal } from 'react-bootstrap';
 
 function ProductList({ handleDetail, setShowModal }) {
     const [products, setProducts] = useState([]); // 상품 목록 상태
@@ -17,7 +17,8 @@ function ProductList({ handleDetail, setShowModal }) {
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
     const [itemsPerPage, setItemsPerPage] = useState(5); // 페이지당 항목 수 (기본값 5)
     const [show, setShow] = useState(false); // 발주 모달 상태
-
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
     // 대분류 코드 목록을 서버에서 받아오는 함수
     useEffect(() => {
         const fetchProducts = async () => {
@@ -117,34 +118,24 @@ function ProductList({ handleDetail, setShowModal }) {
                     </Table>
                 </TableContainer>
             </Box>
-
             {/* 상품 발주 버튼 - 테이블 우측 하단에 배치 */}
-            <div style={{ width: "100%", margin: "20px 0", display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => setShow(true)} // 발주 모달 열기
-                    sx={{ width: "auto" }} // 버튼 크기를 자동으로 설정
-                >
+            <div style={{ width: "100%", margin: "20px 0", display: "flex", justifyContent: "flex-end", alignItems: "center" }}>               
+                <Button variant="contained" color="primary" onClick={handleShow} sx={{ width: "auto" }}>
                     상품 발주
                 </Button>
             </div>
             {/* 발주 모달 */}
-            <Modal show={show} onHide={handleClose} dialogClassName="custom-modal" style={{ zIndex: 1500, overflowY: 'auto'}}backdrop={{style: { zIndex: 1200 }> // 다이얼로그보다 낮게 설정
+            <Modal show={show} onHide={handleClose} className='custom-modal' style={{zIndex: 1500,overflowY: 'auto'}} backdrop={{style: {zIndex: 1200 }}}>
                 <Modal.Header closeButton>
-                    <Modal.Title>발주 화면</Modal.Title>
+                <Modal.Title>발주 화면</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
-                    {/* 발주 모달 내용 */}
-                    <OrderModal handleClose={() => setShow(false)} />
+                <Modal.Body >
+                    <OrderModal handleClose={handleClose}></OrderModal>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShow(false)}>
-                        닫기
-                    </Button>
+                    <Button variant="secondary" onClick={handleClose}>닫기</Button>
                 </Modal.Footer>
             </Modal>
-
             {/* 페이지네이션 */}
             <Pagination
                 currentPage={currentPage} // 현재 페이지
