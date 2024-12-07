@@ -125,7 +125,7 @@ function ProductList({ handleDetail, setShowModal }) {
                 </Button>
             </div>
             {/* 발주 모달 */}
-            <Modal show={show} onHide={handleClose} className='custom-modal' style={{zIndex: 1500,overflowY: 'auto'}} backdrop={{style: {zIndex: 1200 }}}>
+            <Modal show={show} onHide={handleClose} className='custom-modal'backdrop={{style: {zIndex: 1200 }}}>
                 <Modal.Header closeButton>
                 <Modal.Title>발주 화면</Modal.Title>
                 </Modal.Header>
