@@ -46,7 +46,7 @@ const MypageUpdate = () => {
       setShowModal(false);
       navigate(`/main/manager/mypage/view`);
     } catch (error) {
-      console.error('매니저 수정 중 오류:', error);
+      console.error('관리자 수정 중 오류:', error);
     }
   };
 
