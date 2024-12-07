@@ -11,23 +11,7 @@ const MemberModal = ({handleChange, insertProcess, setShowModal, show}) => {
   
     const today = new Date(); // 오늘 날짜 가져오기 
     today.setHours(0,0,0,0); // mindate 설정에 시간까지 들어가서 오늘날짜 선택 안됌 -> 시간 정보 제거
-    const [selectedDate, setSelectedDate] = useState(new Date());
-
-    const yesterday = new Date(today);
-    yesterday.setDate(today.getDate() -1); 
-    useEffect(() => {
-      if (memberData && memberData.memberDate) {
-        const hireDate = new Date(memberData.memberDate);
-        hireDate.setHours(0, 0, 0, 0); // 불러온 날짜의 시간 초기화
-  
-        // hireDate가 유효한 날짜인지 확인하고, 유효하지 않으면 today로 설정
-        if (!isNaN(hireDate.getTime())) {
-          setSelectedDate(hireDate); // 입사일이 유효하면 selectedDate로 설정
-        } else {
-          setSelectedDate(today); // 유효하지 않으면 기본 오늘 날짜로 설정
-        }
-      }
-    }, [memberData]);  // memberData가 변경될 때마다 입사일을 업데이트
+    const [selectedDate, setSelectedDate] = useState("입사일을 선택해주세요");
    
     // handleChange에 직책저장하는 이벤트 추가해주기
     const handleJob = (value) => {
@@ -97,7 +81,7 @@ const MemberModal = ({handleChange, insertProcess, setShowModal, show}) => {
                     <label>입사일</label>
                     <DatePickerComponent
                      name="memberDate"
-                     mindate={yesterday} // Date 객체로 전달 
+                     mindate={today} // Date 객체로 전달 
                      handleDate={handleDate}
                      
                      value={selectedDate}
