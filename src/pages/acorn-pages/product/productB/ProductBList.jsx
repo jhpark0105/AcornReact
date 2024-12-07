@@ -41,12 +41,10 @@ function ProductBList({ productBs, handleDetailB, setShowModal }) {
   return (
     <>
       <div style={{ width: "80%", margin: "0 auto", display: "flex", justifyContent: "space-between" }}>
-        {/* 검색 기능 */}
         <div className={styles["list-component-container"]}>
           <ListSearch searchTerm={searchTerm} onChange={onChange} handleSearchClick={handleSearchClick} />
         </div>
 
-        {/* 대분류 등록 버튼 */}
         <button onClick={() => setShowModal(true)} className="btn btn-success mb-3">
           대분류 등록
         </button>
@@ -67,10 +65,7 @@ function ProductBList({ productBs, handleDetailB, setShowModal }) {
                   {productB.productBCode}
                 </td>
                 <td>
-                  <span
-                    style={{ color: "blue", cursor: "pointer", textDecoration: "underline" }}
-                    // props로 받은 handleDetailB 사용
-                    onClick={() => handleDetailB(productB)}>
+                  <span style={{ color: "blue", cursor: "pointer", textDecoration: "underline" }} onClick={() => handleDetailB(productB)}>
                     {productB.productBName}
                   </span>
                 </td>
@@ -84,7 +79,6 @@ function ProductBList({ productBs, handleDetailB, setShowModal }) {
         </tbody>
       </table>
 
-      {/* 페이지네이션 */}
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}

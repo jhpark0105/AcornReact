@@ -1,9 +1,8 @@
 // Built In Hooks Import
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Redux Import
 import { useDispatch } from "react-redux";
-//import { setSelectedDate } from "../../../redux/ResourceSlice";
 import { setSelectedDate } from '../../../../redux/ResourceSlice';
 
 // Third Party Import
@@ -11,7 +10,6 @@ import axios from "axios";
 import { Calendar, Badge } from "rsuite";
 
 // Custom Tool import
-//import * as dateTools from "../../../libs/dateTools";
 import * as dateTools from '../../../../libs/dateTools';
 
 const CalendarBySuite = () => {
@@ -71,6 +69,11 @@ const CalendarBySuite = () => {
     }
     return null;
   };
+
+  // 첫 렌더링 시에도 캘린더 내 예약 날짜 및 예약 현황 보이도록. (오늘 기준)
+  useEffect(() => {
+    handleDateSelect(new Date());
+  }, []);
 
   return (
     <Calendar

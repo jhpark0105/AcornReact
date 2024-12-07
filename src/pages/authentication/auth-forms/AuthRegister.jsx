@@ -33,37 +33,47 @@ import { Postcode } from './PostCode';
 // ============================|| JWT - REGISTER ||============================ //
 
 export default function AuthRegister() {
+  // useNavigate 객체 생성
   const navigate = useNavigate();
+  
+  // 클라이언트 입력 비밀번호 강도 레벨 상태 관리
   const [level, setLevel] = useState();
+
+  // 비밀번호 표시 여부 상태 관리
   const [showPassword, setShowPassword] = useState(false);
+
+  // 비밀번호 표시/숨기기 토글 함수
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
+  // 비밀번호 표시 버튼 클릭 시 기본 이벤트 방지
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
 
+  // 비밀번호 강도 변경 함수
   const changePassword = (value) => {
-    const temp = strengthIndicator(value);
-    setLevel(strengthColor(temp));
+    const temp = strengthIndicator(value); // 비밀번호 강도 지표 함수 호출
+    setLevel(strengthColor(temp)); // 강도에 따라 색상 설정
   };
 
+  // 컴포넌트가 마운트될 때 비밀번호 강도 초기화
   useEffect(() => {
     changePassword('');
   }, []);
 
+  // 회원가입 처리
   const handleSignup = (values, { setSubmitting, setErrors }) => {
-    //console.log("Sent data: ", values);
-    axios
-      .post('http://localhost:8080/main/signup', values)
+    // 회원가입 요청
+    axios.post('http://localhost:8080/admin/signup', values)
       .then((response) => {
         if (response.status === 200) {
-          alert('회원가입 완료');
-          navigate('/login');
+          //alert('회원가입 완료');
+          navigate('/main/login'); // 회원가입 성공 시 로그인 페이지로 이동
         }
       })
-      .catch((error) => {
+      .catch((error) => { // 오류 응답 처리
         if (error.response) {
           const { code, message } = error.response.data;
           if (code === 'DI') {
@@ -101,7 +111,7 @@ export default function AuthRegister() {
           adminTerm3: false,
           submit: null
         }}
-        validationSchema={Yup.object().shape({
+        validationSchema={Yup.object().shape({ // 유효성 검사
           adminId: Yup.string()
             .min(2, '아이디는 최소 2자 이상이어야 합니다.')
             .max(20, '아이디는 최대 20자 이하여야 합니다.')
@@ -120,7 +130,7 @@ export default function AuthRegister() {
             .matches(/^[a-zA-Z가-힣]{2,20}$/, '이름은 한글과 영어만 입력해야 합니다.')
             .required('이름은 필수 입력입니다.'),
           adminBirth: Yup.string()
-            .max(8)
+            .length(8, '생년월일은 숫자 8자리로 입력해야합니다.')
             .matches(/^\d{8}$/, '생년월일은 YYYYMMDD 형식이어야 합니다.')
             .required('생년월일은 필수 입력입니다.'),
           adminPhone: Yup.string()
@@ -295,7 +305,7 @@ export default function AuthRegister() {
                   </FormHelperText>
                 )}
               </Grid>
-              <Grid item xs={12} md={8}>
+              <Grid item xs={12} md={7.5}>
                 <Stack spacing={1}>
                   <InputLabel htmlFor="postcode-signup">우편번호</InputLabel>
                   <OutlinedInput
@@ -317,7 +327,7 @@ export default function AuthRegister() {
                   </FormHelperText>
                 )}
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={4.5}>
                 <Stack spacing={1}>
                   <InputLabel htmlFor="address1-signup">&nbsp;</InputLabel>
                   <Postcode setFieldValue={setFieldValue} />

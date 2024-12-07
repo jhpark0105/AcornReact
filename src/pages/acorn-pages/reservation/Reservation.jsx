@@ -43,21 +43,77 @@ function Reservation() {
     });
   };
 
-  //insertprocess
-  const handleInsert = () => {
-    axios.post("http://localhost:8080/reservation", state)
-      .then((res) => {
-        if (res.data.isSuccess) {
-          toast.success("예약 등록 성공!");
-          setShowModal(false); // insert 모달 닫기
-          fetchReservation(); // 리로딩 후 최신 데이터 불러옴
-        }
-      })
-      .catch((error) => {
-        toast.error("예약 등록 중 오류가 발생했습니다.");
-        console.error("Error:", error);
-      });
+  // //insertprocess
+  // const handleInsert = () => {
+  //   axios.post("http://localhost:8080/reservation", state)
+  //     .then((res) => {
+  //       if (res.data.isSuccess) {
+  //         toast.success("예약 등록 성공!");
+  //         setShowModal(false); // insert 모달 닫기
+  //         fetchReservation(); // 리로딩 후 최신 데이터 불러옴
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       toast.error("예약 등록 중 오류가 발생했습니다.");
+  //       console.error("Error:", error);
+  //     });
+  // };
+  // insert process
+// const handleInsert = () => {
+//   // 필요한 데이터만 선택적으로 담기
+//   const dataToInsert = {
+//     serviceName: state.serviceName,
+//     customerName: state.customerName,
+//     memberName: state.memberName,
+//     reservationDate: state.reservationDate,
+//     reservationTime: state.reservationTime,
+//     reservationComm: state.reservationComm,
+//   };
+
+//   axios.post("http://localhost:8080/reservation", dataToInsert)
+//     .then((res) => {
+//       if (res.data.isSuccess) {
+//         toast.success("예약 등록 성공!");
+//         setShowModal(false); // insert 모달 닫기
+//         fetchReservation(); // 리로딩 후 최신 데이터 불러옴
+//       }
+//     })
+//     .catch((error) => {
+//       toast.error("예약 등록 중 오류가 발생했습니다.");
+//       console.error("Error:", error);
+//     });
+// };
+
+const handleInsert = () => {
+  if (!state.serviceName || !state.customerName) {
+    toast.error("서비스와 예약자를 선택해야 합니다.");
+    return;
+  }
+
+  const dataToInsert = {
+    serviceName: state.serviceName,
+    customerName: state.customerName,
+    memberName: state.memberName,
+    reservationDate: state.reservationDate,
+    reservationTime: state.reservationTime,
+    reservationComm: state.reservationComm,
   };
+
+  console.log(dataToInsert); // 전송되는 데이터 확인
+
+  axios.post("http://localhost:8080/reservation", dataToInsert)
+    .then((res) => {
+      if (res.data.isSuccess) {
+        toast.success("예약 등록 성공!");
+        setShowModal(false);
+        fetchReservation();
+      }
+    })
+    .catch((error) => {
+      toast.error("예약 등록 중 오류가 발생했습니다.");
+      console.error("Error:", error);
+    });
+};
 
 
  // 특정 예약의 상세 정보 표시
@@ -166,7 +222,6 @@ const handleSave = () => {
 
   return (
     <div className="Reservation">
-      <h2>Reservation List</h2>
 
       <ToastContainer />
       <ReservationList 

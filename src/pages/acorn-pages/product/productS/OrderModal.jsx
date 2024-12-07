@@ -1,25 +1,33 @@
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
-import { useState,useEffect } from 'react';
+import { useRef,useState,useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import axios from 'axios';
-import { Button } from 'react-bootstrap';
+import { Box, Button,CircularProgress, Alert } from '@mui/material';
+import CustomDialog from '../../../../acorn-components/components/Dialog'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
-import Alert from '@mui/material/Alert';
+import './OrderModal.css';
 export default function OrderModal({handleClose}){
+    const [dialogVisible, setDialogVisible] = useState(false);  //다이어로그 띄우기
+    const dialogContent = useRef(""); // 다이얼로그 내용 저장용
     const [error,setError]=useState(null);
     const [isLoading,setIsLoading]=useState(false);
-    const [showList,setShowList]=useState(false);
-    const [blist,setBlist]=useState(null);
-    const [list,setList]=useState([]);
-    const [showCartList,setShowCartList]=useState(false);
-    const [cart,setCart]=useState([]);
+    const [blist,setBlist]=useState(null);  //대분류 상품 목록
+    const [list,setList]=useState([]);  //대분류 별 소분류 상품 목록
+    const [showList,setShowList]=useState(false);   //소분류 목록 보이기
+    const [showCartList,setShowCartList]=useState(false);   //발주 목록 보이기
+    const [cart,setCart]=useState([]);  //발주 목록(장바구니)
     const [alertVisible, setAlertVisible] = useState(false); // Alert 상태 추가
     const [alertMessage, setAlertMessage] = useState(""); // Alert 메시지 상태
-    const [ordersEndDate, setOrdersEndDate] = useState("");
-    const [minDate, setMinDate] = useState("");
-    const [total,setTotal] = useState(0);
+    const [ordersEndDate, setOrdersEndDate] = useState(""); //발주 마감일
+    const [minDate, setMinDate] = useState(""); //발주 등록 가능일 
+    const [total,setTotal] = useState(0);   //발주 목록 총 금액
+    const handleDialogOpen = (content) => {
+        dialogContent.current=content;
+        setTimeout(() => {
+            setDialogVisible(true); // content 설정 이후에 다이얼로그 표시
+        }, 0);
+      };
     const getProductBCode=function(){
         axios.get('http://localhost:8080/productB')
             .then(res=>{
@@ -61,8 +69,7 @@ export default function OrderModal({handleClose}){
             ]);
             setShowCartList(true);
         }else{
-            setAlertMessage("이미 담긴 상품입니다.");
-            setAlertVisible(true);
+            handleDialogOpen("이미 포함된 상품입니다.");
         }
     };
     const updateOrders=(index,num)=>{
@@ -81,12 +88,10 @@ export default function OrderModal({handleClose}){
             setAlertMessage("발주 요청을 진행하시겠습니까?");
             setAlertVisible(true);
         }else{
-            setAlertMessage("발주 마감일은 필수 선택사항입니다.");
-            setAlertVisible(true);
+            handleDialogOpen("발주 마감일은 필수 선택사항입니다.");
         }
     }
     const handleAlertClose = (confirm) => {
-        setAlertVisible(false);
         if (confirm) {
             axios.post('http://localhost:8080/order',{
                 cart:cart,
@@ -96,14 +101,17 @@ export default function OrderModal({handleClose}){
             })
             .then(res=>{
                 if(res){
+                    setIsLoading(true);
                     setAlertMessage("발주 신청이 완료됐습니다.");
                     handleClose();
                 }
             })
             .catch(err=>{
-                setAlertMessage("!*발주 신청이 실패했습니다*!");
-                setAlertVisible(true);
+                setIsLoading(true);
+                handleDialogOpen("발주 신청에 실패했습니다.");
             })
+        }else{
+            setAlertVisible(false);
         }
     };
     const CompareDate=(e)=>{
@@ -195,7 +203,7 @@ export default function OrderModal({handleClose}){
                     }
                 </div>
                 <div>
-                <Button variant="primary" onClick={submitOrder}>발주</Button>&nbsp;&nbsp;총 금액: {total}
+                <Button variant="contained"  onClick={submitOrder}>발주</Button>&nbsp;&nbsp;총 금액: {total}
                 </div>                
             </div>
             {alertVisible && (
@@ -214,6 +222,17 @@ export default function OrderModal({handleClose}){
                 >
                     {alertMessage}
                 </Alert>
+            )}
+            {dialogVisible&&
+                ReactDOM.createPortal(
+                <CustomDialog
+                    open={dialogVisible}
+                    onClose={()=>setDialogVisible(false)}
+                    title="*! 경고 !*"
+                    content={dialogContent.current}
+                    dialogClassName="custom-dialog"
+                />,
+                document.body
             )}
         </article>
     );}

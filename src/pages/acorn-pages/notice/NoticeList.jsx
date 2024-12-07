@@ -2,16 +2,10 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Pagination from 'utils/Pagination';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
 import PushPinIcon from '@mui/icons-material/PushPin';
 import styles from '../../../styles/Pagination.module.css';
 import ListSearch from './ListSearch';
+import TableComponent from 'acorn-components/components/TableComponentGpt';
 
 export default function NoticeList() {
 	const [notices, setNotices] = useState([]);
@@ -62,56 +56,72 @@ export default function NoticeList() {
 		setCurrentPage(1);
 	};
 
-	// 요소 변수를 이용한 조건부 렌더링
-	let listNotices;
+	// Table columns 정의
+	const columns = [
+		{ id: 'noticeNo', label: '공지 번호', width: '50px' },
+		{ id: 'noticeTitle', label: '제목', width: '900px', align: 'center' },
+		{ id: 'noticeReg', label: '작성일', width: '50px', align: 'center' }
+	];
+
+	let rows; // 테이블 내용이 될 행을 조건에 따라 정의
 
 	if (notices.length === 0) {
-		listNotices = (
-			<TableRow>
-				<TableCell colSpan="3" align="center">
-					등록된 공지사항이 없습니다.
-				</TableCell>
-			</TableRow>
-		);
+		// 등록된 공지사항이 없습니다
+		rows = notices.map((_) => ({
+			noticeNo: '',
+			noticeTitle: <span>등록된 공지사항이 없습니다.</span>,
+			noticeReg: ''
+		}));
 	} else if (!searchTerm) {
-		listNotices = notices.map((notice) => (
-			<TableRow hover key={notice.noticeNo} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-				{notice.noticeCheck ? (
-					<TableCell component="th" scope="row">
-						<PushPinIcon sx={{ verticalAlign: 'middle', fontSize: 'medium' }} />
-						{notice.noticeNo}
-					</TableCell>
-				) : (
-					<TableCell component="th" scope="row">
-						{notice.noticeNo}
-					</TableCell>
-				)}
-				<TableCell align="center">
-					<Link to={`/main/notice/${notice.noticeNo}`}>{notice.noticeTitle}</Link>
-				</TableCell>
-				<TableCell align="right">{notice.noticeReg}</TableCell>
-			</TableRow>
-		));
-	} else if (searchedNotices.length === 0) {
-		listNotices = (
-			<TableRow>
-				<TableCell colSpan="3" align="center">
-					일치하는 결과가 없습니다.
-				</TableCell>
-			</TableRow>
-		);
-	} else {
-		listNotices = searchedNotices.map((notice) => (
-			<TableRow hover key={notice.noticeNo} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-				<TableCell component="th" scope="row">
+		// 기본 출력
+		rows = notices.map((notice) => ({
+			noticeNo: (
+				<span>
+					{notice.noticeCheck && <PushPinIcon sx={{ verticalAlign: 'middle', fontSize: 'medium' }} />}
 					{notice.noticeNo}
-				</TableCell>
-				<TableCell align="center">
-					<Link to={`/main/notice/${notice.noticeNo}`}>{notice.noticeTitle}</Link>
-				</TableCell>
-				<TableCell align="right">{notice.noticeReg}</TableCell>
-			</TableRow>
-		));
+				</span>
+			),
+			noticeTitle: (
+				<Link
+					to={`/main/notice/${notice.noticeNo}`}
+					style={{
+						color: 'blue', // 파란색 텍스트
+						cursor: 'pointer', // 클릭 시 손 모양 커서
+						textDecoration: 'underline' // 밑줄 추가
+					}}
+				>
+					{notice.noticeTitle}
+				</Link>
+			),
+			noticeReg: notice.noticeReg
+		}));
+	} else if (searchedNotices.length === 0) {
+		// 일치하는 결과가 없습니다
+		rows = [
+			{
+				noticeNo: '',
+				noticeTitle: <span>일치하는 결과가 없습니다.</span>,
+				noticeReg: ''
+			}
+		];
+	} else {
+		// 검색결과 출력
+		rows = searchedNotices.map((notice) => ({
+			noticeNo: notice.noticeNo,
+			noticeTitle: (
+				<Link
+					to={`/main/notice/${notice.noticeNo}`}
+					style={{
+						color: 'blue', // 파란색 텍스트
+						cursor: 'pointer', // 클릭 시 손 모양 커서
+						textDecoration: 'underline' // 밑줄 추가
+					}}
+				>
+					{notice.noticeTitle}
+				</Link>
+			),
+			noticeReg: notice.noticeReg
+		}));
 	}
 
 	return (
@@ -119,18 +129,10 @@ export default function NoticeList() {
 			<div className={styles['list-component-container']}>
 				<ListSearch searchTerm={inputValue} onChange={setInputValue} handleSearchClick={handleSearchClick} />
 			</div>
-			<TableContainer component={Paper}>
-				<Table sx={{ minWidth: 650 }} aria-label="simple table">
-					<TableHead>
-						<TableRow>
-							<TableCell>공지 번호</TableCell>
-							<TableCell align="center">제목</TableCell>
-							<TableCell align="right">등록일</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>{listNotices}</TableBody>
-				</Table>
-			</TableContainer>
+			<TableComponent // Table 컴포넌트를 사용하여 데이터를 렌더링 */
+				columns={columns}
+				rows={rows} //rows TableComponent에 전달
+			/>
 			<Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
 		</div>
 	);

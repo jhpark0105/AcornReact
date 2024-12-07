@@ -1,5 +1,6 @@
 import DatePickerComponent from "./Picker/DatePicker";
 import SelectPickerComponent from "./Picker/SelectPicker";
+import '../../../styles/modal.css';
 
 const MemberDetailModal = ({updating, selectedMember, handleDetailChange, handleSave, handleUpdate, setShowDetailModal, setShowDeleteModal, selectedDate}) => {
 
@@ -14,6 +15,7 @@ const MemberDetailModal = ({updating, selectedMember, handleDetailChange, handle
     const handleJob = (value) => {
         handleDetailChange({target:{name:'memberJob', value}});
     }
+    console.log(selectedMember.memberName)
     return(
         <>
         {/* 모달 배경
@@ -34,30 +36,11 @@ const MemberDetailModal = ({updating, selectedMember, handleDetailChange, handle
 {/* <div className="modal show" style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)" }} tabIndex="-1"> */}
         <div 
                 className="modal show" 
-                style={{ 
-                    display: "block", 
-                    backgroundColor: "rgba(0, 0, 0, 0.5)", 
-                    position: "fixed",  // 화면 전체에서 고정
-                    top: 0, 
-                    left: 0, 
-                    right: 0, 
-                    bottom: 0, 
-                    zIndex: 1050,  // 모달이 배경 위에 표시되도록
-                    overflow: "auto",  // 화면이 넘치면 스크롤
-                }} 
+                style={{display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)" }}
                 tabIndex="-1"
             >
            {/* </div> <div className="modal-dialog"> */}
-            <div 
-                    className="modal-dialog" 
-                    style={{
-                        position: "absolute",  // 부모 div 기준으로 절대 위치
-                        top: "50%", 
-                        left: "50%", 
-                        transform: "translate(-50%, -50%)",  // 화면 중앙으로 배치
-                        zIndex: 1060,  // 모달 내용이 배경 위에 표시되도록
-                    }}
-                >
+            <div className="modal-dialog" >
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title">직원 상세</h5>
@@ -114,7 +97,7 @@ const MemberDetailModal = ({updating, selectedMember, handleDetailChange, handle
 
                                 <label>직원 입사일</label>
                                 <DatePickerComponent
-                                    value={memberDate}
+                                    value={memberDate ? new Date(memberDate) : null}
                                     // LocalDate -> Date로 변환
                                     handleDate={handleDate}
                                     readOnly={true} // 항상 읽기전용으로 설정

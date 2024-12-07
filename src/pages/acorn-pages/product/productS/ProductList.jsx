@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 import Modal from 'react-bootstrap/Modal';
 import OrderModal from './OrderModal';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './modal.css';
+import './OrderModal.css';
 function ProductList({ handleDetail, setShowModal }) {
     const [products, setProducts] = useState([]); // 상품 목록 상태
     const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태 관리
@@ -101,13 +101,7 @@ function ProductList({ handleDetail, setShowModal }) {
                     상품 발주
                 </Button>
             </div>
-
-            <Modal show={show} onHide={handleClose}
-                dialogClassName="custom-modal"
-                style={{
-                    zIndex: 1500,
-                    overflowY: 'auto'
-                }}>
+            <Modal show={show} onHide={handleClose} dialogClassName="custom-modal" style={{zIndex: 1500,overflowY: 'auto'}}backdrop={{style: { zIndex: 1200 }}}> // 다이얼로그보다 낮게 설정               
                 <Modal.Header closeButton>
                 <Modal.Title>발주 화면</Modal.Title>
                 </Modal.Header>
