@@ -6,7 +6,6 @@ import PushPinIcon from '@mui/icons-material/PushPin';
 import styles from '../../../styles/Pagination.module.css';
 import ListSearch from './ListSearch';
 import TableComponent from 'acorn-components/components/TableComponentGpt';
-import { Button } from '@mui/material';
 
 export default function NoticeList() {
   const [notices, setNotices] = useState([]);
@@ -131,9 +130,6 @@ export default function NoticeList() {
     <div>
       <div className={styles['list-component-container']} style={{ display: 'flex', justifyContent: 'space-between' }}>
         <ListSearch searchTerm={inputValue} onChange={setInputValue} handleSearchClick={handleSearchClick} />
-        <Button variant="contained" color="success" onClick={() => navigate('/main/notice/write')}>
-          공지 작성
-        </Button>
       </div>
       <TableComponent // Table 컴포넌트를 사용하여 데이터를 렌더링 */
         columns={columns}
