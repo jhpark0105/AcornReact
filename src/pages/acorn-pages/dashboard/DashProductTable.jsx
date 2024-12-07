@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Pagination from "../../../acorn-components/components/Pagination";
 import axios from 'axios';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Box,CircularProgress} from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Box,CircularProgress, Alert} from '@mui/material';
 
 // 상품 데이터 가져오기
 export default function DashboardProduct() {

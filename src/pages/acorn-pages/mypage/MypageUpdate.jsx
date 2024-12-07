@@ -13,7 +13,9 @@ const MypageUpdate = () => {
   useEffect(() => {
     const fetchManagerData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/manager/mypage/${branchCode}`);
+        const response = await axios.get(`http://localhost:8080/manager/mypage`, {
+          withCredentials: true // 크로스 도메인 요청 시 쿠키 포함
+        });
         setFormData(response.data);
       } catch (error) {
         console.error('데이터 로딩 중 오류:', error);
@@ -21,7 +23,7 @@ const MypageUpdate = () => {
     };
 
     fetchManagerData();
-  }, [branchCode]);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -38,7 +40,9 @@ const MypageUpdate = () => {
 
   const confirmUpdate = async () => {
     try {
-      await axios.put(`http://localhost:8080/manager/mypage/update/${branchCode}`, formData);
+      await axios.put(`http://localhost:8080/manager/mypage/update`, formData, {
+        withCredentials: true // 쿠키 포함 설정
+      });
       setShowModal(false);
       navigate(`/main/manager/mypage/view/${branchCode}`);
     } catch (error) {
@@ -52,7 +56,7 @@ const MypageUpdate = () => {
     <Paper elevation={3} sx={{ maxWidth: 800, margin: 'auto', p: 4 }}>
       {showModal && (
         <ConfirmModal
-          message="매니저 정보를 수정하시겠습니까?"
+          message="관리자 정보를 수정하시겠습니까?"
           onConfirm={confirmUpdate}
           onCancel={() => setShowModal(false)}
         />
