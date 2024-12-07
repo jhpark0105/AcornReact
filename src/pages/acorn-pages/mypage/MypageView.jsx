@@ -4,14 +4,16 @@ import axios from 'axios';
 import { Paper, Grid, Avatar, TextField, Box, Typography } from '@mui/material';
 
 const MypageView = () => {
-  const { branchCode } = useParams();
+  //const { branchCode } = useParams();
   const navigate = useNavigate();
   const [managerData, setManagerData] = useState(null);
 
   useEffect(() => {
     const fetchManagerData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/manager/mypage/${branchCode}`);
+        const response = await axios.get(`http://localhost:8080/manager/mypage`, {
+          withCredentials: true // 크로스 도메인 요청 시 쿠키 포함
+        });
         setManagerData(response.data);
       } catch (error) {
         console.error('데이터 로딩 중 오류:', error);
@@ -19,7 +21,7 @@ const MypageView = () => {
     };
 
     fetchManagerData();
-  }, [branchCode]);
+  },[]);
 
   if (!managerData) return <div>로딩 중...</div>;
 

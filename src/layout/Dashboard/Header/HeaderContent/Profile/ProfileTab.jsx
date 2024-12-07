@@ -28,7 +28,9 @@ export default function ProfileTab() {
   };
 
   const handleLogout = () => {
-    axios.post('http://localhost:8080/logoutProcess')
+    axios.post('http://localhost:8080/logoutProcess', {}, {
+      withCredentials: true // 현재 세션의 쿠키를 서버에 전송하여 무효화
+    })
     .then((response) => {
       if (response.status === 200) {
         //alert("로그아웃 성공");
@@ -44,7 +46,7 @@ export default function ProfileTab() {
     <List component="nav" sx={{ p: 0, '& .MuiListItemIcon-root': { minWidth: 32 } }}>
       <ListItemButton 
         selected={selectedIndex === 0} 
-        onClick={() => handleListItemClick(0, '/main/manager/mypage/update/B001')}
+        onClick={() => handleListItemClick(0, '/main/manager/mypage/update')}
         >
         <ListItemIcon>
           <EditOutlined />
@@ -54,7 +56,7 @@ export default function ProfileTab() {
       
       <ListItemButton 
         selected={selectedIndex === 1} 
-        onClick={() => handleListItemClick(1, '/main/manager/mypage/view/B001')}
+        onClick={() => handleListItemClick(1, '/main/manager/mypage/view')}
         >
 
         <ListItemIcon>

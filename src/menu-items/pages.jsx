@@ -1,12 +1,3 @@
-// assets
-import { LoginOutlined, ProfileOutlined } from '@ant-design/icons';
-
-// icons
-const icons = {
-	LoginOutlined,
-	ProfileOutlined
-};
-
 /**
  * breadcrumbs 네비게이션
  * : 탐색 계층 구조를 표시하여 사용자가 현재 위치를 파악하고 계층 구조의 수준을 이동할 수 있게 해준다.
@@ -20,7 +11,7 @@ const pages = {
 	id: 'group-erp',
 	title: '메뉴',
 	type: 'group',
-	url: 'main' /* '/'를 작성하면 절대경로로 인식한다. */,
+	url: 'main' /* 요청 URL : '/'를 작성하면 절대경로로 인식한다. */,
 	children: [
 		{
 			id: 'dashboard',
@@ -31,19 +22,19 @@ const pages = {
 		{
 			id: 'customer',
 			title: '고객 관리',
-			url: '/main/customer',
+			url: 'customer', /* 부모 경로부터 누적된 상대경로를 요청 */
 			type: 'item'
 		},
 		{
 			id: 'member',
 			title: '직원 관리',
-			url: '/main/member',
+			url: 'member',
 			type: 'item'
 		},
 		{
 			id: 'service',
 			title: '서비스 관리',
-			url: '/main/service',
+			url: 'service',
 			type: 'item'
 		},
 		{
