@@ -23,19 +23,19 @@ function PRODUCT() {
   useEffect(() => {
     fetchProducts();
   }, []);
-
+  
   //소분류(상품) 전체 목록 조회
   const fetchProducts = () => {
     axios.get(`http://localhost:8080/product`)
-      .then((response) => {
-        setProducts(response.data);
-      })
-      .catch((error) => {
-        toast.error("상품 정보를 불러오는 데 오류가 발생했습니다.");
-        console.error("Error :", error);
-      });
+    .then((response) => {
+      setProducts(response.data);
+    })
+    .catch((error) => {
+      toast.error("상품 정보를 불러오는 데 오류가 발생했습니다.");
+      console.error("Error :", error);
+    });
   };
-
+  
   // 입력 폼에서 값 변경 시 상태 업데이트
   const handleChange = (e) => {
     setState({

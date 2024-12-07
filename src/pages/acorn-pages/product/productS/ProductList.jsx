@@ -19,18 +19,18 @@ function ProductList({ handleDetail, setShowModal }) {
     const [show, setShow] = useState(false); // 발주 모달 상태
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+    const fetchProducts = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/product'); // 상품 API 경로
+            setProducts(response.data); // 상품 데이터 상태 업데이트
+        } catch (error) {
+            console.error('대분류 데이터를 가져오는 데 실패했습니다:', error);
+        }
+    };
     // 대분류 코드 목록을 서버에서 받아오는 함수
     useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                const response = await axios.get('http://localhost:8080/product'); // 상품 API 경로
-                setProducts(response.data); // 상품 데이터 상태 업데이트
-            } catch (error) {
-                console.error('대분류 데이터를 가져오는 데 실패했습니다:', error);
-            }
-        };
         fetchProducts(); // 컴포넌트가 마운트될 때 데이터 로딩
-    }, []);
+    }, [products]);
 
     // products 상태가 업데이트되면 filteredData도 갱신
     useEffect(() => {
@@ -133,7 +133,9 @@ function ProductList({ handleDetail, setShowModal }) {
                     <OrderModal handleClose={handleClose}></OrderModal>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>닫기</Button>
+                    <button type="button" className="btn btn-secondary" onClick={handleClose}>
+                            닫기
+                    </button>
                 </Modal.Footer>
             </Modal>
             {/* 페이지네이션 */}
