@@ -4,8 +4,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import Pagination from 'utils/Pagination';
 import PushPinIcon from '@mui/icons-material/PushPin';
 import styles from '../../../styles/Pagination.module.css';
-import ListSearch from './ListSearch';
+import ListSearch from '../../acorn-pages/notice/ListSearch';
 import TableComponent from 'acorn-components/components/TableComponentGpt';
+import { Button } from '@mui/material';
 
 export default function NoticeList() {
   const [notices, setNotices] = useState([]);
@@ -20,7 +21,7 @@ export default function NoticeList() {
   // 전체 공지 요청
   const fetchNotices = (pageNumber) => {
     axios
-      .get(`http://localhost:8080/notice?page=${pageNumber - 1}`)
+      .get(`http://localhost:8080/admin-notice?page=${pageNumber - 1}`)
       .then((response) => {
         setNotices(response.data.content);
         setTotalPages(response.data.page.totalPages);
@@ -33,7 +34,7 @@ export default function NoticeList() {
   // 검색한 공지 요청
   const noticeSearching = (keyword, pageNumber) => {
     axios
-      .get(`http://localhost:8080/notice/search?keyword=${keyword}&page=${pageNumber - 1}`)
+      .get(`http://localhost:8080/admin-notice/search?keyword=${keyword}&page=${pageNumber - 1}`)
       .then((response) => {
         setSearchedNotices(response.data.content);
         setTotalPages(response.data.page.totalPages);
@@ -85,7 +86,7 @@ export default function NoticeList() {
       ),
       noticeTitle: (
         <Link
-          to={`/main/notice/${notice.noticeNo}`}
+          to={`/admin/notice/${notice.noticeNo}`}
           style={{
             color: 'blue', // 파란색 텍스트
             cursor: 'pointer', // 클릭 시 손 모양 커서
@@ -112,7 +113,7 @@ export default function NoticeList() {
       noticeNo: notice.noticeNo,
       noticeTitle: (
         <Link
-          to={`/main/notice/${notice.noticeNo}`}
+          to={`/admin/notice/${notice.noticeNo}`}
           style={{
             color: 'blue', // 파란색 텍스트
             cursor: 'pointer', // 클릭 시 손 모양 커서
@@ -130,6 +131,9 @@ export default function NoticeList() {
     <div>
       <div className={styles['list-component-container']} style={{ display: 'flex', justifyContent: 'space-between' }}>
         <ListSearch searchTerm={inputValue} onChange={setInputValue} handleSearchClick={handleSearchClick} />
+        <Button variant="contained" color="success" onClick={() => navigate('/admin/notice/write')}>
+          공지 작성
+        </Button>
       </div>
       <TableComponent // Table 컴포넌트를 사용하여 데이터를 렌더링 */
         columns={columns}

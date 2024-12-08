@@ -2,7 +2,27 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Paper, Avatar, TextField, Button, Grid, Box, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import ConfirmModal from './ConfirmModal';  // 수정 확인 모달
+
+// readonly 상태의 TextField를 위한 커스텀 스타일 컴포넌트
+const ReadOnlyTextField = styled(TextField)({
+  '& .MuiOutlinedInput-root': {
+    '& fieldset': {
+      borderColor: 'rgba(0, 0, 0, 0.23)', // 기본 테두리 색상
+    },
+    '&:hover fieldset': {
+      borderColor: 'rgba(0, 0, 0, 0.23)', // 호버 시 테두리 색상 변경 방지
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: 'rgba(0, 0, 0, 0.23)', // 포커스 시 테두리 색상 변경 방지
+    },
+  },
+  '& .MuiInputBase-input.Mui-disabled': {
+    WebkitTextFillColor: 'rgba(0, 0, 0, 0.87)', // 텍스트 색상 유지
+    cursor: 'default', // 커서 스타일 변경
+  },
+});
 
 const MypageUpdate = () => {
   const { branchCode } = useParams();
@@ -44,9 +64,9 @@ const MypageUpdate = () => {
         withCredentials: true // 쿠키 포함 설정
       });
       setShowModal(false);
-      navigate(`/main/manager/mypage/view/${branchCode}`);
+      navigate(`/main/manager/mypage/view`);
     } catch (error) {
-      console.error('매니저 수정 중 오류:', error);
+      console.error('관리자 수정 중 오류:', error);
     }
   };
 
@@ -73,11 +93,48 @@ const MypageUpdate = () => {
         </Grid>
         <Grid item xs={8}>
           <form onSubmit={handleUpdate} className="form-group">
-            <TextField label="지점명" name="branchName" value={formData.branchName} fullWidth margin="normal" InputProps={{ readOnly: true }} />
-            <TextField label="지점 코드" name="branchCode" value={formData.branchCode} fullWidth margin="normal" InputProps={{ readOnly: true }} />
-            <TextField label="관리자 이름" name="managerName" value={formData.managerName} onChange={handleChange} fullWidth margin="normal" />
-            <TextField label="관리자 연락처" name="managerTel" value={formData.managerTel} onChange={handleChange} fullWidth margin="normal" />
-            <TextField label="관리자 이메일" name="managerMail" value={formData.managerMail} onChange={handleChange} fullWidth margin="normal" />
+            <ReadOnlyTextField 
+              label="지점명" 
+              name="branchName" 
+              value={formData.branchName} 
+              fullWidth 
+              margin="normal" 
+              InputProps={{ readOnly: true }} 
+              disabled
+            />
+            <ReadOnlyTextField 
+              label="지점 코드" 
+              name="branchCode" 
+              value={formData.branchCode} 
+              fullWidth 
+              margin="normal" 
+              InputProps={{ readOnly: true }} 
+              disabled
+            />
+            <TextField 
+              label="관리자 이름" 
+              name="managerName" 
+              value={formData.managerName} 
+              onChange={handleChange} 
+              fullWidth 
+              margin="normal" 
+            />
+            <TextField 
+              label="관리자 연락처" 
+              name="managerTel" 
+              value={formData.managerTel} 
+              onChange={handleChange} 
+              fullWidth 
+              margin="normal" 
+            />
+            <TextField 
+              label="관리자 이메일" 
+              name="managerMail" 
+              value={formData.managerMail} 
+              onChange={handleChange} 
+              fullWidth 
+              margin="normal" 
+            />
           </form>
         </Grid>
       </Grid>
