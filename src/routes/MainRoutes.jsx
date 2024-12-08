@@ -4,9 +4,12 @@ import { lazy } from 'react';
 import Loadable from 'components/Loadable';
 import Main from 'layout/Dashboard';
 import Login from 'pages/authentication/login';
+
 // 마이페이지
 import MypageView from '../pages/acorn-pages/mypage/MypageView';
 import MypageUpdate from '../pages/acorn-pages/mypage/MypageUpdate';
+import ErrorBoundary from "../pages/extra-pages/ErrorBoundary";
+import {element} from "prop-types";
 
 // =====
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard/index')));
@@ -26,6 +29,7 @@ const Notice = Loadable(lazy(() => import('pages/acorn-pages/notice/Notice')));
 
 const MainRoutes = {
   path: "/",
+  errorElement: <ErrorBoundary />,
   children: [
     {
       path: "",
@@ -87,16 +91,21 @@ const MainRoutes = {
           element: <Notice />
         },
         {
-          path: 'manager/mypage/view',
-          element: <MypageView />
+          path: 'manager/mypage',
+          children: [
+            {
+              path: "view",
+              element: <MypageView />
+            },
+            {
+              path: 'update',
+              element: <MypageUpdate />
+            },
+          ]
         },
-        {
-          path: 'manager/mypage/update',
-          element: <MypageUpdate />
-        },
-      ]
+      ],
     }
-  ]
+  ],
 };
 
 export default MainRoutes;

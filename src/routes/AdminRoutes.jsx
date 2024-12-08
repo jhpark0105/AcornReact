@@ -6,8 +6,8 @@ import Admin from 'layout/AdminLayout';
 
 // =====
 const Dashboard = Loadable(lazy(() => import('pages/admin/dashboard')));
-const Orders = Loadable(lazy(() => import('pages/admin/orders')));
-const Financial = Loadable(lazy(() => import('pages/admin/financial')));
+const Order = Loadable(lazy(() => import('pages/admin/order')));
+const Finance = Loadable(lazy(() => import('pages/admin/finance')));
 const Notice = Loadable(lazy(() => import('pages/admin/notice')));
 const MypageView = Loadable(lazy(() => import('pages/admin/mypage/MypageView')));
 const MypageUpdate = Loadable(lazy(() => import('pages/admin/mypage/MypageUpdate')));
@@ -25,12 +25,12 @@ const AdminRoutes = {
       element: <Dashboard />
     },
     {
-      path: 'orders/*',
-      element: <Orders />
+      path: 'order',
+      element: <Order />
     },
     {
-      path: 'financial',
-      element: <Financial />
+      path: 'finance/*',
+      element: <Finance />
     },
     {
       path: 'notice/*',
