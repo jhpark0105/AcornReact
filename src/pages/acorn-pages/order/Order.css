@@ -1,0 +1,24 @@
+.MuiCardHeader-root.css-14c277-MuiCardHeader-root {
+    padding: 0;
+    padding-bottom: 10px !important;
+}
+.MuiCardContent-root.css-1v9be3b-MuiCardContent-root {
+    padding: 0;
+    padding-left: 10px !important;
+}
+.MuiCard-root.css-13mu4hp-MuiPaper-root-MuiCard-root{
+    margin-bottom: 10px !important;
+}
+.MuiCard-root {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 16px;
+    padding: 16px;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  }
+  
+  .MuiCard-root:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
