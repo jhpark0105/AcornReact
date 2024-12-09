@@ -12,7 +12,7 @@ const config = {
 };
 
 export default config;
-export const drawerWidth = 260;
+export const drawerWidth = 260; /* 사이드바 너비 */
 
 export const twitterColor = '#1DA1F2';
 export const facebookColor = '#3b5998';

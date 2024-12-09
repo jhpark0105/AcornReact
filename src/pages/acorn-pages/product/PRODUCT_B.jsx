@@ -87,7 +87,6 @@ function PRODUCT_B() {
 
   return (
     <div className="App">
-      <h2>대분류 목록</h2>
 
       <ToastContainer />
 
@@ -117,7 +116,7 @@ function PRODUCT_B() {
 
       {showDeleteBModal && (
         <ProductBDelete
-          selectedProductB={selectedProductB}
+          selectedProductB={selectedProductB} //선택된 대분류 데이터
           handleDeleteB={handleDeleteB} // 삭제 작업을 처리
           setShowDeleteBModal={setShowDeleteBModal} // 삭제 모달을 닫는 함수
         />

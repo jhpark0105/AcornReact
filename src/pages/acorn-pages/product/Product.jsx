@@ -1,20 +1,19 @@
-import axios from "axios";
+import './App.css';
 import React from 'react';
-import { Routes, Route, Link, BrowserRouter as Router } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import ProductBList from './productB/ProductBList';
 import PRODUCT_B from './PRODUCT_B';
-import PRODUCT from './PRODUCTS';
+import PRODUCT_S from './PRODUCT_S';
 
-const Product = () => {
-    return (
-        <>
-            <Routes>
-                {/* <Route path="/" element={<PRODUCT_B />} /> */}
-                <Route path="/productB" element={<ProductBList />} />
-                <Route path="/product" element={<PRODUCT />} />
-            </Routes>
-        </>
-    );
+function App() {
+  return (
+    <>
+      <Routes>
+          <Route path="/" element={<PRODUCT_B />}></Route>
+          <Route path="/productB" element={<ProductBList />}></Route>
+          <Route path="/productS" element={<PRODUCT_S />}></Route>
+      </Routes>
+    </>
+  );
 }
-
-export default Product;
+export default App;

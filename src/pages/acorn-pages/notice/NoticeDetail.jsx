@@ -1,14 +1,29 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Card, CardContent, Typography, Divider } from '@mui/material';
 import Grid from '@mui/material/Grid';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
 
 export default function NoticeDetail() {
-	const params = useParams();
-	const noticeNo = params.no;
+  const navigate = useNavigate();
+  const params = useParams();
+  const noticeNo = params.no;
+  const [notice, setNotice] = useState({});
 
-	const [notice, setNotice] = useState({});
+  useEffect(() => {
+    axios
+      .get(`http://localhost:8080/notice/${noticeNo}`)
+      .then((response) => {
+        setNotice(response.data);
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error('Error searching notice: ', error);
+        alert('공지사항을 불러오는 도중 오류가 발생했습니다.');
+      });
+  }, [noticeNo]);
 
 	useEffect(() => {
 		axios

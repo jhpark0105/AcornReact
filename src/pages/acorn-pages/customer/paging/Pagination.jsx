@@ -1,80 +1,68 @@
 import React from "react";
-import styles from "../../../../styles/Pagination.module.css";
+import styles from "../Pagination.module.css";
 
 function Pagination({ currentPage, totalPages, onPageChange, itemsPerPage, setItemsPerPage }) {
+  const pageGroupSize = 5; // 한 번에 표시할 페이지 번호 수
+  const currentGroup = Math.ceil(currentPage / pageGroupSize); // 현재 그룹 계산
+  const startPage = (currentGroup - 1) * pageGroupSize + 1; // 현재 그룹의 첫 페이지
+  const endPage = Math.min(startPage + pageGroupSize - 1, totalPages); // 현재 그룹의 마지막 페이지
+
   return (
     <div>
-      {/* 페이지당 표시 항목 선택 셀렉트 박스
-      <div className={styles.itemsPerPageContainer}>
-        <label htmlFor="itemsPerPageSelect" style={{ marginRight: "10px" }}>
-          페이지당 항목:
-        </label>
-        <select
-          id="itemsPerPageSelect"
-          value={itemsPerPage}
-          onChange={(e) => {
-            const selectedValue = parseInt(e.target.value, 10); // 선택된 값을 숫자로 변환
-            setItemsPerPage(selectedValue);
-            onPageChange(1); // 페이지를 첫 번째로 리셋
-          }}
-          className={styles.itemsPerPageSelect}
-        >
-          {[5, 10].map((value) => (
-            <option key={value} value={value}>
-              {value}
-            </option>
-          ))}
-        </select>
-      </div> */}
-
       {/* 페이지네이션 버튼 */}
       <div className={styles.pagination}>
+        {/* 처음으로 이동 버튼 */}
         {currentPage > 1 && (
           <button
             onClick={() => onPageChange(1)}
-            className={`${styles.pageButton} ${currentPage === 1 ? styles.disabled : ""}`}
+            className={styles.pageButton}
             disabled={currentPage === 1}
           >
             «
           </button>
         )}
 
-        {currentPage > 1 && (
+        {/* 이전 그룹으로 이동 버튼 */}
+        {currentGroup > 1 && (
           <button
-            onClick={() => onPageChange(currentPage - 1)}
-            className={`${styles.pageButton} ${currentPage === 1 ? styles.disabled : ""}`}
-            disabled={currentPage === 1}
+            onClick={() => onPageChange(startPage - 1)}
+            className={styles.pageButton}
           >
             ‹
           </button>
         )}
 
-        {[...Array(totalPages)].map((_, index) => (
-          <button
-            key={index + 1}
-            onClick={() => onPageChange(index + 1)}
-            className={`${styles.pageButton} ${
-              currentPage === index + 1 ? styles.active : ""
-            }`}
-          >
-            {index + 1}
-          </button>
-        ))}
+        {/* 현재 그룹의 페이지 번호 표시 */}
+        {[...Array(endPage - startPage + 1)].map((_, index) => {
+          const page = startPage + index;
+          return (
+            <button
+              key={page}
+              onClick={() => onPageChange(page)}
+              className={`${styles.pageButton} ${
+                currentPage === page ? styles.active : ""
+              }`}
+            >
+              {page}
+            </button>
+          );
+        })}
 
-        {currentPage < totalPages && (
+        {/* 다음 그룹으로 이동 버튼 */}
+        {endPage < totalPages && (
           <button
-            onClick={() => onPageChange(currentPage + 1)}
-            className={`${styles.pageButton} ${currentPage === totalPages ? styles.disabled : ""}`}
-            disabled={currentPage === totalPages}
+            onClick={() => onPageChange(endPage + 1)}
+            className={styles.pageButton}
           >
             ›
           </button>
         )}
 
+        {/* 마지막으로 이동 버튼 */}
         {currentPage < totalPages && (
           <button
             onClick={() => onPageChange(totalPages)}
-            className={`${styles.pageButton} ${currentPage === totalPages ? styles.disabled : ""}`}
+            className={styles.pageButton}
             disabled={currentPage === totalPages}
           >
             »

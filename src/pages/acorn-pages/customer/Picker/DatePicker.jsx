@@ -12,7 +12,8 @@ const DatePickerComponent = ({ selected, onChange, disabled }) => (
       value={selected}
       onChange={onChange}
       placement="bottomStart" // 팝업 위치 조정
-      container={() => document.querySelector('.modal-body')} // 모달 내부로 제한
+      container={() => document.body} // 모달 내부로 제한
+      virtualized={true}
       disabled={disabled}
     />
   </div>

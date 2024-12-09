@@ -17,7 +17,8 @@ const GenderPickerComponent = ({value, onChange}) => {
             value={value}
             onChange={onChange}
             placement='bottomStart' // 팝업위치 설정
-            container={()=> document.querySelector('.modal-body')} // 모달 내부로 제한
+            container={()=> document.body} // 모달 내부로 제한
+            virtualized={true}
             searchable={false}  //검색 비허용
             />
     </div>
