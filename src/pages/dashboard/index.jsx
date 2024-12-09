@@ -1,3 +1,5 @@
+import {Link} from 'react-router-dom';
+
 // material-ui
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
@@ -6,68 +8,45 @@ import Box from '@mui/material/Box';
 import PageviewIcon from '@mui/icons-material/Pageview';
 // project import
 import MainCard from 'components/MainCard';
-import ServiceChart from '../acorn-pages/dashboard/chart/ServiceChart';
+import AnalyticEcommerce from 'components/cards/statistics/AnalyticEcommerce';
+
+import CardItem from "../../acorn-components/components/dashboard/CardItem";
 import DashboardNoticeTable from '../acorn-pages/dashboard/DashNoticeTable';
 import DashboardProductTable from '../acorn-pages/dashboard/DashProductTable';
-import {Link} from 'react-router-dom';
-import AnalyticEcommerce from 'components/cards/statistics/AnalyticEcommerce';
+import ServiceChart from '../acorn-pages/dashboard/chart/ServiceChart';
 import DashboardReservation from 'pages/acorn-pages/dashboard/DashboardReservation';
+
 
 // ==============================|| DASHBOARD - DEFAULT ||============================== //
 
 export default function DashboardDefault() {
-  const chartTitle = <Typography variant="h5" align="center">연간 서비스 매출 현황</Typography>;
-  
+
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75} >
       {/*********** ROW  1 ************/}
-      
       {/* NOTICE */}
-      <Grid item xs={4} md={4} lg={4}>
-        <Grid container alignItems="center" justifyContent="space-between">
-          <Grid item>
-            <Typography variant="h5" display="flex" alignItems="center" gap={1}>중요 공지사항<Link to='/main/notice' ><PageviewIcon/></Link></Typography>
-          </Grid>
-          <Grid item />
-        </Grid>
-        <MainCard sx={{ mt: 2 }} content={false}>
-          <DashboardNoticeTable />
-        </MainCard>
-      </Grid>
+      <CardItem
+		  grid={4}
+		  title={<>중요 공지사항<Link to='/main/notice' ><PageviewIcon/></Link></>}
+		  content={<DashboardNoticeTable/>}/>
       {/* SERVICE CHART */}
-      <Grid item xs={8} md={8} lg={8}>
-        <MainCard 
-            border={true}
-            content={false} 
-            title={chartTitle} 
-            children={<ServiceChart />}>
-        </MainCard>
-      </Grid>
+	  <CardItem
+			grid={8}
+			content={<ServiceChart />}
+			title={"연간 서비스 매출 현황"}/>
 
 
       {/*********** ROW  2 ************/}
       {/* PRODUCT */}
-      <Grid item xs={4} md={4} lg={4}>
-        <Grid container alignItems="center" justifyContent="space-between">
-          <Grid item>
-            <Typography variant="h5">상품 목록(재고10개 이하)<Link to='/main/productS'><PageviewIcon/></Link></Typography>
-          </Grid>
-          <Grid item />
-        </Grid>
-        <MainCard sx={{ mt: 2 }} content={false}>
-          <DashboardProductTable></DashboardProductTable>
-        </MainCard>
-      </Grid>
-
+      <CardItem
+			grid={4}
+			title={<>상품 목록(재고10개 이하)<Link to='/main/productS'><PageviewIcon/></Link></>}
+			content={<DashboardProductTable />}/>
       {/* CALENDAR */}
-      <Grid item xs={8} md={8} lg={8}>
-        <MainCard 
-            border={true}
-            content={false} 
-            children={<DashboardReservation />}>
-        </MainCard>
-      </Grid>
-
+	  <CardItem
+			grid={8}
+			title={"월별 예약 현황"}
+			content={<DashboardReservation />}/>
     </Grid>
   );
 }
