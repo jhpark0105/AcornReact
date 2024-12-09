@@ -73,14 +73,6 @@ function App() {
     });
   };
 
-  // 입력 폼에서 직책 선택 시 상태 업데이트
-  // const handlePicker = (value) => {
-  //   setState({
-  //     ...state,
-  //     memberJob : value // 선택된 직책을 상태에 저장 
-  //   })
-  // }
-
   // 특정 직원 상세 정보 표시
   const handleDetail = (member) => {
     setSelectedMember(member); // 선택한 직원 데이터를 상태에 저장

@@ -59,23 +59,6 @@ console.log("selected date",date);
                       className="form-control" placeholder="직원 이름을 입력하세요." />
                   </div>
 
-                  {/*
-                  <div className="mb-3">
-                    <label>직원 직책</label>
-                    <select  
-                      name="memberJob"
-                      value={selectedJob}
-                      onChange={handleJob}
-                      className="form-control">
-                    <option value="" disabled >직책을 선택해주세요</option>    
-                    <option value="원장">원장</option>
-                    <option value="부원장">부원장</option>
-                    <option value="실장">실장</option>
-                    <option value="디자이너">디자이너</option>
-                    <option value="인턴">인턴</option>
-                    </select>
-                  </div>
-                  */}
                   <div className="mb-3">
                     <SelectPickerComponent
                     value={selectedJob}
@@ -92,9 +75,6 @@ console.log("selected date",date);
                      
                      value={selectedDate}
                     />
-                    {/*
-                    <Calendar selectedDate={hireDate} onDateChange={setHireDate}/>
-                    */}
                   </div>
 
                   <div className="mb-3">
