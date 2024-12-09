@@ -13,9 +13,6 @@ const MemberDetailModal = ({updating, selectedMember, handleDetailChange, handle
   ? new Date(selectedMember.memberDate).toLocaleDateString("en-CA") // YYYY-MM-DD 형식
   : "";
 
-    //const memberDate = selectedMember.memberDate ? new Date(selectedMember.memberDate) : null;
-    // Date 객체로 반환
-
     const handleJob = (value) => {
         handleDetailChange({target:{name:'memberJob', value}});
     }
