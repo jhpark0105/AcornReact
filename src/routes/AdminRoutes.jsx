@@ -4,13 +4,15 @@ import { lazy } from 'react';
 import Loadable from 'components/Loadable';
 import Admin from 'layout/AdminLayout';
 
+
 // =====
 const Dashboard = Loadable(lazy(() => import('pages/admin/dashboard')));
 const Order = Loadable(lazy(() => import('pages/admin/order')));
 const Finance = Loadable(lazy(() => import('pages/admin/finance')));
 const Notice = Loadable(lazy(() => import('pages/admin/notice')));
-const MypageView = Loadable(lazy(() => import('pages/admin/mypage/MypageView')));
-const MypageUpdate = Loadable(lazy(() => import('pages/admin/mypage/MypageUpdate')));
+const AdminMypageView = Loadable(lazy(() => import('pages/admin/mypage/AdminMypageView')));
+const AdminMypageUpdate = Loadable(lazy(() => import('pages/admin/mypage/AdminMypageUpdate')));
+const AdminMypageInsert = Loadable(lazy(() => import('pages/admin/mypage/AdminMypageInsert')));
 
 const AdminRoutes = {
   path: '/admin/*',
@@ -41,11 +43,15 @@ const AdminRoutes = {
       children: [
         {
           path: 'view',
-          element: <MypageView />
+          element: <AdminMypageView />
         },
         {
           path: 'update',
-          element: <MypageUpdate />
+          element: <AdminMypageUpdate />
+        },
+        {
+          path: 'insert',
+          element: <AdminMypageInsert />
         }
       ]
     }
