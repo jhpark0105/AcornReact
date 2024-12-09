@@ -1,7 +1,5 @@
 
 import { forwardRef } from "react";
-//import DatePicker from "react-datepicker";
-//import "react-datepicker/dist/react-datepicker.css";
 import DatePickerComponent from "./Picker/DatePicker";
 
 const DateSearch = (props) => {
