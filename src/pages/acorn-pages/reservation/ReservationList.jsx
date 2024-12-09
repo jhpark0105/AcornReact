@@ -73,13 +73,6 @@ function ReservationList({ reservations, handleDetail, setShowModal }) {
     }
 
     // 날짜 범위 필터링
-    // if (startDate && endDate) {
-    //   filtered = filtered.filter((reservation) => {
-    //     const reservationDate = new Date(reservation.reservationDate);
-    //     return reservationDate >= startDate && reservationDate <= endDate;
-    //   });
-    // }
-    // 날짜 범위 필터링
     if (startDate && endDate) {
       // 1. 시작 날짜가 종료 날짜보다 이후일 경우
       if (startDate > endDate) {

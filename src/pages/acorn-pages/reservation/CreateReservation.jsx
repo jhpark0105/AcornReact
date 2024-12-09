@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import CustomSelect from './Picker/CustomSelect';
 
 function ReservationModal({ handleChange, handleInsert, setShowModal }) {
-  const [services, setServices] = useState([]);
-  const [members, setMembers] = useState([]);
-  const [customers, setCustomers] = useState([]);
+  const [services, setServices] = useState([]);// 서비스 목록을 상태로 관리
+  const [members, setMembers] = useState([]);// 담당 직원 목록을 상태로 관리
+  const [customers, setCustomers] = useState([]);// 예약자 목록을 상태로 관리
 
   const [selectedReservation, setSelectedReservation] = useState({
     serviceName: '',
@@ -34,9 +34,10 @@ function ReservationModal({ handleChange, handleInsert, setShowModal }) {
   }, []);
 
   const handleFieldChange = (name, value) => {
+    // 필드 변경 시 상태를 업데이트하는 함수
     setSelectedReservation(prev => ({
-      ...prev,
-      [name]: value,
+      ...prev,// 이전 상태를 유지
+      [name]: value, // 변경된 필드 업데이트
     }));
     handleChange({ target: { name, value } }); // 부모로 값 전달
   };
@@ -57,10 +58,10 @@ function ReservationModal({ handleChange, handleInsert, setShowModal }) {
                 <label>서비스 명</label>
                 <CustomSelect
                   data={services.map(service => ({
-                    label: service.serviceName,
-                    value: service.serviceName,
+                    label: service.serviceName, // 드롭다운에 표시될 이름
+                    value: service.serviceName, // 선택 시 저장될 값
                   }))}
-                  value={selectedReservation.serviceName}
+                  value={selectedReservation.serviceName} // 선택된 값
                   onChange={value => handleFieldChange('serviceName', value)}
                   placeholder="서비스를 선택하세요"
                 />
@@ -103,7 +104,7 @@ function ReservationModal({ handleChange, handleInsert, setShowModal }) {
                   value={selectedReservation.reservationDate}
                   onChange={e => handleFieldChange(e.target.name, e.target.value)}
                   className="form-control"
-                  min={new Date().toLocaleDateString('en-CA')}
+                  min={new Date().toLocaleDateString('en-CA')} // 최소값: 오늘 날짜
                 />
               </div>
 
