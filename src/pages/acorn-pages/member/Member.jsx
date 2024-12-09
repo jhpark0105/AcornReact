@@ -36,11 +36,13 @@ function App() {
     });
   };
 
+  state.memberJoinDate = new Date().toISOString();
   // 입력 폼에서 값 변경 시 상태 업데이트
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setState({
       ...state,
-      [e.target.name]: e.target.value // 변경된 값 상태 반영
+      [name]: name ===  "memberJoinDate" ? new Date(value).toISOString() : value// 변경된 값 상태 반영
     });
   };
 
@@ -70,14 +72,6 @@ function App() {
       console.log("member insert : " + error);
     });
   };
-
-  // 입력 폼에서 직책 선택 시 상태 업데이트
-  // const handlePicker = (value) => {
-  //   setState({
-  //     ...state,
-  //     memberJob : value // 선택된 직책을 상태에 저장 
-  //   })
-  // }
 
   // 특정 직원 상세 정보 표시
   const handleDetail = (member) => {
@@ -111,6 +105,7 @@ function App() {
 
   // 상세보기 모달에서 입력 값 변경 시 상태 업데이트
   const handleDetailChange = (e) => {
+    console.log(e.target.value)
     setSelectedMember({
       ...selectedMember,
       [e.target.name] : e.target.value, // 변경된 입력값 상태에 반영 

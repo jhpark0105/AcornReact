@@ -6,53 +6,50 @@ import Admin from 'layout/AdminLayout';
 
 // =====
 const Dashboard = Loadable(lazy(() => import('pages/admin/dashboard')));
-const Orders = Loadable(lazy(() => import('pages/admin/orders')));
-const Financial = Loadable(lazy(() => import('pages/admin/financial')));
+const Order = Loadable(lazy(() => import('pages/admin/order')));
+const Finance = Loadable(lazy(() => import('pages/admin/finance')));
 const Notice = Loadable(lazy(() => import('pages/admin/notice')));
 const MypageView = Loadable(lazy(() => import('pages/admin/mypage/MypageView')));
 const MypageUpdate = Loadable(lazy(() => import('pages/admin/mypage/MypageUpdate')));
 
-
-// ==============================|| ADMIN ROUTING ||============================== //
-
 const AdminRoutes = {
-  path: "/admin/*",
+  path: '/admin/*',
   element: <Admin />,
   children: [
     {
-      path: "",
-      element: <Dashboard />,
+      path: '',
+      element: <Dashboard />
     },
     {
-      path: "dashboard",
-      element: <Dashboard />,
+      path: 'dashboard',
+      element: <Dashboard />
     },
     {
-      path: "orders/*",
-      element: <Orders />,
+      path: 'order',
+      element: <Order />
     },
     {
-      path: "financial",
-      element: <Financial />,
+      path: 'finance/*',
+      element: <Finance />
     },
     {
-      path: "notice",
-      element: <Notice />,
+      path: 'notice/*',
+      element: <Notice />
     },
     {
-      path: "mypage",
+      path: 'mypage',
       children: [
         {
-          path: "view",
-          element: <MypageView/>
+          path: 'view',
+          element: <MypageView />
         },
         {
-          path: "update",
-          element: <MypageUpdate/>
-        },
+          path: 'update',
+          element: <MypageUpdate />
+        }
       ]
-    },
-  ],
+    }
+  ]
 };
 
 export default AdminRoutes;

@@ -1,14 +1,15 @@
 import axios from 'axios';
-import ListSearch from 'acorn-components/components/ListSearch'; // 검색 컴포넌트
-import Pagination from "../../../../utils/Pagination";
-import { NumericFormat } from "react-number-format"; // 숫자 포맷팅 컴포넌트
 import React, { useState, useEffect } from 'react';
+import ListSearch from 'acorn-components/components/ListSearch'; // 검색 컴포넌트
+import Pagination from "acorn-components/components/Pagination";
+import { NumericFormat } from "react-number-format"; // 숫자 포맷팅 컴포넌트
 import { Button, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import styles from "../../../../styles/ListSearch.module.css";
+
 import OrderModal from './OrderModal'; // 발주 모달 컴포넌트
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './OrderModal.css';
 import { Modal } from 'react-bootstrap';
+import './OrderModal.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function ProductList({ products, handleDetail, setShowModal }) {
   const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태 관리

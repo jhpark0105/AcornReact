@@ -19,15 +19,15 @@ const adminPages = {
 			type: 'item'
 		},
 		{
-			id: 'orders',
+			id: 'order',
 			title: '발주 관리',
-			url: 'orders',
+			url: 'order',
 			type: 'item'
 		},
 		{
-			id: 'financial',
+			id: 'finance',
 			title: '재무 관리',
-			url: 'financial',
+			url: 'finance',
 			type: 'item'
 		},
 	]

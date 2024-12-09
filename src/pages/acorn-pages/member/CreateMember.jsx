@@ -20,12 +20,18 @@ const MemberModal = ({handleChange, insertProcess, setShowModal, show}) => {
     }
 
     const handleDate = (date) => {
-      console.log("selected date",date);
-      // 선택된 날짜도 시간 초기화
-      date.setHours(0,0,0,0);
-      setSelectedDate(date);
-      handleChange({target : {name:'memberDate', value:date}}); // 부모로 전달된 handleChange함수 호출
-      console.log('update date',date)
+      // // 선택된 날짜도 시간 초기화
+      // date.setHours(0,0,0,0);
+      // setSelectedDate(date);
+      // handleChange({target : {name:'memberDate', value:date}}); // 부모로 전달된 handleChange함수 호출
+      //
+console.log("selected date",date);
+      const localDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+      setSelectedDate(localDate);  // 로컬 시간으로 업데이트
+      handleChange({target:{name:'memberDate', value: localDate}}) // 부모 컴포넌트에 전달 
+ console.log('update date',date)
+
     }
 
                   
@@ -53,23 +59,6 @@ const MemberModal = ({handleChange, insertProcess, setShowModal, show}) => {
                       className="form-control" placeholder="직원 이름을 입력하세요." />
                   </div>
 
-                  {/*
-                  <div className="mb-3">
-                    <label>직원 직책</label>
-                    <select  
-                      name="memberJob"
-                      value={selectedJob}
-                      onChange={handleJob}
-                      className="form-control">
-                    <option value="" disabled >직책을 선택해주세요</option>    
-                    <option value="원장">원장</option>
-                    <option value="부원장">부원장</option>
-                    <option value="실장">실장</option>
-                    <option value="디자이너">디자이너</option>
-                    <option value="인턴">인턴</option>
-                    </select>
-                  </div>
-                  */}
                   <div className="mb-3">
                     <SelectPickerComponent
                     value={selectedJob}
@@ -86,9 +75,6 @@ const MemberModal = ({handleChange, insertProcess, setShowModal, show}) => {
                      
                      value={selectedDate}
                     />
-                    {/*
-                    <Calendar selectedDate={hireDate} onDateChange={setHireDate}/>
-                    */}
                   </div>
 
                   <div className="mb-3">
