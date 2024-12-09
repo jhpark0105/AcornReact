@@ -31,52 +31,11 @@ export default function CustomerDetail({selectedCustomer, setShowDetailModal, re
           })
           .catch((error) => {
             toast.error("수정 중 오류가 발생했습니다.");
-            console.error("Error:", error);
+            toast.error("Error:", error);
           });
     };
-  //   const handleSave = async () => {
-  //     try {
-  //         const res = await axios.put(
-  //             `http://localhost:8080/customer/${customer.customerId}`,
-  //             customer
-  //         );
-  
-  //         if (res.data.isSuccess) {
-  //             toast.success("고객 수정 성공!");
-  //             setIsEditing(false);
-  //             setShowDetailModal(false);
-  //             await refresh(); // 저장 후 리스트 새로고침
-  //         } else {
-  //             toast.error("수정에 실패했습니다.");
-  //         }
-  //     } catch (error) {
-  //         toast.error("수정 중 오류가 발생했습니다.");
-  //         console.error("Error:", error);
-  //     }
-  // };
-  
-  
-  
-  
-  
-
-
-
-    // 수정된 값 저장
-    // const handleDetailChange = (e) => {
-    //     setCustomer({
-    //         ...customer,
-    //         [e.target.name]: e.target.value,
-    //     });
-    // };
-
-    // const handleDetailChange = (value, fieldName) => {
-    //   setCustomer({
-    //       ...customer,
-    //       [fieldName]: value, // fieldName을 받아서 상태를 업데이트
-    //   });
-    // };
-  
+    
+    // 수정
     const handleDetailChange = (value, fieldName) => {
       setCustomer(prevCustomer => ({
         ...prevCustomer,
@@ -156,27 +115,11 @@ export default function CustomerDetail({selectedCustomer, setShowDetailModal, re
 
                   <div className="mb-3">
                     <label>고객 등록일</label><br/>
-                    {/* <DatePicker
-                        selected={startDate}
-                        onChange={handleDateChange}
-                        value={customer.customerReg}  // ISO 날짜 형식 값 (yyyy-MM-dd)
-                        readOnly={!isEditing}
-                        dateFormat="yyyy-MM-dd"
-                        className="form-control"
-                    /> */}
-                    {/* <DatePickerComponent 
-                    selected={startDate}
-                    value={customer.customerReg}  // ISO 날짜 형식 값 (yyyy-MM-dd)
-                    readOnly
-                    dateFormat="yyyy-MM-dd"
-                    className="form-control"
-                    disabled={true}/> */}
                     <DatePickerComponent
                         selected={startDate}
                         onChange={handleDateChange}
                         disabled // 수정 모드에서만 날짜 선택 가능
                     />
-
 
                     {/* 등록일 수정 필요할 경우 */}
                     {/* {isEditing ? (
