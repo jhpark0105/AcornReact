@@ -26,7 +26,8 @@ const ReadOnlyTextField = styled(TextField)({
 const MypageView = () => {
   const navigate = useNavigate();
   const [managerData, setManagerData] = useState(null);
-
+  
+  // 컴포넌트 렌더링 후 매니저 데이터 갖고옴
   useEffect(() => {
     const fetchManagerData = async () => {
       try {

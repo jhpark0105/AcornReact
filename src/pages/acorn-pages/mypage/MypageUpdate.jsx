@@ -30,6 +30,7 @@ const MypageUpdate = () => {
   const [formData, setFormData] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
+  // 컴포넌트 렌더링 후 매니저 데이터 갖고옴
   useEffect(() => {
     const fetchManagerData = async () => {
       try {
@@ -45,6 +46,7 @@ const MypageUpdate = () => {
     fetchManagerData();
   }, []);
 
+  // 수정폼 입력값 저장
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -53,11 +55,13 @@ const MypageUpdate = () => {
     }));
   };
 
+  // 수정 버튼 클릭 시, 수정 확인 모달 표시
   const handleUpdate = (e) => {
-    e.preventDefault();
-    setShowModal(true);
+    e.preventDefault(); // 기본 동작 방지 (페이지 새로고침 방지)
+    setShowModal(true); // 모달 창 띄우기
   };
 
+  // 매니저 데이터 수정 후, 모달 닫고 매니저 view 로 이동
   const confirmUpdate = async () => {
     try {
       await axios.put(`http://localhost:8080/manager/mypage/update`, formData, {
