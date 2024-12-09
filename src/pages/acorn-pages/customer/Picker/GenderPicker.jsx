@@ -18,7 +18,7 @@ const GenderPickerComponent = ({value, onChange}) => {
             onChange={onChange}
             placement='bottomStart' // 팝업위치 설정
             container={()=> document.body} // 모달 내부로 제한
-            virtualized
+            virtualized={true}
             searchable={false}  //검색 비허용
             />
     </div>

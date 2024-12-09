@@ -19,7 +19,7 @@ const SelectPickerComponent = ({onChange, value}) => {
           onChange={onChange}
           placement="bottomStart"
           container={() => document.body}
-          virtualized
+          virtualized={true}
           searchable={false}
         />
     </div>
