@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import styles from "../../../styles/ListSearch.module.css";
 import Pagination from "../../../acorn-components/components/Pagination";
 import ListSearch from './ListMemberSearch';
-import {Table, TableBody, TableCell, TableContainer, TableRow, TableHead, Box} from "@mui/material";
+import {Table, TableBody, TableCell, TableContainer, TableRow, TableHead, Box, Button} from "@mui/material";
 
 // 직책 순서 배열
 const jobOrder = ["원장", "부원장", "실장", "디자이너", "인턴", "파트 타임"];
@@ -104,12 +104,17 @@ function MemberList({ members, handleDetail, setShowModal }) {
         </div>
         {/* 직원 등록 버튼 */}
         <div className={styles.buttonBox}>
-        <button
-          onClick={() => setShowModal(true)}
-          className={`${styles.button} ${styles.registerButton}`}
-        >
+        <Button
+            variant="contained"
+            color="success"
+            onClick={() => setShowModal(true)}
+            style={{
+              whiteSpace: "nowrap",
+              padding: "8px 20px",
+            }}
+          >
           직원 등록
-        </button>
+        </Button>
         </div>
       </div>
 

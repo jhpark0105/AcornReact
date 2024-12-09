@@ -5,7 +5,7 @@ const ResourceSlice = createSlice({
     name: "resource",
     initialState: {
         // 현재 날짜로 초기화. yyyy-mm-dd 형태
-        //selectedDate: new Date().toISOString().split("T")[0],
+        //selectedDate: new Date().toISOString().split("T")[0], // 버그 나는 코드
         selectedDate: dateTools.getDateStringByYYYYMMDD(new Date()),
         //selectedDate: '2024-10-24',  // 테스트용
     },

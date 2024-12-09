@@ -1,18 +1,20 @@
+// React Import 
 import React, { useState, useEffect } from "react";
+import axios from "axios";
+
+// MUI Import
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { PickersDay } from "@mui/x-date-pickers/PickersDay";
 import "dayjs/locale/ko"; // 한국어로 로컬리제이션
 import dayjs from "dayjs"; // dayjs 라이브러리에서는 JS 내장 객체인 Date 대신 Dayjs라는 객체를 사용함.
-import axios from "axios";
 
 // Redux Import
 import { useDispatch } from "react-redux";
-//import { setSelectedDate } from "../redux/ResourceSlice";
 import { setSelectedDate } from "redux/ResourceSlice";
 
-//import * as dateTools from "../libs/dateTools";
+// Custom Library Import
 import * as dateTools from '../../../../libs/dateTools';
 
 const Calendar = () => {
@@ -25,7 +27,9 @@ const Calendar = () => {
    * 사용자가 특정 날짜 클릭 시 해당 날짜를 yyyy-mm-dd 형태의 문자열로
    * redux의 store에 저장.
    *
-   * @param {dayjs} date - 사용자가 선택한 특정 날짜의 Date 객체.
+   * @param {dayjs} date - 사용자가 선택한 특정 날짜의 Dayjs 객체. 
+   * 참고 자료
+   * https://day.js.org/en/
    */
   const handleDateSelect = (date) => {
     let dateInFormat = date.format("YYYY-MM-DD");
@@ -63,8 +67,14 @@ const Calendar = () => {
   };
 
   /**
-   *
-   * @param {dayjs} day
+   * MUI에서 제공하는 달력에서는 기본적으로 특정 달의 모든 날들을 돌며 
+   * 실행할 기능을 제공한다. 
+   * 여기서는 예약 현황이 있는 날에 대해 이를 표시하기 위해 스타일을 바꿔주는 코드이다. 
+   * 
+   * 참고 자료
+   * https://day.js.org/en/
+   * 
+   * @param {dayjs} day - 기본적으로 달력을 구성하기 위해 dayjs라는 별도의 라이브러리를 사용하고 있다. 
    */
   const injectBadgeIfDataExist = ({ day, ...others }) => {
     if (datesInMonth.includes(day.format("YYYY-MM-DD"))) {
@@ -76,7 +86,7 @@ const Calendar = () => {
           존재함을 알린다.
           */
         <PickersDay
-          {...others}
+          {...others} 
           day={day}
           style={{ backgroundColor: "#C5D3E8" }}
         />
