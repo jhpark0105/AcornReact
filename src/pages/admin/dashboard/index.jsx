@@ -15,6 +15,7 @@ import DashboardNoticeTable from '../../acorn-pages/dashboard/DashNoticeTable';
 import DashboardProductTable from '../../acorn-pages/dashboard/DashProductTable';
 
 import DashboardReservation from 'pages/acorn-pages/dashboard/DashboardReservation';
+import CardItem from "../../../acorn-components/components/dashboard/CardItem";
 // avatar style
 const avatarSX = {
   width: 36,
@@ -39,38 +40,18 @@ export default function AdminDashboard() {
   
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75} >
-      
       {/*********** ROW  1 ************/}
       {/* ORDERS */}
-      <Grid item xs={4} md={4} lg={4}>
-        <MainCard 
-          sx={{ mt: 2 }} 
-          content={false} 
-          title={
-            <Typography 
-              variant="h5" 
-              display="flex" 
-              alignItems="center" 
-              justifyContent="center" 
-              gap={1}
-              children={<>발주 요청 내역<Link to='/admin/orders'><PageviewIcon/></Link></>}
-            >
-            </Typography>}
-            children={<DashboardNoticeTable />}
-          >
-        </MainCard>
-      </Grid>
+        <CardItem
+            grid={4}
+            title={<>발주 요청 내역<Link to='/admin/order'><PageviewIcon/></Link></>}
+            content={<DashboardNoticeTable/>}/>
 
-
-      {/* SERVICE CHART */}
-      <Grid item xs={8} md={8} lg={8}>
-        <MainCard 
-          border={true}
-          content={false} 
-          title={chartTitle} 
-          children={<ServiceChart />}/>
-      </Grid>
-
+      {/* CHART */}
+        <CardItem
+            grid={8}
+            title={"지점별 월 매출 현황"}
+            content={<ServiceChart />}/>
     </Grid>
   );
 }
