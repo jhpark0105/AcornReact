@@ -22,7 +22,7 @@ function ReservationDetail({
         reservationDate: '',
         reservationTime: '',
         reservationComm: '',
-        ...selectedReservation, // 초기값 병합
+        ...selectedReservation, // 부모로부터 받은 초기 예약 데이터를 병합
     });
 
     useEffect(() => {
@@ -45,11 +45,13 @@ function ReservationDetail({
             .catch((err) => console.error('Error fetching customers:', err));
     }, []);
 
+    // 입력 필드 값 변경 시 호출되는 함수
     const handleFieldChange = (name, value) => {
         setReservation((prev) => ({
             ...prev,
             [name]: value,
         }));
+        // 부모 컴포넌트로 값 변경 알림
         handleDetailChange({ target: { name, value } });
     };
 
@@ -87,13 +89,13 @@ function ReservationDetail({
                             {/* 서비스명 */}
                             <div className="mb-3">
                                 <label>서비스 명</label>
-                                {isEditing ? (
+                                {isEditing ? ( // 편집 모드일 경우
                                     <CustomSelect
                                         data={services.map((service) => ({
-                                            label: service.serviceName,
-                                            value: service.serviceName,
+                                            label: service.serviceName, // 드롭다운 표시값
+                                            value: service.serviceName, // 선택 값
                                         }))}
-                                        value={reservation.service.serviceName}
+                                        value={reservation.service.serviceName}// 선택된 서비스
                                         onChange={(value) => handleFieldChange('service', { serviceName: value })}
                                     />
                                 ) : (

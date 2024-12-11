@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { ToastContainer,toast } from 'react-toastify';
 import axios from "axios";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePickerComponent from "./Picker/DatePicker";
 import 'rsuite/dist/rsuite.min.css';
@@ -10,23 +9,25 @@ import GenderPickerComponent from "./Picker/GenderPicker";
 
 export default function CustomerDetail({selectedCustomer, setShowDetailModal, refresh}) {
     const [isEditing, setIsEditing] = useState(false); // 수정 모드 상태
-    const [ customer, setCustomer] = useState({...selectedCustomer});
-    const [startDate, setStartDate] = useState(new Date(customer.customerReg));
+    const [ customer, setCustomer] = useState({...selectedCustomer});  // 선택된 고객 정보를 상태로 저장
+    const [startDate, setStartDate] = useState(new Date(customer.customerReg));  // 등록일을 상태로 저장
 
+
+    // 수정 버튼 클릭시 수정 모드 활성화
     const handleEdit = () => {
         setIsEditing(true);
     };
 
 
-    // 수정 후 저장
+    // 수정 후 저장(수정된 고객 정보를 서버로 전송)
     const handleSave = () => {
-        axios.put(`http://localhost:8080/customer/${customer.customerId}`, customer)
+        axios.put(`http://localhost:8080/customer/${customer.customerId}`, customer)  // PUT 요청 -> 고객 정보 업데이트
           .then((res) => {
             if (res.data.isSuccess) {
               toast.success("고객 수정 성공!");
-              setIsEditing(false);
-              setShowDetailModal(false);
-              refresh();
+              setIsEditing(false);  // 수정 모드 비활성화
+              setShowDetailModal(false);  // 상세 모달 닫기
+              refresh();  // 부모 컴포넌트 데이터 갱신
             }
           })
           .catch((error) => {
@@ -34,8 +35,8 @@ export default function CustomerDetail({selectedCustomer, setShowDetailModal, re
             toast.error("Error:", error);
           });
     };
-    
-    // 수정
+
+    // 입력된 값 변경시 호출. 상태에 변경된 값 반영
     const handleDetailChange = (value, fieldName) => {
       setCustomer(prevCustomer => ({
         ...prevCustomer,
@@ -43,7 +44,7 @@ export default function CustomerDetail({selectedCustomer, setShowDetailModal, re
       }));
     };
 
-    // 날짜 수정
+    // 등록일 변경 시 호출. 날짜를 상태에 반영
     const handleDateChange = (date) => {
         setStartDate(date);
         setCustomer({
@@ -86,12 +87,13 @@ export default function CustomerDetail({selectedCustomer, setShowDetailModal, re
                         <option value={"남자"}>남자</option>
                         <option value={"여자"}>여자</option>
                     </select> */}
-                    {isEditing ? (
+                    {isEditing ? (  // 수정모드에서 GenderPicke 컴포넌트 렌더링
                     <GenderPickerComponent
                         value={customer.customerGender}
                         onChange={(value) => handleDetailChange(value, "customerGender")}
                     />
                     ) : (
+                        // 읽기 전용
                         <input
                             type="text"
                             className="form-control"
@@ -116,8 +118,8 @@ export default function CustomerDetail({selectedCustomer, setShowDetailModal, re
                   <div className="mb-3">
                     <label>고객 등록일</label><br/>
                     <DatePickerComponent
-                        selected={startDate}
-                        onChange={handleDateChange}
+                        selected={startDate}  // 현재 선택된 날짜
+                        onChange={handleDateChange}  // 날짜 변경 핸들러
                         disabled // 수정 모드에서만 날짜 선택 가능
                     />
 
@@ -146,11 +148,13 @@ export default function CustomerDetail({selectedCustomer, setShowDetailModal, re
                         <option value={"BRONZE"}>BRONZE</option>
                     </select> */}
                     {isEditing ? (
+                      // 수정 모드에서 SelectPicker 컴포넌트 렌더링
                       <SelectPickerComponent
                         value={customer.customerRank}
                         onChange={(value) => handleDetailChange(value, "customerRank")}
                       />
                     ) : (
+                      // 읽기 전용
                       <input 
                         type="text" 
                         className="form-control" 

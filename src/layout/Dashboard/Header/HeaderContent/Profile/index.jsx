@@ -65,7 +65,8 @@ export default function Profile() {
   //   };
   //   fetchData();
   // }, []);
-
+  
+  // 컴포넌트 렌더링 후 매니저 데이터 갖고옴
   useEffect(() => {
     const fetchData = async () => {
       try {      

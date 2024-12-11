@@ -43,8 +43,9 @@ export default function NoticeList() {
       });
   };
 
-  // 검색 여부에 따라 의존성배열 변동
+  // 페이지번호나 입력된 검색어가 바뀌면 리렌더링
   useEffect(() => {
+    // 검색어를 입력했을 경우 noticeSearching, 아니면 fetchNotices
     if (searchTerm) {
       noticeSearching(searchTerm, currentPage);
     } else {
@@ -65,7 +66,7 @@ export default function NoticeList() {
     { id: 'noticeReg', label: '작성일', width: '50px', align: 'center' }
   ];
 
-  let rows; // 테이블 내용이 될 행을 조건에 따라 정의
+  let rows; // 테이블 내용이 될 행(요소 변수)을 조건에 따라 정의
 
   if (notices.length === 0) {
     // 등록된 공지사항이 없습니다
@@ -79,13 +80,14 @@ export default function NoticeList() {
     rows = notices.map((notice) => ({
       noticeNo: (
         <span>
+          {/* 중요도가 false면 null, true면 핀 아이콘 출력*/}
           {notice.noticeCheck && <PushPinIcon sx={{ verticalAlign: 'middle', fontSize: 'medium' }} />}
           {notice.noticeNo}
         </span>
       ),
       noticeTitle: (
         <Link
-          to={`/main/notice/${notice.noticeNo}`}
+          to={`/main/notice/${notice.noticeNo}`} // 해당하는 번호의 공지로 이동
           style={{
             color: 'blue', // 파란색 텍스트
             cursor: 'pointer', // 클릭 시 손 모양 커서
@@ -112,7 +114,7 @@ export default function NoticeList() {
       noticeNo: notice.noticeNo,
       noticeTitle: (
         <Link
-          to={`/main/notice/${notice.noticeNo}`}
+          to={`/main/notice/${notice.noticeNo}`} // 해당하는 번호의 공지로 이동
           style={{
             color: 'blue', // 파란색 텍스트
             cursor: 'pointer', // 클릭 시 손 모양 커서
@@ -128,7 +130,7 @@ export default function NoticeList() {
 
   return (
     <div>
-      <div className={styles['list-component-container']} style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <div className={styles['list-component-container']} style={{ display: 'flex', justifyContent: 'left' }}>
         <ListSearch searchTerm={inputValue} onChange={setInputValue} handleSearchClick={handleSearchClick} />
       </div>
       <TableComponent // Table 컴포넌트를 사용하여 데이터를 렌더링 */
