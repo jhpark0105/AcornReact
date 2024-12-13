@@ -31,25 +31,28 @@ function ProductList({ products, handleDetail, setShowModal }) {
         fetchProducts(); // 컴포넌트가 마운트될 때 데이터 로딩
     }, [products]);
 
-  // products 데이터가 변경되면 필터링 데이터를 갱신
-  useEffect(() => {
-    setFilteredData(products);
-  }, [products]);
+    // products 데이터가 변경되면 필터링 데이터를 갱신
+    useEffect(() => {
+      setFilteredData(products);
+    }, [products]);
 
-  // 검색어 상태를 업데이트
-  const onChange = (term) => {
-    setSearchTerm(term);
-  };
+    // 검색어 상태를 업데이트
+    const onChange = (term) => {
+      setSearchTerm(term);
+    };
 
-  // 검색어 필터링
-  const handleSearchClick = () => {
-    const filtered = products.filter((item) =>
-      // 상품명에 검색어가 포함되는 항목만 필터링
-      item.productName.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredData(filtered);
-    setCurrentPage(1); // 검색 후 첫 페이지로 이동
-  };
+    // 버튼 클릭 시 필터링 처리(상품명과 대분류명으로 상품 찾기)
+    const handleSearchClick = () => {
+      const filtered = products.filter((item) => {
+          const isProductNameMatch = item.productName && item.productName.toLowerCase().includes(searchTerm.toLowerCase());
+          const isProductBNameMatch = item.product_b && item.product_b.productBName && item.product_b.productBName.toLowerCase().includes(searchTerm.toLowerCase());
+
+          // 상품명이나 대분류명이 일치하면 필터링
+          return isProductNameMatch || isProductBNameMatch;
+      });
+      setFilteredData(filtered);
+      setCurrentPage(1); //검색 후 첫 페이지로 이동
+    };
 
   // 페이지별 데이터 계산
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -73,7 +76,7 @@ function ProductList({ products, handleDetail, setShowModal }) {
           />
         </div>
         
-        <div className={styles.buttonBox}>
+        <div className={styles.buttonBox} style={{ margin: "20px 0", display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
           {/* 상품 등록 버튼 */}
           <Button
             variant="contained"
