@@ -41,8 +41,7 @@ export default function NoticeCreate() {
 		console.log('Sending data:', formData); // 전송하는 데이터 확인
 
 		// 공지 작성 ajax 요청
-		axios
-			.post('http://localhost:8080/notice', formData)
+		axios.post('http://localhost:8080/notice', formData)
 			.then((response) => {
 				if (response.data.isSuccess) {
 					console.log(response.data);
@@ -50,7 +49,7 @@ export default function NoticeCreate() {
 					// 요청 성공 시 최신 공지사항 번호 반환
 					return axios.get('http://localhost:8080/notice/latest');
 				} else {
-					throw new Error(response.data.message);
+					toast.error(response.data.message); //실패 메시지
 				}
 			})
 			.then((latestNoResponse) => {
