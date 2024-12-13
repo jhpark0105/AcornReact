@@ -24,7 +24,6 @@ function PRODUCT() {
     axios.get(`http://localhost:8080/product`)
       .then((response) => {
         setProducts(response.data);
-        console.log("Products fetched:", response.data); // 디버깅용
       })
       .catch((error) => {
         toast.error("상품 정보를 불러오는 데 오류가 발생했습니다.");
