@@ -18,6 +18,7 @@ const Customer = Loadable(lazy(() => import('pages/acorn-pages/customer/Customer
 const Member = Loadable(lazy(() => import('pages/acorn-pages/member/Member')));
 const Service = Loadable(lazy(() => import('pages/acorn-pages/service/Service')));
 const Reservation = Loadable(lazy(() => import('pages/acorn-pages/reservation/Reservation')));
+const ReservationStatus = Loadable(lazy(() => import('pages/acorn-pages/reservation/ReservationStatus')));
 const ProductB = Loadable(lazy(() => import('pages/acorn-pages/product/PRODUCT_B')));
 const ProductS = Loadable(lazy(() => import('pages/acorn-pages/product/PRODUCT_S')));
 const Order = Loadable(lazy(() => import('pages/acorn-pages/order/Order')));
@@ -67,7 +68,7 @@ const MainRoutes = {
             },
             {
               path: "payment",
-              element: <Reservation/>
+              element: <ReservationStatus/>
             },
           ]
         },
