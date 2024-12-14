@@ -42,20 +42,44 @@ const Service = () => {
   };
 
   // insertprocess
+  // const handleInsert = () => {
+  //   axios.post("http://localhost:8080/service", state)
+  //     .then((res) => {
+  //       if (res.data.isSuccess) {
+  //         toast.success("서비스 등록 성공!");
+  //         setShowModal(false); // insert 모달 닫기
+  //         fetchServices(); // 리로딩 후 최신 데이터 불러옴
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       toast.error("서비스 등록 중 오류가 발생했습니다.");
+  //       console.error("Error:", error);
+  //     });
+  // };
   const handleInsert = () => {
     axios.post("http://localhost:8080/service", state)
       .then((res) => {
-        if (res.data.isSuccess) {
-          toast.success("서비스 등록 성공!");
-          setShowModal(false); // insert 모달 닫기
-          fetchServices(); // 리로딩 후 최신 데이터 불러옴
+        console.log("응답 데이터:", res.data); // 응답 데이터 확인용 로그
+        const response = res.data; // 응답 데이터를 바로 사용
+
+        if (response.isSuccess) {
+          // 성공 메시지 표시 후 모달 닫기
+          toast.success(response.message);
+          setShowModal(false); // 모달 닫기
+          fetchServices(); // 최신 데이터 불러오기
+        } else {
+          // 중복된 경우 오류 메시지 출력
+          toast.error(response.message);
         }
       })
       .catch((error) => {
+        // 서버와의 통신 실패 시
         toast.error("서비스 등록 중 오류가 발생했습니다.");
-        console.error("Error:", error);
+        console.error("Error:", error.response ? error.response.data : error.message); // 오류 응답 데이터 확인
       });
   };
+
+
 
   // 특정 서비스의 상세 정보 표시
   const handleDetail = (service) => {
