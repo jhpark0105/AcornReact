@@ -69,13 +69,16 @@ function PRODUCT_B() {
   // 대분류 삭제
   const handleDeleteB = () => {
     if (selectedProductB) {
-      axios.delete(`http://localhost:8080/productB/${selectedProductB.productBCode}`)
+      axios
+        .delete(`http://localhost:8080/productB/${selectedProductB.productBCode}`)
         .then((res) => {
           if (res.data.isSuccess) {
-            toast.success("대분류 삭제 성공!");
+            toast.success(res.data.message); // 성공 메시지
             setShowDeleteBModal(false); // 삭제 모달 닫기
             setShowDetailBModal(false); // 상세보기 모달 닫기
-            fetchProductBs(); // 리로딩 후 최신 데이터 불러옴
+            fetchProductBs(); // 최신 데이터 불러오기
+          } else {
+            toast.error(res.data.message); // 실패 메시지
           }
         })
         .catch((error) => {
