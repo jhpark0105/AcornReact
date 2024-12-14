@@ -16,20 +16,21 @@ function ProductList({ products, handleDetail, setShowModal }) {
   const [filteredData, setFilteredData] = useState([]); // 필터링된 데이터 상태 관리
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
   const [itemsPerPage, setItemsPerPage] = useState(10); // 페이지당 항목 수 (기본값 10)
-    const [show, setShow] = useState(false); // 발주 모달 상태
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-    const fetchProducts = async () => {
-        try {
-            const response = await axios.get('http://localhost:8080/product'); // 상품 API 경로
-        } catch (error) {
-            console.error('대분류 데이터를 가져오는 데 실패했습니다:', error);
-        }
-    };
-    // 대분류 코드 목록을 서버에서 받아오는 함수
-    useEffect(() => {
-        fetchProducts(); // 컴포넌트가 마운트될 때 데이터 로딩
-    }, [products]);
+  const [show, setShow] = useState(false); // 발주 모달 상태
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  const fetchProducts = async () => {
+    try {
+        const response = await axios.get('http://localhost:8080/product'); // 상품 API 경로
+    } catch (error) {
+        console.error('대분류 데이터를 가져오는 데 실패했습니다:', error);
+    }
+  };
+
+  // 대분류 코드 목록을 서버에서 받아오는 함수
+  useEffect(() => {
+      fetchProducts(); // 컴포넌트가 마운트될 때 데이터 로딩
+  }, [products]);
 
   // products 데이터가 변경되면 필터링 데이터를 갱신
   useEffect(() => {
@@ -41,14 +42,17 @@ function ProductList({ products, handleDetail, setShowModal }) {
     setSearchTerm(term);
   };
 
-  // 검색어 필터링
+  // 버튼 클릭 시 필터링 처리(상품명과 대분류명으로 상품 찾기)
   const handleSearchClick = () => {
-    const filtered = products.filter((item) =>
-      // 상품명에 검색어가 포함되는 항목만 필터링
-      item.productName.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filtered = products.filter((item) => {
+        const isProductNameMatch = item.productName && item.productName.toLowerCase().includes(searchTerm.toLowerCase());
+        const isProductBNameMatch = item.product_b && item.product_b.productBName && item.product_b.productBName.toLowerCase().includes(searchTerm.toLowerCase());
+
+        // 상품명이나 대분류명이 일치하면 필터링
+        return isProductNameMatch || isProductBNameMatch;
+    });
     setFilteredData(filtered);
-    setCurrentPage(1); // 검색 후 첫 페이지로 이동
+    setCurrentPage(1); //검색 후 첫 페이지로 이동
   };
 
   // 페이지별 데이터 계산
@@ -73,7 +77,7 @@ function ProductList({ products, handleDetail, setShowModal }) {
           />
         </div>
         
-        <div className={styles.buttonBox}>
+        <div className={styles.buttonBox} style={{ margin: "20px 0", display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
           {/* 상품 등록 버튼 */}
           <Button
             variant="contained"
