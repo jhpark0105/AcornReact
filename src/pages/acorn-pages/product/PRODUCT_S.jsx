@@ -24,7 +24,6 @@ function PRODUCT() {
     axios.get(`http://localhost:8080/product`)
       .then((response) => {
         setProducts(response.data);
-        console.log("Products fetched:", response.data); // 디버깅용
       })
       .catch((error) => {
         toast.error("상품 정보를 불러오는 데 오류가 발생했습니다.");
@@ -48,12 +47,12 @@ function PRODUCT() {
   const handleInsert = () => {
     axios.post("http://localhost:8080/product", state)
       .then((res) => {
-        if (res.data.isSuccess) {
+        if (res.data.isSuccess) { //성공 메시지
           toast.success("상품 등록 성공!");
           setShowModal(false);
           fetchProducts();
         } else {
-          toast.error(res.data.message);
+          toast.error(res.data.message); //실패 메시지
         }
       })
       .catch((error) => {
@@ -78,11 +77,13 @@ function PRODUCT() {
   const handleSave = () => {
     axios.put(`http://localhost:8080/product/edit/${selectedProduct.productCode}`, selectedProduct)
       .then((res) => {
-        if (res.data.isSuccess) {
+        if (res.data.isSuccess) { //성공 메시지
           toast.success("상품 수정 성공!");
           setIsEditing(false);
           setShowDetailModal(false);
           fetchProducts();
+        } else {
+          toast.error(res.data.message); //실패 메시지
         }
       })
       .catch((error) => {
@@ -104,11 +105,13 @@ function PRODUCT() {
     if (selectedProduct) {
       axios.delete(`http://localhost:8080/product/${selectedProduct.productCode}`)
         .then((res) => {
-          if (res.data.isSuccess) {
+          if (res.data.isSuccess) { //성공 메시지
             toast.success("상품 삭제 성공!");
             setShowDeleteModal(false);
             setShowDetailModal(false);
             fetchProducts();
+          } else {
+            toast.error(res.data.message); //실패 메시지
           }
         })
         .catch((error) => {

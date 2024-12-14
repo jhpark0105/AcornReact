@@ -1,106 +1,112 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import Pagination from 'utils/Pagination';
-import PushPinIcon from '@mui/icons-material/PushPin';
-import styles from '../../../styles/Pagination.module.css';
-import ListSearch from './ListSearch';
-import TableComponent from 'acorn-components/components/TableComponentGpt';
+import axios from 'axios'; // HTTP 요청을 위해 axios 라이브러리 임포트
+import { useEffect, useState } from 'react'; // React 상태 관리와 효과 훅
+import { ToastContainer, toast } from 'react-toastify'; // 알림 메시지 표시를 위한 라이브러리
+import { Link, useNavigate, useLocation } from 'react-router-dom'; // 라우팅과 페이지 이동을 위한 라이브러리
+import Pagination from 'acorn-components/components/Pagination'; // 페이지네이션 컴포넌트
+import PushPinIcon from '@mui/icons-material/PushPin'; // 고정 공지 아이콘
+import ListSearch from 'acorn-components/components/ListSearch'; // 검색 UI 컴포넌트
+import TableComponent from 'acorn-components/components/TableComponentGpt'; // 표 출력 컴포넌트
+import styles from '../../../styles/Pagination.module.css'; // CSS 모듈 스타일링
+import Button from '@mui/material/Button'; // 공지 등록 버튼 UI
 
 export default function NoticeList() {
-  const [notices, setNotices] = useState([]);
-  const [searchedNotices, setSearchedNotices] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
-  const [inputValue, setInputValue] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
+  // 공지 목록과 관련된 상태 정의
+  const [notices, setNotices] = useState([]); // 전체 공지 데이터 저장
+  const [searchedNotices, setSearchedNotices] = useState([]); // 검색된 공지 데이터 저장
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
+  const [totalPages, setTotalPages] = useState(0); // 전체 페이지 수
+  const [inputValue, setInputValue] = useState(''); // 검색 입력값
+  const [searchTerm, setSearchTerm] = useState(''); // 실제 검색 쿼리
 
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // 페이지 이동을 위한 함수
+  const location = useLocation(); // 현재 위치 정보 가져오기
 
-  // 전체 공지 요청
+  // 전체 공지 목록을 가져오는 함수
   const fetchNotices = (pageNumber) => {
     axios
-      .get(`http://localhost:8080/notice?page=${pageNumber - 1}`)
+      .get(`http://localhost:8080/notice?page=${pageNumber - 1}`) // API 호출 (page는 0부터 시작)
       .then((response) => {
-        setNotices(response.data.content);
-        setTotalPages(response.data.page.totalPages);
+        setNotices(response.data.content); // 응답 데이터에서 공지 목록 저장
+        setTotalPages(response.data.page.totalPages); // 전체 페이지 수 저장
       })
       .catch((error) => {
-        console.error('Error fetching notices: ', error);
+        console.error('Error fetching notices: ', error); // 에러 처리
       });
   };
 
-  // 검색한 공지 요청
+  // 검색된 공지 목록을 가져오는 함수
   const noticeSearching = (keyword, pageNumber) => {
     axios
-      .get(`http://localhost:8080/notice/search?keyword=${keyword}&page=${pageNumber - 1}`)
+      .get(`http://localhost:8080/notice/search?keyword=${keyword}&page=${pageNumber - 1}`) // 검색 API 호출
       .then((response) => {
-        setSearchedNotices(response.data.content);
-        setTotalPages(response.data.page.totalPages);
+        setSearchedNotices(response.data.content); // 검색된 데이터 저장
+        setTotalPages(response.data.page.totalPages); // 검색 결과의 전체 페이지 수 저장
       })
       .catch((error) => {
-        console.error('Error searching notices: ', error);
+        console.error('Error searching notices: ', error); // 에러 처리
       });
   };
 
-  // 페이지번호나 입력된 검색어가 바뀌면 리렌더링
+  // 현재 페이지나 검색어가 변경될 때 데이터를 다시 가져옴
   useEffect(() => {
-    // 검색어를 입력했을 경우 noticeSearching, 아니면 fetchNotices
     if (searchTerm) {
-      noticeSearching(searchTerm, currentPage);
+      noticeSearching(searchTerm, currentPage); // 검색 실행
     } else {
-      fetchNotices(currentPage);
+      fetchNotices(currentPage); // 전체 공지 가져오기
     }
-  }, [currentPage, searchTerm]);
+  }, [currentPage, searchTerm]); // currentPage 또는 searchTerm이 변경될 때 실행
 
-  // 검색버튼 클릭 핸들러
+  // 다른 페이지에서 전달된 메시지가 있으면 toast로 알림 표시
+  useEffect(() => {
+    if (location.state?.message) {
+      toast.success(location.state.message); // 성공 메시지 표시
+    }
+  }, [location.state]); // location.state가 변경될 때 실행
+
+  // 검색 버튼 클릭 시 검색 실행
   const handleSearchClick = () => {
-    setSearchTerm(inputValue);
-    setCurrentPage(1);
+    setSearchTerm(inputValue); // 검색어를 설정
+    setCurrentPage(1); // 첫 번째 페이지로 이동
   };
 
-  // Table columns 정의
+  // Table 컴포넌트에 전달할 컬럼 정의
   const columns = [
-    { id: 'noticeNo', label: '공지 번호', width: '50px' },
-    { id: 'noticeTitle', label: '제목', width: '900px', align: 'center' },
-    { id: 'noticeReg', label: '작성일', width: '50px', align: 'center' }
+    { id: 'noticeNo', label: '공지 번호', width: '50px' }, // 공지 번호
+    { id: 'noticeTitle', label: '제목', width: '900px', align: 'center' }, // 제목
+    { id: 'noticeReg', label: '작성일', width: '50px', align: 'center' } // 작성일
   ];
 
-  let rows; // 테이블 내용이 될 행(요소 변수)을 조건에 따라 정의
+  let rows;
 
-  if (notices.length === 0) {
-    // 등록된 공지사항이 없습니다
+  if (notices.length === 0) { // 공지 목록이 없을 때 처리
     rows = notices.map((_) => ({
       noticeNo: '',
       noticeTitle: <span>등록된 공지사항이 없습니다.</span>,
       noticeReg: ''
     }));
-  } else if (!searchTerm) {
-    // 기본 출력
+  } else if (!searchTerm) { // 검색하지 않은 경우 공지 데이터 매핑
     rows = notices.map((notice) => ({
-      noticeNo: (
+      noticeNo : (
         <span>
-          {/* 중요도가 false면 null, true면 핀 아이콘 출력*/}
-          {notice.noticeCheck && <PushPinIcon sx={{ verticalAlign: 'middle', fontSize: 'medium' }} />}
+          {notice.noticeCheck && <PushPinIcon sx={{ verticalAlign: 'middle', fontSize: 'medium' }} />} {/* 중요 공지 표시 */}
           {notice.noticeNo}
         </span>
       ),
-      noticeTitle: (
+      noticeTitle : (
         <Link
-          to={`/main/notice/${notice.noticeNo}`} // 해당하는 번호의 공지로 이동
+          to={`/main/notice/${notice.noticeNo}`} // 공지 상세 페이지로 이동
           style={{
-            color: 'blue', // 파란색 텍스트
-            cursor: 'pointer', // 클릭 시 손 모양 커서
-            textDecoration: 'underline' // 밑줄 추가
+            color: 'blue',
+            cursor: 'pointer',
+            textDecoration: 'underline'
           }}
         >
           {notice.noticeTitle}
         </Link>
       ),
-      noticeReg: notice.noticeReg
+      noticeReg : notice.noticeReg // 작성일
     }));
-  } else if (searchedNotices.length === 0) {
-    // 일치하는 결과가 없습니다
+  } else if (searchedNotices.length === 0) { // 검색 결과가 없을 때 처리
     rows = [
       {
         noticeNo: '',
@@ -108,35 +114,58 @@ export default function NoticeList() {
         noticeReg: ''
       }
     ];
-  } else {
-    // 검색결과 출력
+  }
+  // 검색 결과가 있을 때 데이터 매핑
+  else {
     rows = searchedNotices.map((notice) => ({
-      noticeNo: notice.noticeNo,
+      noticeNo : notice.noticeNo,
       noticeTitle: (
         <Link
-          to={`/main/notice/${notice.noticeNo}`} // 해당하는 번호의 공지로 이동
+          to={`/main/notice/${notice.noticeNo}`} // 공지 상세 페이지로 이동
           style={{
-            color: 'blue', // 파란색 텍스트
-            cursor: 'pointer', // 클릭 시 손 모양 커서
-            textDecoration: 'underline' // 밑줄 추가
+            color: 'blue',
+            cursor: 'pointer',
+            textDecoration: 'underline'
           }}
         >
           {notice.noticeTitle}
         </Link>
       ),
-      noticeReg: notice.noticeReg
+      noticeReg : notice.noticeReg // 작성일
     }));
   }
 
   return (
     <div>
-      <div className={styles['list-component-container']} style={{ display: 'flex', justifyContent: 'left' }}>
-        <ListSearch searchTerm={inputValue} onChange={setInputValue} handleSearchClick={handleSearchClick} />
+      <ToastContainer /> {/* 알림 메시지를 위한 컨테이너 */}
+
+      {/* 검색 및 공지 등록 버튼 */}
+      <div
+        className={styles['list-component-container']}
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between', // 검색과 공지 등록 버튼을 양쪽 끝으로 배치
+          alignItems: 'center',
+          width: '100%',
+        }}
+      >
+
+        <div style={{ flex: 1 }}>
+          <ListSearch searchTerm={inputValue} onChange={setInputValue} handleSearchClick={handleSearchClick} />
+        </div>
+
+        <Button
+          variant="contained"
+          color="success"
+          onClick={() => navigate('/main/notice/write')} // 공지 작성 페이지로 이동
+        >
+          공지 작성
+        </Button>
       </div>
-      <TableComponent // Table 컴포넌트를 사용하여 데이터를 렌더링 */
-        columns={columns}
-        rows={rows} //rows TableComponent에 전달
-      />
+
+      {/* 공지 목록 출력 */}
+      <TableComponent columns={columns} rows={rows} />
+
       <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
     </div>
   );
