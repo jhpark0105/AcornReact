@@ -46,8 +46,8 @@ function Reservation() {
 
   //insert process
   const handleInsert = () => {
-    if (!state.serviceName || !state.customerName) {
-      toast.error("서비스와 예약자를 선택해야 합니다.");
+    if (!state.serviceName || !state.customerName || !state.memberName) {
+      toast.error("서비스, 예약자, 직원을 선택해야 합니다.");
       return;
     }
 
