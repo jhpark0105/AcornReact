@@ -12,20 +12,20 @@ import '../../../styles/modal.css';
  */
 
 function ServiceDetailModal({
-  isEditing,
-  selectedService,
-  handleDetailChange,
-  handleSave,
-  handleEdit,
-  setShowDetailModal,
-  setShowDeleteModal
-}) {
+                              isEditing,
+                              selectedService,
+                              handleDetailChange,
+                              handleSave,
+                              handleEdit,
+                              setShowDetailModal,
+                              setShowDeleteModal
+                            }) {
   return (
     <div className="modal show" tabIndex="-1">
       <div className="modal-dialog">
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title">서비스 상세</h5>
+            <h5 className="modal-title">{isEditing ? "서비스 수정" : "서비스 상세"}</h5>
             <button type="button" className="btn-close" onClick={() => setShowDetailModal(false)}></button>
           </div>
 
@@ -79,7 +79,7 @@ function ServiceDetailModal({
               </button>
             ) : (
               <>
-                 {/* 편집 모드가 아닐 때만 표시 */}
+                {/* 편집 모드가 아닐 때만 표시 */}
                 <button type="button" className="btn btn-warning" onClick={handleEdit}>
                   수정
                 </button>
@@ -96,3 +96,4 @@ function ServiceDetailModal({
 }
 
 export default ServiceDetailModal;
+
