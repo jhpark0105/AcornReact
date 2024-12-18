@@ -64,7 +64,10 @@ function ReservationDetail({
             <div className="modal-dialog">
                 <div className="modal-content">
                     <div className="modal-header">
-                        <h5 className="modal-title">예약 상세</h5>
+                        {/* <h5 className="modal-title">예약 상세</h5> */}
+                        <h5 className="modal-title">
+                            {isEditing ? "예약 수정" : "예약 상세"}
+                        </h5>
                         <button
                             type="button"
                             className="btn-close"
@@ -231,11 +234,25 @@ function ReservationDetail({
                                 </button>
                                 <button
                                     type="button"
+                                    className="btn btn-success"
+                                    onClick={handleEdit}
+                                >
+                                확정
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn btn-danger"
+                                    onClick={handleEdit}
+                                >
+                                취소
+                                </button>
+                                {/* <button
+                                    type="button"
                                     className="btn btn-danger"
                                     onClick={() => setShowDeleteModal(true)}
                                 >
                                     삭제
-                                </button>
+                                </button> */}
                             </>
                         )}
                     </div>
