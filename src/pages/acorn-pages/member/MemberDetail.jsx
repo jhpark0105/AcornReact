@@ -2,7 +2,15 @@ import DatePickerComponent from "./Picker/DatePicker";
 import SelectPickerComponent from "./Picker/SelectPicker";
 import '../../../styles/modal.css';
 
-const MemberDetailModal = ({updating, selectedMember, handleDetailChange, handleSave, handleUpdate, setShowDetailModal, setShowDeleteModal, selectedDate}) => {
+const MemberDetailModal = ({
+                               updating,
+                               selectedMember,
+                               handleDetailChange,
+                               handleSave,
+                               handleUpdate,
+                               setShowDetailModal,
+                               setShowDeleteModal
+}) => {
 
     const handleDate = (date) => {
         handleDetailChange({target:{name:'memberDate', value:date}});
@@ -45,7 +53,7 @@ const MemberDetailModal = ({updating, selectedMember, handleDetailChange, handle
             <div className="modal-dialog" >
                 <div className="modal-content">
                     <div className="modal-header">
-                        <h5 className="modal-title">직원 상세</h5>
+                        <h5 className="modal-title">{updating ? "직원 수정" : "직원 상세"}</h5>
                         <button type="button" className="btn-close" onClick={() => setShowDetailModal(false)}></button>
                     </div>
 

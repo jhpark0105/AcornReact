@@ -1,72 +1,103 @@
-
 import { useEffect, useRef, useState } from 'react';
 import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
-
-// material-ui imports (기존 코드 유지)
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import Avatar from '@mui/material/Avatar';
-import Badge from '@mui/material/Badge';
-import ClickAwayListener from '@mui/material/ClickAwayListener';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction';
-import Paper from '@mui/material/Paper';
-import Popper from '@mui/material/Popper';
-import Tooltip from '@mui/material/Tooltip';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-
-// 프로젝트 imports (기존 코드 유지)
+import InfiniteScroll from 'react-infinite-scroll-component';
+import {
+  useTheme,
+  useMediaQuery,
+  Avatar,
+  Badge,
+  ClickAwayListener,
+  Divider,
+  IconButton,
+  List,
+  ListItemButton,
+  ListItemText,
+  Paper,
+  Popper,
+  Tooltip,
+  Typography,
+  Box,
+} from '@mui/material';
+import { BellOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import MainCard from 'components/MainCard';
 import Transitions from 'components/@extended/Transitions';
-
-// 아이콘 imports (기존 코드 유지)
-import BellOutlined from '@ant-design/icons/BellOutlined';
-import CheckCircleOutlined from '@ant-design/icons/CheckCircleOutlined';
-import GiftOutlined from '@ant-design/icons/GiftOutlined';
-import MessageOutlined from '@ant-design/icons/MessageOutlined';
-import SettingOutlined from '@ant-design/icons/SettingOutlined';
-
-// ==============================|| HEADER CONTENT - NOTIFICATION ||============================== //
 
 export default function Notification() {
   const theme = useTheme();
   const matchesXs = useMediaQuery(theme.breakpoints.down('md'));
-
   const anchorRef = useRef(null);
-  const [read, setRead] = useState(0); // 초기 알림 개수
+
   const [notifications, setNotifications] = useState([]); // 알림 목록
   const [open, setOpen] = useState(false);
+  const [hasMore, setHasMore] = useState(true); // 추가로 불러올 알림이 있는지 확인
+  const [isFetching, setIsFetching] = useState(false); // 데이터가 이미 로딩 중인지 확인
+
+  // 읽지 않은 알림 개수
+  const unreadCount = notifications.filter((notification) => !notification.isRead).length;
+
+  const fetchNotifications = async (page = 1) => {
+    if (isFetching) return; // 이미 로딩 중이면 return
+    setIsFetching(true);
+
+    try {
+      const response = await fetch(`http://localhost:8080/api/notifications?page=${page}`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.length === 0) {
+          setHasMore(false); // 더 이상 불러올 알림이 없으면 hasMore를 false로 설정
+        } else {
+          // 중복된 알림이 들어가지 않도록 체크하여 추가
+          setNotifications((prev) => {
+            const newNotifications = data.filter(
+              (newNotification) => !prev.some((existingNotification) => existingNotification.id === newNotification.id)
+            );
+            return [...prev, ...newNotifications]; // 새 알림을 기존 목록 뒤에 추가
+          });
+        }
+      } else {
+        console.error('Failed to fetch notifications');
+      }
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+    } finally {
+      setIsFetching(false);
+    }
+  };
 
   useEffect(() => {
-    // 웹소켓 연결
     const socket = new SockJS('http://localhost:8080/ws');
     const stompClient = Stomp.over(socket);
 
     stompClient.connect({}, () => {
-      // 알림 채널 구독
+      console.log('WebSocket connected!');
+
       stompClient.subscribe('/topic/reservations', (message) => {
-        setNotifications((prevNotifications) => [
-          ...prevNotifications,
-          message.body,
-        ]);
-        setRead((prevRead) => prevRead + 1); // 읽지 않은 알림 개수 증가
+        try {
+          const parsedMessage = JSON.parse(message.body);
+          const newNotification = {
+            ...parsedMessage,
+            isRead: false, // 새 알림은 읽지 않은 상태로 추가
+          };
+          setNotifications((prev) => [newNotification, ...prev]); // 새 알림을 목록 앞에 추가
+        } catch (error) {
+          console.error('Failed to parse message:', message.body);
+        }
       });
     });
 
     return () => {
       stompClient.disconnect();
+      console.log('WebSocket disconnected.');
     };
   }, []);
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
+
+    if (!open) {
+      fetchNotifications(); // 알림을 처음 불러올 때
+    }
   };
 
   const handleClose = (event) => {
@@ -76,79 +107,100 @@ export default function Notification() {
     setOpen(false);
   };
 
-  const markAsRead = () => {
-    setRead(0); // 읽지 않은 알림 개수 초기화
+  const markAllAsRead = () => {
+    setNotifications((prev) =>
+      prev.map((notification) => ({
+        ...notification,
+        isRead: true,
+      }))
+    );
+  };
+
+  const loadMoreNotifications = () => {
+    if (!isFetching && hasMore) {
+      const nextPage = Math.ceil(notifications.length / 10) + 1;
+      fetchNotifications(nextPage);
+    }
   };
 
   return (
-      <Box sx={{ flexShrink: 0, ml: 0.75 }}>
-        <IconButton
-            color="secondary"
-            variant="light"
-            sx={{ color: 'text.primary', bgcolor: open ? 'grey.100' : 'transparent' }}
-            aria-label="open profile"
-            ref={anchorRef}
-            aria-controls={open ? 'profile-grow' : undefined}
-            aria-haspopup="true"
-            onClick={handleToggle}
-        >
-          <Badge badgeContent={read} color="primary">
-            <BellOutlined />
-          </Badge>
-        </IconButton>
-        <Popper
-            placement={matchesXs ? 'bottom' : 'bottom-end'}
-            open={open}
-            anchorEl={anchorRef.current}
-            role={undefined}
-            transition
-            disablePortal
-        >
-          {({ TransitionProps }) => (
-              <Transitions
-                  type="grow"
-                  position={matchesXs ? 'top' : 'top-right'}
-                  in={open}
-                  {...TransitionProps}
-              >
-                <Paper sx={{ boxShadow: theme.customShadows.z1, minWidth: 285, maxWidth: 420 }}>
-                  <ClickAwayListener onClickAway={handleClose}>
-                    <MainCard
-                        title="Notification"
-                        elevation={0}
-                        border={false}
-                        content={false}
-                        secondary={
-                            read > 0 && (
-                                <Tooltip title="Mark as all read">
-                                  <IconButton color="success" size="small" onClick={markAsRead}>
-                                    <CheckCircleOutlined style={{ fontSize: '1.15rem' }} />
-                                  </IconButton>
-                                </Tooltip>
-                            )
-                        }
+    <Box sx={{ flexShrink: 0, ml: 0.75 }}>
+      <IconButton
+        color="secondary"
+        variant="light"
+        sx={{ color: 'text.primary', bgcolor: open ? 'grey.100' : 'transparent' }}
+        aria-label="open notifications"
+        ref={anchorRef}
+        aria-controls={open ? 'profile-grow' : undefined}
+        aria-haspopup="true"
+        onClick={handleToggle}
+      >
+        <Badge badgeContent={unreadCount} color="success">
+          <BellOutlined />
+        </Badge>
+      </IconButton>
+      <Popper
+        placement={matchesXs ? 'bottom' : 'bottom-end'}
+        open={open}
+        anchorEl={anchorRef.current}
+        role={undefined}
+        transition
+        disablePortal
+      >
+        {({ TransitionProps }) => (
+          <Transitions
+            type="grow"
+            position={matchesXs ? 'top' : 'top-right'}
+            in={open}
+            {...TransitionProps}
+          >
+            <Paper sx={{ boxShadow: theme.customShadows.z1, minWidth: 285, maxWidth: 420 }}>
+              <ClickAwayListener onClickAway={handleClose}>
+                <MainCard
+                  title="Notifications"
+                  elevation={0}
+                  border={false}
+                  content={false}
+                  secondary={
+                    unreadCount > 0 && (
+                      <Tooltip title="Mark all as read">
+                        <IconButton color="success" size="small" onClick={markAllAsRead}>
+                          <CheckCircleOutlined style={{ fontSize: '1.15rem' }} />
+                        </IconButton>
+                      </Tooltip>
+                    )
+                  }
+                >
+                  <List component="nav" sx={{ maxHeight: '400px', overflowY: 'auto' }} id="notification-list">
+                    <InfiniteScroll
+                      dataLength={notifications.length}
+                      next={loadMoreNotifications}
+                      hasMore={hasMore} // 더 이상 데이터가 없으면 hasMore를 false로 설정
+                      scrollThreshold={0.95}
+                      scrollableTarget="notification-list"
+                      endMessage={<div>No more notifications.</div>} // 더 이상 알림이 없으면 메세지 표시
                     >
-                      <List component="nav">
-                        {notifications.map((notification, index) => (
-                            <div key={index}>
-                              <ListItemButton>
-                                <ListItemText primary={notification} />
-                              </ListItemButton>
-                              {index < notifications.length - 1 && <Divider />}
-                            </div>
-                        ))}
-                        {notifications.length === 0 && (
-                            <ListItemButton>
-                              <ListItemText primary=" 새로운 알림이 없습니다. "/>
-                            </ListItemButton>
-                        )}
-                      </List>
-                    </MainCard>
-                  </ClickAwayListener>
-                </Paper>
-              </Transitions>
-          )}
-        </Popper>
-      </Box>
+                      {notifications.map((notification, index) => (
+                        <div key={index}>
+                          <ListItemButton>
+                            <ListItemText primary={notification.content || notification} />
+                          </ListItemButton>
+                          {index < notifications.length - 1 && <Divider />}
+                        </div>
+                      ))}
+                      {notifications.length === 0 && (
+                        <ListItemButton>
+                          <ListItemText primary="No new notifications" />
+                        </ListItemButton>
+                      )}
+                    </InfiniteScroll>
+                  </List>
+                </MainCard>
+              </ClickAwayListener>
+            </Paper>
+          </Transitions>
+        )}
+      </Popper>
+    </Box>
   );
 }
