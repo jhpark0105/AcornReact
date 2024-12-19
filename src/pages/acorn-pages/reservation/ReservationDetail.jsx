@@ -8,6 +8,7 @@ function ReservationDetail({
     handleDetailChange,
     handleSave,
     handleEdit,
+    handleFinish,
     setShowDetailModal,
     setShowDeleteModal,
 }) {
@@ -235,7 +236,7 @@ function ReservationDetail({
                                 <button
                                     type="button"
                                     className="btn btn-success"
-                                    onClick={handleEdit}
+                                    onClick={handleFinish}
                                 >
                                 확정
                                 </button>

@@ -84,6 +84,34 @@ function Reservation() {
   setIsEditing(false); // update 모드 초기화
 };
 
+ //예약 확정 버튼 클릭시 reservationStatus=1로 수정
+const handleFinish = () => {
+  const flattenedData = {
+    reservationNo: selectedReservation.reservationNo,
+  };
+  if(setShowDetailModal(true)){
+    axios.post(`http://localhost:8080/reservation/finish/${selectedReservation.reservationNo}`,
+      flattenedData,
+      { headers: { 'Content-Type': 'application/json' } } // Content-Type 설정 추가
+    )
+      .then((res) => {
+        if (res.data.isSuccess) {
+          toast.success("예약 정보 수정 성공!");
+          setShowDetailModal(false); // update 모달 닫기
+          fetchReservation(); // 리로딩 후 최신 데이터 불러옴
+        }
+      })
+      .catch((error) => {
+        toast.error("수정 중 오류가 발생했습니다.");
+        console.error("Error:", error);
+      });
+  }
+}
+
+
+
+
+
 // 상세보기 모달에서 update 모드로 전환
 const handleEdit = () => {
   setIsEditing(true);
@@ -208,6 +236,7 @@ const handleSave = () => {
     handleEdit={handleEdit}
     setShowDetailModal={setShowDetailModal}
     setShowDeleteModal={setShowDeleteModal}
+    handelFinish={handleFinish}
   />
 )}
 
