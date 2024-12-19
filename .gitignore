@@ -61,6 +61,9 @@ Thumbs.db
 # GitHub-specific files
 .github/
 
+#.ideal 개별 환경
+.ideal
+
 
 tsconfig.node.json
 yarn.lock

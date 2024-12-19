@@ -24,9 +24,9 @@ function Reservation() {
     fetchReservation();
   }, []);
 
-  // 전체 예약 목록 조회
+  // 예약 현황 목록 조회
   const fetchReservation = () => {
-    axios.get('http://localhost:8080/reservation')
+    axios.get('http://localhost:8080/reservation/confirm')
       .then((response) => {
         setReservations(response.data);
       })

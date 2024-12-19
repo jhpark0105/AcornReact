@@ -6,6 +6,8 @@ import DatePickerComponent from "./Picker/DatePicker";
 import 'rsuite/dist/rsuite.min.css';
 import SelectPickerComponent from "./Picker/SelectPicker";
 import GenderPickerComponent from "./Picker/GenderPicker";
+import '../../../styles/modal.css';
+
 
 export default function CustomerDetail({selectedCustomer, setShowDetailModal, refresh}) {
     const [isEditing, setIsEditing] = useState(false); // 수정 모드 상태
@@ -187,6 +189,13 @@ export default function CustomerDetail({selectedCustomer, setShowDetailModal, re
 
                     ) : (
                   <>
+                    <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={() => setShowDetailModal(false)}
+                    >
+                          닫기
+                    </button>
                     <button type="button" className="btn btn-warning" onClick={handleEdit}>
                       수정
                     </button>

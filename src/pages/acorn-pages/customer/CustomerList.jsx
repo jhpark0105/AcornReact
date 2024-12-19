@@ -157,7 +157,7 @@ function CustomerList({ handleDetail,  }) {  // refresh를 refreshData로 이름
         />
 
         <Button variant="contained" color="success" onClick={() => setShowModal(true)}>
-          고객 등록
+          고객등록
         </Button>
       </Box>
 
