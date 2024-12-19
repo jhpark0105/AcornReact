@@ -18,7 +18,9 @@ function ProductDetailModal({ isEditing, selectedProduct, handleDetailChange, ha
       <div className="modal-dialog">
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title">상품 상세</h5>
+            <h5 className="modal-title">
+              {isEditing ? "상품 수정" : "상품 상세"}
+            </h5>
 
             {/* 모달 닫기 버튼 */}
             <button type="button" className="btn-close" onClick={() => setShowDetailModal(false)} ></button>
