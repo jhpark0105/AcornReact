@@ -126,6 +126,7 @@ export default function CustomerInsForm({ setShowModal, refresh, show }) {
               <div className="mb-3">
                 <label>고객 등록일</label>
                 <DatePickerComponent
+                  style={{ width: 600 }}
                   value={state.customerReg}
                   selected={startDate}
                   onChange={(date) => setStartDate(date)}

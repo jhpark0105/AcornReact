@@ -1,10 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Tab.css";
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button } from "@mui/material";
-
-function Tabs({reservations}) {
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
+import { NumericFormat } from "react-number-format";
+function Tabs() {
   const [activeTab, setActiveTab] = useState("tab1");
-  const [filteredData, setFilteredData] = useState([]); // 예시용 기본 상태값
+  const [confirmedReservations, setConfirmedReservations] = useState([]);
+  const [cancelledReservations, setCancelledReservations] = useState([]);
+
+  useEffect(() => {
+    // 예약 확정 리스트 가져오기
+    fetch("http://localhost:8080/reservation/finish")
+      .then((response) => response.json())
+      .then((data) => setConfirmedReservations(data))
+      .catch((error) => console.error("Error fetching confirmed reservations:", error));
+
+    // 예약 취소 리스트 가져오기
+    fetch("http://localhost:8080/reservation/cancel")
+      .then((response) => response.json())
+      .then((data) => setCancelledReservations(data))
+      .catch((error) => console.error("Error fetching cancelled reservations:", error));
+  }, []);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -19,38 +41,27 @@ function Tabs({reservations}) {
     { id: "memberName", label: "담당 직원" },
     { id: "servicePrice", label: "서비스 금액" },
   ];
-  
 
-  // 페이지네이션 관련 변수
-  const itemsPerPage = 10;
-  const currentPage = 1;
-
-  // currentItems : filteredData를 기준으로 현재 페이지에 해당하는 데이터를 계산
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
-
-  // rows 계산
-  const rows = currentItems.map((reservation) => ({
-    reservationNo: reservation.reservationNo,
-    serviceName: reservation.service?.serviceName || "정보 없음",
-    reservationDate: reservation.reservationDate,
-    reservationTime: reservation.reservationTime,
-    customerName: (
-      <span
-        style={{
-          color: "blue",
-          cursor: "pointer",
-          textDecoration: "underline",
-        }}
-        onClick={() => handleDetail(reservation)}
-      >
-        {reservation.customer?.customerName || "정보 없음"}
-      </span>
-    ),
-    memberName: reservation.member?.memberName || "정보 없음",
-    reservationComm: reservation.reservationComm || "없음",
-  }));
+  const renderRows = (data) => {
+    return data.map((reservation, index) => (
+      <TableRow key={index}>
+        <TableCell>{reservation.reservationNo}</TableCell>
+        <TableCell>{reservation.service?.serviceName || "정보 없음"}</TableCell>
+        <TableCell>{reservation.reservationDate}</TableCell>
+        <TableCell>{reservation.reservationTime}</TableCell>
+        <TableCell>{reservation.customer?.customerName || "정보 없음"}</TableCell>
+        <TableCell>{reservation.member?.memberName || "정보 없음"}</TableCell>
+        <TableCell>
+          <NumericFormat
+            value={reservation.service?.servicePrice || 0}
+            displayType="text"
+            thousandSeparator
+            suffix=" 원"
+          />
+        </TableCell>
+      </TableRow>
+    ));
+  };
 
   return (
     <div className="tabs-container">
@@ -73,39 +84,6 @@ function Tabs({reservations}) {
       {/* Tab content */}
       <div className="tab-content">
         {activeTab === "tab1" && (
-          <div>
-            <TableContainer sx={{ width: "100%", overflowX: "auto" }}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    {columns.map((col) => (
-                      <TableCell key={col.id}>{col.label}</TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {rows.length > 0 ? (
-                    rows.map((row, index) => (
-                      <TableRow key={index}>
-                        {columns.map((col) => (
-                          <TableCell key={col.id}>{row[col.id]}</TableCell>
-                        ))}
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={columns.length} align="center">
-                        확정된 예약이 없습니다.
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </div>
-        )}
-        {activeTab === "tab2" && (
-          <div>
           <TableContainer sx={{ width: "100%", overflowX: "auto" }}>
             <Table>
               <TableHead>
@@ -116,14 +94,32 @@ function Tabs({reservations}) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.length > 0 ? (
-                  rows.map((row, index) => (
-                    <TableRow key={index}>
-                      {columns.map((col) => (
-                        <TableCell key={col.id}>{row[col.id]}</TableCell>
-                      ))}
-                    </TableRow>
-                  ))
+                {confirmedReservations.length > 0 ? (
+                  renderRows(confirmedReservations)
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={columns.length} align="center">
+                      확정된 예약이 없습니다.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+        {activeTab === "tab2" && (
+          <TableContainer sx={{ width: "100%", overflowX: "auto" }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  {columns.map((col) => (
+                    <TableCell key={col.id}>{col.label}</TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {cancelledReservations.length > 0 ? (
+                  renderRows(cancelledReservations)
                 ) : (
                   <TableRow>
                     <TableCell colSpan={columns.length} align="center">
@@ -134,7 +130,6 @@ function Tabs({reservations}) {
               </TableBody>
             </Table>
           </TableContainer>
-        </div>
         )}
       </div>
     </div>
