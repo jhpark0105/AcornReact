@@ -5,7 +5,6 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import {
   useTheme,
   useMediaQuery,
-  Avatar,
   Badge,
   ClickAwayListener,
   Divider,
@@ -29,12 +28,11 @@ export default function Notification() {
   const anchorRef = useRef(null);
 
   const [notifications, setNotifications] = useState([]); // 알림 목록
+  const [unreadCount, setUnreadCount] = useState(0); // 읽지 않은 알림 개수
   const [open, setOpen] = useState(false);
   const [hasMore, setHasMore] = useState(true); // 추가로 불러올 알림이 있는지 확인
   const [isFetching, setIsFetching] = useState(false); // 데이터가 이미 로딩 중인지 확인
-
-  // 읽지 않은 알림 개수
-  const unreadCount = notifications.filter((notification) => !notification.isRead).length;
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 번호
 
   const fetchNotifications = async (page = 1) => {
     if (isFetching) return; // 이미 로딩 중이면 return
@@ -42,17 +40,25 @@ export default function Notification() {
 
     try {
       const response = await fetch(`http://localhost:8080/api/notifications?page=${page}`);
+      console.log('Response Status:', response.status);
+
       if (response.ok) {
-        const data = await response.json();
+        const responseBody = await response.text(); // 텍스트로 먼저 읽기
+        console.log('Response Body:', responseBody);
+        const data = JSON.parse(responseBody); // JSON으로 변환
+
         if (data.length === 0) {
           setHasMore(false); // 더 이상 불러올 알림이 없으면 hasMore를 false로 설정
         } else {
-          // 중복된 알림이 들어가지 않도록 체크하여 추가
           setNotifications((prev) => {
             const newNotifications = data.filter(
               (newNotification) => !prev.some((existingNotification) => existingNotification.id === newNotification.id)
             );
             return [...prev, ...newNotifications]; // 새 알림을 기존 목록 뒤에 추가
+          });
+          setUnreadCount((prev) => {
+            const uniqueUnread = data.filter((n) => !n.isRead && !notifications.some((existing) => existing.id === n.id));
+            return prev + uniqueUnread.length;
           });
         }
       } else {
@@ -73,18 +79,32 @@ export default function Notification() {
       console.log('WebSocket connected!');
 
       stompClient.subscribe('/topic/reservations', (message) => {
+        console.log('Raw Message Body:', message.body);
         try {
-          const parsedMessage = JSON.parse(message.body);
+          const parsedMessage = JSON.parse(message.body); // JSON 파싱 시도
+          console.log('Parsed Message:', parsedMessage);
+
           const newNotification = {
             ...parsedMessage,
             isRead: false, // 새 알림은 읽지 않은 상태로 추가
           };
-          setNotifications((prev) => [newNotification, ...prev]); // 새 알림을 목록 앞에 추가
+
+          setNotifications((prev) => [newNotification, ...prev]);
+          setUnreadCount((prev) => prev + 1);
         } catch (error) {
           console.error('Failed to parse message:', message.body);
+
+          // JSON이 아닌 단순 문자열 메시지인 경우
+          setNotifications((prev) => [
+            { content: message.body, isRead: false },
+            ...prev,
+          ]);
+          setUnreadCount((prev) => prev + 1);
         }
       });
     });
+
+    fetchNotifications(); // 컴포넌트 마운트 시 DB에서 초기 알림 목록 불러오기
 
     return () => {
       stompClient.disconnect();
@@ -94,10 +114,6 @@ export default function Notification() {
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
-
-    if (!open) {
-      fetchNotifications(); // 알림을 처음 불러올 때
-    }
   };
 
   const handleClose = (event) => {
@@ -114,11 +130,13 @@ export default function Notification() {
         isRead: true,
       }))
     );
+    setUnreadCount(0);
   };
 
   const loadMoreNotifications = () => {
     if (!isFetching && hasMore) {
-      const nextPage = Math.ceil(notifications.length / 10) + 1;
+      const nextPage = currentPage + 1;
+      setCurrentPage(nextPage);
       fetchNotifications(nextPage);
     }
   };
