@@ -1,6 +1,7 @@
 import '../../../styles/modal.css';
 import React, { useEffect, useState } from 'react';
 import CustomSelect from './Picker/CustomSelect';
+import TimePickerComponent from './Picker/TimePickerComponent';
 
 function ReservationDetail({
     isEditing,
@@ -178,18 +179,36 @@ function ReservationDetail({
                             </div>
 
                             {/* 예약 시간 */}
+                            {/*<div className="mb-3">*/}
+                            {/*    <label>예약 시간</label>*/}
+                            {/*    <input*/}
+                            {/*        type="time"*/}
+                            {/*        name="reservationTime"*/}
+                            {/*        value={reservation.reservationTime}*/}
+                            {/*        onChange={(e) =>*/}
+                            {/*            handleFieldChange('reservationTime', e.target.value)*/}
+                            {/*        }*/}
+                            {/*        disabled={!isEditing}*/}
+                            {/*        className="form-control"*/}
+                            {/*    />*/}
+                            {/*</div>*/}
+                            {/* 예약 시간 */}
                             <div className="mb-3">
                                 <label>예약 시간</label>
-                                <input
-                                    type="time"
-                                    name="reservationTime"
+                                {isEditing ? (
+                                  <TimePickerComponent
+                                    value={reservation.reservationTime} // 기존 예약 시간 전달
+                                    onChange={(value) => handleFieldChange('reservationTime', value)} // 값 변경 시 업데이트
+                                    isEditing={isEditing} // 편집 모드 여부 전달
+                                  />
+                                ) : (
+                                  <input
+                                    type="text"
                                     value={reservation.reservationTime}
-                                    onChange={(e) =>
-                                        handleFieldChange('reservationTime', e.target.value)
-                                    }
-                                    disabled={!isEditing}
+                                    readOnly
                                     className="form-control"
-                                />
+                                  />
+                                )}
                             </div>
 
                             {/* 특이사항 */}
