@@ -11,6 +11,7 @@ function ReservationDetail({
     handleFinish,
     setShowDetailModal,
     setShowDeleteModal,
+    setShowCancelModal,
 }) {
     const [services, setServices] = useState([]);
     const [members, setMembers] = useState([]);
@@ -243,7 +244,7 @@ function ReservationDetail({
                                 <button
                                     type="button"
                                     className="btn btn-danger"
-                                    onClick={handleEdit}
+                                    onClick={() => setShowCancelModal(true)}
                                 >
                                 취소
                                 </button>
