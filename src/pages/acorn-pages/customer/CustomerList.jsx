@@ -11,14 +11,16 @@ import {
   TableRow,
   Button,
 } from "@mui/material";
-import Pagination from "./paging/Pagination";  
+import Pagination from "./paging/Pagination";
 import ListSearch from "./Search/ListSearch";
 import DateSearch from "./Search/DateSearch";
-import styles from "./ListSearch.module.css"; 
+import styles from "./ListSearch.module.css";
 import { RiSearchLine } from "react-icons/ri";
 import CustomerInsForm from "./CustomerInsForm"; // 고객 등록 컴포넌트
 import CustomerDetail from "./CustomerDetail"; // 고객 상세 정보 및 수정 컴포넌트
 import { ToastContainer, toast } from 'react-toastify';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function CustomerList({ handleDetail,  }) {  // refresh를 refreshData로 이름 변경
   const [customers, setCustomers] = useState([]);  // 고객 목록 상태
@@ -65,20 +67,20 @@ function CustomerList({ handleDetail,  }) {  // refresh를 refreshData로 이름
       alert("시작 날짜와 종료 날짜를 모두 선택해주세요.");  // 알림
       return;
     }
-  
+
     // 날짜를 UTC 시간대로 변환하여 'YYYY-MM-DD' 형식으로 추출
     const formattedStartDate = new Date(startDate).setHours(0, 0, 0, 0); // 시작일의 자정 (00:00:00)
     const formattedEndDate = new Date(endDate).setHours(23, 59, 59, 999); // 종료일의 마지막 시간 (23:59:59)
-  
+
     const filteredCustomers = customers.filter((customer) => {
       const customerRegDate = new Date(customer.customerReg).setHours(0, 0, 0, 0); // 고객 등록일도 자정으로 맞추기
       return customerRegDate >= formattedStartDate && customerRegDate <= formattedEndDate;
     });
-  
+
     setFilteredData(filteredCustomers);  // 필터링된 데이터로 업데이트
     setCurrentPage(1);  // 검색 결과 첫 페이지로 이동
   };
-  
+
 
   // 페이지네이션을 위한 계산
   const indexOfLastItem = currentPage * itemsPerPage; // 현재 페이지의 마지막 아이템 인덱스
