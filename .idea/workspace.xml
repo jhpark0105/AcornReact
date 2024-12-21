@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="29bd9de7-5eb8-479c-9e2b-54b6e44f30d3" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/acorn-pages/reservation/ReservationStatus.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/acorn-pages/reservation/ReservationStatus.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/layout/Dashboard/Header/HeaderContent/Notification.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/layout/Dashboard/Header/HeaderContent/Notification.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,7 +73,7 @@
       <workItem from="1733983624665" duration="453000" />
       <workItem from="1733984154361" duration="615000" />
       <workItem from="1733986596347" duration="1101000" />
-      <workItem from="1734429106796" duration="22071000" />
+      <workItem from="1734429106796" duration="28245000" />
     </task>
     <servers />
   </component>
