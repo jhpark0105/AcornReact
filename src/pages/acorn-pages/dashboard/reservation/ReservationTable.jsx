@@ -85,11 +85,17 @@ const ReservationTable = () => {
         margin: '1em auto'
       }}>
         <Pagination
+          // count={
+          //   !isEmptyObject(jsonData) ? jsonData.data.pages.page.totalPages : 0
+          // }
+          // siblingCount={
+          //   !isEmptyObject(jsonData) ? jsonData.data.pages.page.size : 0
+          // }
           count={
-            !isEmptyObject(jsonData) ? jsonData.data.pages.page.totalPages : 0
+            jsonData?.data?.pages?.page?.totalPages || 0
           }
           siblingCount={
-            !isEmptyObject(jsonData) ? jsonData.data.pages.page.size : 0
+            jsonData?.data?.pages?.page?.size || 0
           }
           showFirstButton
           showLastButton
