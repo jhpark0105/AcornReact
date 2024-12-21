@@ -52,39 +52,42 @@ export default function Notification() {
           setHasMore(false); // 더 이상 데이터가 없으면 스크롤 종료
         } else {
           setNotifications((prev) => {
-            const uniqueNotifications = filterDuplicates(data, prev);
-
-            // 읽지 않은 알림 개수 계산
-            const unreadNotifications = uniqueNotifications.filter((n) => !n.isRead).length;
-            setUnreadCount((prevUnreadCount) => prevUnreadCount + unreadNotifications);
-
-            return [...prev, ...uniqueNotifications].sort((a, b) => b.id - a.id); // 최신 순 정렬
+            const combinedNotifications = [...prev, ...data];
+            const uniqueNotifications = combinedNotifications.filter(
+              (notification, index, self) =>
+                index === self.findIndex((n) => n.id === notification.id)
+            );
+            // 읽지 않은 알림 개수 업데이트
+            const newUnreadCount = uniqueNotifications.filter((n) => !n.isRead).length;
+            setUnreadCount(newUnreadCount);
+            return uniqueNotifications.sort((a, b) => b.id - a.id); // 최신 순 정렬
           });
         }
       } else {
-        console.error("알림 데이터를 가져오지 못했습니다.");
+        console.error('알림 데이터를 가져오는 데 실패했습니다.');
       }
     } catch (error) {
-      console.error("알림 데이터를 가져오는 중 오류 발생:", error);
+      console.error('알림 데이터를 가져오는 중 오류 발생:', error);
     } finally {
       setIsFetching(false);
     }
   };
 
-  // 새 알림 추가 (중복 방지)
-  const addNotification = (newNotification) => {
+  // WebSocket에서 새 알림 처리
+  const processNewNotification = (newNotification) => {
     setNotifications((prev) => {
-      if (prev.some((existing) => existing.id === newNotification.id)) {
-        console.warn("중복된 알림이 감지됨:", newNotification.id);
+      if (prev.some((n) => n.id === newNotification.id)) {
+        console.warn('중복된 알림 무시:', newNotification.id);
         return prev;
       }
 
-      // 읽지 않은 알림 개수 업데이트
-      if (!newNotification.isRead) {
-        setUnreadCount((prevUnreadCount) => prevUnreadCount + 1);
-      }
+      const updatedNotifications = [newNotification, ...prev].sort((a, b) => b.id - a.id);
 
-      return [newNotification, ...prev].sort((a, b) => b.id - a.id); // 최신 순 정렬
+      // 읽지 않은 알림 개수 업데이트
+      const newUnreadCount = updatedNotifications.filter((n) => !n.isRead).length;
+      setUnreadCount(newUnreadCount);
+
+      return updatedNotifications;
     });
   };
 
@@ -92,20 +95,34 @@ export default function Notification() {
   const handleNotificationClick = async (notificationId) => {
     try {
       const notification = notifications.find((n) => n.id === notificationId);
-      if (!notification || notification.isRead) return;
+      if (!notification || notification.isRead) {
+        console.warn(`알림이 없거나 이미 읽은 상태입니다. 알림 ID: ${notificationId}`);
+        return;
+      }
 
-      await fetch(`http://localhost:8080/api/notifications/${notificationId}/read`, {
+      const response = await fetch(`http://localhost:8080/api/notifications/${notificationId}/read`, {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
       });
 
-      setNotifications((prev) =>
-        prev.map((n) =>
+      if (!response.ok) {
+        console.error(`알림 읽음 처리 실패 (상태 코드: ${response.status})`);
+        return;
+      }
+
+      setNotifications((prev) => {
+        const updatedNotifications = prev.map((n) =>
           n.id === notificationId ? { ...n, isRead: true } : n
-        )
-      );
-      setUnreadCount((prev) => Math.max(0, prev - 1));
+        );
+
+        // 읽지 않은 알림 개수 업데이트
+        const newUnreadCount = updatedNotifications.filter((n) => !n.isRead).length;
+        setUnreadCount(newUnreadCount);
+
+        return updatedNotifications;
+      });
     } catch (error) {
-      console.error("알림 읽음 처리하는 중 오류 발생:", error);
+      console.error('알림 읽음 처리 중 오류 발생:', error);
     }
   };
 
@@ -113,14 +130,17 @@ export default function Notification() {
   const markAllAsRead = async () => {
     try {
       await fetch(`http://localhost:8080/api/notifications/read`, { method: 'POST' });
-      setNotifications((prev) => prev.map((notification) => ({ ...notification, isRead: true })));
-      setUnreadCount(0);
+      setNotifications((prev) => {
+        const updatedNotifications = prev.map((notification) => ({ ...notification, isRead: true }));
+        setUnreadCount(0);
+        return updatedNotifications;
+      });
     } catch (error) {
-      console.error("모든 알림 읽음 처리하는 중 오류 발생:", error);
+      console.error('모든 알림 읽음 처리 중 오류 발생:', error);
     }
   };
 
-  // WebSocket 초기화 및 알림 구독
+  // WebSocket 초기화 및 구독
   useEffect(() => {
     const socket = new SockJS('http://localhost:8080/ws');
     const stompClient = Stomp.over(socket);
@@ -128,26 +148,26 @@ export default function Notification() {
     stompClient.connect(
       {},
       () => {
-        console.log("웹소켓 연결 성공!");
+        console.log('WebSocket 연결 성공!');
         stompClient.subscribe('/topic/reservations', (message) => {
           try {
             const parsedMessage = JSON.parse(message.body);
-            const newNotification = { ...parsedMessage, isRead: false };
-            addNotification(newNotification);
+            processNewNotification({ ...parsedMessage, isRead: false });
           } catch (error) {
-            console.error("웹소켓 메시지 처리하는 중 오류 발생:", error);
+            console.error('WebSocket 메시지 처리 중 오류 발생:', error);
 
             const textNotification = {
-              id: Date.now(),
+              id: Date.now(), // 임시 ID 생성
               content: message.body,
               isRead: false,
+              createdAt: new Date().toISOString(), // 현재 시간 설정
             };
-            addNotification(textNotification);
+            processNewNotification(textNotification);
           }
         });
       },
       (error) => {
-        console.error("웹소켓 연결 실패:", error);
+        console.error('WebSocket 연결 실패:', error);
       }
     );
 
