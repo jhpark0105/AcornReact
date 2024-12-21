@@ -6,115 +6,147 @@ import { TextField, Checkbox, FormControlLabel, Button, Box, Typography, Contain
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function NoticeCreate() {
-	const navigate = useNavigate();
+    const navigate = useNavigate();
+    const [image, setImage] = useState(null); // 이미지 상태 추가
+    const [imagePreview, setImagePreview] = useState(''); // 이미지 미리보기 상태 추가
+    const [loading, setLoading] = useState(false); // 로딩 상태
 
-	// 입력 폼 상태 초기화
-	const [formData, setFormData] = useState({
-		noticeTitle: '',
-		noticeCheck: false,
-		noticeContent: ''
-	});
+    // 입력 폼 상태 초기화
+    const [formData, setFormData] = useState({
+        noticeTitle: '',
+        noticeCheck: false,
+        noticeContent: '',
+    });
 
-	// 입력 필드 변경 핸들러
-	const handleChange = (e) => {
-		const { name, value, type, checked } = e.target;
-		setFormData({
-			...formData,
-			/* 
-				타입이 checkbox일 경우 체크박스의 값, 아닐 경우 해당 필드의 값 할당
-				noticeTitle: formData.noticeTitle
-				noticeCheck: formData.noticeCheck
-				noticeContent: formData.noticeContent
-			*/
-			[name]: type === 'checkbox' ? checked : value
-		});
-	};
+    // 입력 필드 변경 핸들러
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setFormData({
+            ...formData,
+            [name]: type === 'checkbox' ? checked : value
+        });
+    };
 
-	// 폼 제출을 처리하는 핸들러
-	const handleSubmit = (e) => {
-		e.preventDefault(); // submit 기본동작 차단
-		// 제목과 내용이 비어있는지 확인
-		if (!formData.noticeTitle.trim().length || !formData.noticeContent.trim().length) {
-			toast.error('제목과 내용을 모두 입력해주세요.');
-			return;
-		}
-		console.log('Sending data:', formData); // 전송하는 데이터 확인
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+    
+        if (file) {
+            // 파일 크기 제한 (예: 5MB)
+            const maxSize = 5 * 1024 * 1024;
+            if (file.size > maxSize) {
+                toast.error('파일 크기는 5MB를 초과할 수 없습니다.');
+                return;
+            }
+    
+            // 이미지 파일 형식 체크 (PNG, JPG, JPEG)
+            if (['image/png', 'image/jpeg', 'image/jpg'].includes(file.type)) {
+                setImage(file);
+    
+                // 이미지 미리보기 URL 설정
+                const reader = new FileReader();
+                reader.onloadend = () => setImagePreview(reader.result);
+                reader.readAsDataURL(file);
+            } else {
+                toast.error('PNG, JPG, JPEG 파일만 업로드 가능합니다.');
+            }
+        }
+    };
+    
+    const handleSubmit = (e) => {
+        e.preventDefault();
+    
+        if (!formData.noticeTitle.trim() || !formData.noticeContent.trim()) {
+            toast.error('제목과 내용을 모두 입력해주세요.');
+            return;
+        }
+    
+        setLoading(true);
+    
+        const formDataToSend = new FormData();
+        formDataToSend.append('dto', new Blob([JSON.stringify(formData)], { type: 'application/json' }));
+        if (image) {
+            formDataToSend.append('image', image);
+        }
+    
+        axios.post('http://localhost:8080/notice', formDataToSend)
+            .then((response) => {
+                if (response.data.isSuccess) {
+                    return axios.get('http://localhost:8080/notice/latest');
+                } else {
+                    throw new Error(response.data.message);
+                }
+            })
+            .then((latestNoResponse) => {
+                const latestNoticeNo = latestNoResponse.data.noticeNo;
+                navigate(`/main/notice/${latestNoticeNo}`);
+            })
+            .catch((err) => toast.error(err.message || '공지 작성 중 오류가 발생했습니다.'))
+            .finally(() => setLoading(false));
+    };
 
-		// 공지 작성 ajax 요청
-		axios.post('http://localhost:8080/notice', formData)
-			.then((response) => {
-				if (response.data.isSuccess) {
-					console.log(response.data);
-					console.log(response.data.message);
-					// 요청 성공 시 최신 공지사항 번호 반환
-					return axios.get('http://localhost:8080/notice/latest');
-				} else {
-					toast.error(response.data.message); //실패 메시지
-				}
-			})
-			.then((latestNoResponse) => {
-				const latestNoticeNo = latestNoResponse.data.noticeNo;
-				// 생성된 공지사항 상세페이지로 이동
-				navigate(`/main/notice/${latestNoticeNo}`);
-			})
-			.catch((err) => {
-				console.error('notice insert:', err);
-			});
-	};
+    return (
+        <>
+            <ToastContainer />
 
-	return (
-		<>
-			<ToastContainer />
-
-			<Container maxWidth="sm">
-				{/* 최대 너비 'small'로 제한 */}
-				{/* elveation: 그림자 깊이, p: 패딩 단위, mt: margin-top 단위 */}
-				<Paper elevation={3} sx={{ p: 4, mt: 4 }}>
-					<Typography variant="h5" gutterBottom>
-						공지사항 작성
-					</Typography>
-					{/* form과 같은 역할, noValidate: submit 시 form데이터의 유효성검사 안함 */}
-					<Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-						<TextField
-							margin="normal"
-							required
-							fullWidth
-							id="noticeTitle"
-							label="공지 제목"
-							name="noticeTitle"
-							value={formData.noticeTitle}
-							onChange={handleChange}
-							autoFocus // 페이지 렌더링 시 자동 포커스
-						/>
-						<FormControlLabel
-							control={<Checkbox checked={formData.noticeCheck} onChange={handleChange} name="noticeCheck" />}
-							label="중요한 공지"
-						/>
-						<TextField
-							margin="normal"
-							required
-							fullWidth
-							name="noticeContent"
-							label="본문"
-							id="noticeContent"
-							multiline // 여러 줄 입력 가능
-							rows={4} // 기본 4줄 높이
-							value={formData.noticeContent}
-							onChange={handleChange}
-						/>
-						<Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
-							{/* 테두리선 스타일 버튼, 기능은 history.back()과 유사 */}
-							<Button type="button" variant="outlined" onClick={() => navigate(-1)}>
-								취소
-							</Button>
-							{/* 색이 채워진 스타일 버튼 */}
-							<Button type="submit" variant="contained">
-								작성
-							</Button>
-						</Box>
-					</Box>
-				</Paper>
-			</Container>
-		</>
-	);
+            <Container maxWidth="sm">
+                <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
+                    <Typography variant="h5" gutterBottom>
+                        공지사항 작성
+                    </Typography>
+                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="noticeTitle"
+                            label="공지 제목"
+                            name="noticeTitle"
+                            value={formData.noticeTitle}
+                            onChange={handleChange}
+                            autoFocus
+                        />
+                        <FormControlLabel
+                            control={<Checkbox checked={formData.noticeCheck} onChange={handleChange} name="noticeCheck" />}
+                            label="중요한 공지"
+                        />
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="noticeContent"
+                            label="본문"
+                            id="noticeContent"
+                            multiline
+                            rows={4}
+                            value={formData.noticeContent}
+                            onChange={handleChange}
+                        />
+                        <Box sx={{ mt: 2 }}>
+                            <input
+                                accept="image/*"
+                                type="file"
+                                onChange={handleImageChange} // 이미지 파일 변경 시
+                            />
+                            {imagePreview && (
+                                <Box sx={{ mt: 2 }}>
+                                    <img
+                                        src={imagePreview}
+                                        style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain' }}
+                                    />
+                                </Box>
+                            )}
+                        </Box>
+                        <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
+                            <Button type="button" variant="outlined" onClick={() => navigate(-1)}>
+                                취소
+                            </Button>
+                            <Button type="submit" variant="contained" disabled={loading}>
+                                {loading ? '로딩 중...' : '작성'}
+                            </Button>
+                        </Box>
+                    </Box>
+                </Paper>
+            </Container>
+        </>
+    );
 }

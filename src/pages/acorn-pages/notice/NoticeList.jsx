@@ -24,26 +24,29 @@ export default function NoticeList() {
   // 전체 공지 목록을 가져오는 함수
   const fetchNotices = (pageNumber) => {
     axios
-      .get(`http://localhost:8080/notice?page=${pageNumber - 1}`) // API 호출 (page는 0부터 시작)
+      .get(`http://localhost:8080/notice?page=${pageNumber - 1}`)
       .then((response) => {
-        setNotices(response.data.content); // 응답 데이터에서 공지 목록 저장
-        setTotalPages(response.data.page.totalPages); // 전체 페이지 수 저장
+        console.log("API Response (fetchNotices):", response.data); // 응답 데이터 출력
+  
+        setNotices(response.data.content || []); // 공지 목록 저장
+        setTotalPages(response.data.totalPages || 0); // 전체 페이지 수 저장
       })
       .catch((error) => {
-        console.error('Error fetching notices: ', error); // 에러 처리
+        console.error("Error fetching notices: ", error); // 에러 처리
       });
   };
-
-  // 검색된 공지 목록을 가져오는 함수
+  
   const noticeSearching = (keyword, pageNumber) => {
     axios
-      .get(`http://localhost:8080/notice/search?keyword=${keyword}&page=${pageNumber - 1}`) // 검색 API 호출
+      .get(`http://localhost:8080/notice/search?keyword=${keyword}&page=${pageNumber - 1}`)
       .then((response) => {
-        setSearchedNotices(response.data.content); // 검색된 데이터 저장
-        setTotalPages(response.data.page.totalPages); // 검색 결과의 전체 페이지 수 저장
+        console.log("API Response (noticeSearching):", response.data); // 응답 데이터 출력
+  
+        setSearchedNotices(response.data.content || []); // 검색된 데이터 저장
+        setTotalPages(response.data.totalPages || 0); // 검색 결과의 전체 페이지 수 저장
       })
       .catch((error) => {
-        console.error('Error searching notices: ', error); // 에러 처리
+        console.error("Error searching notices: ", error); // 에러 처리
       });
   };
 

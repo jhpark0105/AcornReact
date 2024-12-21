@@ -4,9 +4,11 @@ function TimePickerComponent({ value, onChange, isEditing = false }) {
 	const [selectedTime, setSelectedTime] = useState('');
 
 	useEffect(() => {
-		// 부모 컴포넌트에서 전달받은 value를 selectedTime에 동기화
+		// value가 변경될 때마다 selectedTime을 동기화
 		if (value) {
-			setSelectedTime(value);
+			// "13:30:00" 형식을 "13:30"으로 변환
+			const formattedValue = value.includes(':') ? value.slice(0, 5) : value;
+			setSelectedTime(formattedValue);
 		}
 	}, [value]);
 

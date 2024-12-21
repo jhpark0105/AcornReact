@@ -19,6 +19,8 @@ export default function NoticeDetail() {
   useEffect(() => {
     axios.get(`http://localhost:8080/notice/${noticeNo}`) // 공지 상세 데이터를 가져오기 위한 API 호출
       .then((response) => {
+        console.log("Notice Data:", response.data); // 전체 notice 객체를 직접 확인
+        console.log("noticeImagePath:", response.data.noticeImagePath); // 이미지 경로를 확인
         setNotice(response.data); // 가져온 데이터를 상태에 저장
       })
       .catch((error) => {
@@ -73,12 +75,35 @@ export default function NoticeDetail() {
             </Grid>
           </Grid>
           <Divider sx={{ my: 2 }} />
-          <Typography style={{ whiteSpace: 'pre-line' }} gutterBottom>
-            {notice.noticeContent}
-          </Typography>
+          
+          <Grid container spacing={2}>
+          {/* 왼쪽: 공지 내용 */}
+          <Grid item xs={notice.noticeImagePath ? 8 : 12}> {/* 이미지가 있을 경우 8칸, 없으면 12칸 */}
+            <Typography style={{ whiteSpace: 'pre-line' }} gutterBottom>
+              {notice.noticeContent}
+            </Typography>
+          </Grid>
+
+          {/* 오른쪽: 이미지 */}
+          {notice.noticeImagePath && (
+            <Grid item xs={4}> {/* 이미지가 있는 경우 오른쪽에 4칸 사용 */}
+              <Box
+                component="img"
+                src={`http://localhost:8080${notice.noticeImagePath}`} // 서버 URL + 이미지 경로
+                alt="공지 이미지"
+                sx={{
+                  width: '100%',
+                  height: 'auto',
+                  maxHeight: '300px',
+                  objectFit: 'contain',
+                  borderRadius: 2,
+                }}
+              />
+            </Grid>
+          )}
+        </Grid>
         </CardContent>
       </Card>
-
 
       <Stack spacing={2} direction="row" sx={{ marginTop: '20px', justifyContent: 'center' }}>
         <Button variant="contained" onClick={() => navigate(`/main/notice/${notice.prevNo}`)} disabled={!notice.prevNo}>
