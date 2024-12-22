@@ -136,6 +136,8 @@ function Tabs() {
             <DateSearch selectedDate={startDate} setSelectedDate={setStartDate} />
             <span>-</span>
             <DateSearch selectedDate={endDate} setSelectedDate={setEndDate} />
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <ListSearch
               searchTerm={searchTerm}
               onChange={setSearchTerm}
