@@ -26,7 +26,7 @@ function Reservation() {
     fetchReservation();
   }, []);
 
-  //예약 현황 목록 조회
+  //예약 대기 목록 조회
   const fetchReservation = () => {
     axios.get('http://localhost:8080/reservation/confirm')
       .then((response) => {
@@ -46,7 +46,7 @@ function Reservation() {
     });
   };
 
-  //예약 등록
+  //예약 등록 process
   const handleInsert = () => {
     if (!state.serviceName || !state.customerName || !state.memberName) {
       toast.error("서비스, 예약자, 직원을 선택해야 합니다.");
@@ -145,7 +145,7 @@ function Reservation() {
     setIsEditing(true);
   };
 
-  //예약 수정
+  //예약 수정 process
   const handleSave = () => {
     // 불러오는 객체 data 중 필요한 data만 담음
     const flattenedData = {
