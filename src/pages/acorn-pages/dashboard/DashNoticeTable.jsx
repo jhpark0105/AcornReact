@@ -89,7 +89,7 @@ export default function DashboardNotice() {
                     }}>
                     <Link color="secondary" to={`/main/notice/${notice.noticeNo}`}>{notice.noticeTitle}</Link>
                   </TableCell>
-                  <TableCell align="right">{notice.noticeReg}</TableCell>
+                  <TableCell align="center">{notice.noticeReg}</TableCell>
                 </TableRow>
               )))
               :
