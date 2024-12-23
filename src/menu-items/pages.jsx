@@ -45,13 +45,13 @@ const pages = {
 			children: [
 				{
 					id: 'status',
-					title: '예약 현황',
+					title: '예약 대기',
 					url: '/main/reservation',
 					type: 'item'
 				},
 				{
 					id: 'payment',
-					title: '결제 내역',
+					title: '예약 현황',
 					url: '/main/payment',
 					type: 'item'
 				}
