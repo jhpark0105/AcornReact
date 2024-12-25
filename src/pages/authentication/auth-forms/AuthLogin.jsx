@@ -80,6 +80,8 @@ export default function AuthLogin({ isDemo = false }) {
       })
       .then((response) => {
         if (response.status === 200) {
+          const {branchCode} = response.data;
+          localStorage.setItem('branchCode', branchCode);
           //alert('로그인 성공');
           navigate('/main/dashboard'); // 로그인 성공 시 대시보드로 이동
         }

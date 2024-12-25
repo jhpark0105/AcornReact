@@ -5,7 +5,7 @@ import Pagination from "../../../acorn-components/components/Pagination";
 import PropTypes from "prop-types";
 import { Box, Typography } from "@mui/material";
 import styles from "../../../styles/ListSearch.module.css"; // 스타일
-import './Order.css';
+import './ChatPage.css';
 function OrderCardList({ orders }) {
   const [filteredData, setFilteredData] = useState([]); // 필터링된 데이터 상태
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태

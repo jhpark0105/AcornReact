@@ -78,9 +78,9 @@ const pages = {
 			]
 		},
 		{
-			id: 'order',
-			title: '발주 관리',
-			url: '/main/order',
+			id: 'chat',
+			title: '채팅 관리',
+			url: '/main/chat',
 			type: 'item'
 		},
 		{
