@@ -11,17 +11,23 @@ import '../../../../styles/modal.css'
 
 function ProductBDetailModal({ selectedProductB, setShowDetailBModal, setShowDeleteBModal }) {
     return (
-        <div className="modal show" style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)" }} tabIndex="-1">
+        <div className="modal show" style={{
+                display: "flex",
+                alignItems: "center", // 세로 중앙 정렬
+                justifyContent: "center", // 가로 중앙 정렬
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                position: "fixed",
+                inset: "0", // top, right, bottom, left를 한 번에 설정
+                zIndex: 1050,
+            }}
+            tabIndex="-1"
+        >
             <div className="modal-dialog">
                 <div className="modal-content">
                     <div className="modal-header">
-                        {/* 모달 제목 */}
                         <h5 className="modal-title">대분류 상세</h5>
-                        
-                        {/* 모달을 닫기 위한 버튼 */}
                         <button type="button" className="btn-close" onClick={() => setShowDetailBModal(false)}></button>
                     </div>
-
                     <div className="modal-body">
                         <form>
                             <div className="mb-3">
@@ -45,16 +51,9 @@ function ProductBDetailModal({ selectedProductB, setShowDetailBModal, setShowDel
                             </div>
                         </form>
                     </div>
-
                     <div className="modal-footer">
-                        {/* 닫기 버튼: 모달을 닫는 함수 호출 */}
-                        <button type="button" className="btn btn-secondary" onClick={() => setShowDetailBModal(false)}>
-                            닫기
-                        </button>
-                        {/* 삭제 버튼: 대분류 삭제 모달 열기 */}
-                        <button type="button" className="btn btn-danger" onClick={() => setShowDeleteBModal(true)}>
-                            삭제
-                        </button>
+                        <button type="button" className="btn btn-secondary" onClick={() => setShowDetailBModal(false)}>닫기</button>
+                        <button type="button" className="btn btn-danger" onClick={() => setShowDeleteBModal(true)}>삭제</button>
                     </div>
                 </div>
             </div>
