@@ -101,15 +101,45 @@ function ReservationList({ reservations, handleDetail, setShowModal }) {
     setCurrentPage(1);// 검색 후 첫 페이지로 이동
   };
 
-  const columns = [
-    { id: "reservationNo", label: "예약 번호" },
-    { id: "serviceName", label: "서비스 명" },
-    { id: "reservationDate", label: "예약 날짜" },
-    { id: "reservationTime", label: "예약 시간" },
-    { id: "customerName", label: "예약자" },
-    { id: "memberName", label: "담당 직원" },
-    { id: "reservationComm", label: "특이사항" },
+  const headCells = [
+    { id: "reservationNo", label: "예약 번호" , width:"100px"},
+    { id: "serviceName", label: "서비스 명" ,width:"100px"},
+    { id: "reservationDate", label: "예약 날짜" ,width:"150px"},
+    { id: "reservationTime", label: "예약 시간" ,width:"150px"},
+    { id: "customerName", label: "예약자" ,width:"100px"},
+    { id: "memberName", label: "담당 직원" ,width:"100px"},
+    { id: "reservationComm", label: "특이사항" ,width:"200px"},
   ];
+
+  /**
+   * 테이블 헤더
+   * @param {string} order - 정렬 방향
+   * @param {string} orderBy - 정렬 기준 필드
+   */
+  function ReservationTableHead({ order, orderBy }) {
+    return (
+      <TableHead>
+        <TableRow>
+          {headCells.map((headCell) => (
+            <TableCell
+              key={headCell.id}
+              align={headCell.align}
+              sortDirection={orderBy === headCell.id ? order : false}
+              sx={{width:headCell.width}}
+            >
+              {headCell.label}
+            </TableCell>
+          ))}
+        </TableRow>
+      </TableHead>
+    );
+  }
+
+  ReservationTableHead.propTypes = {
+    order: PropTypes.string.isRequired,
+    orderBy: PropTypes.string.isRequired,
+  };
+
 
   const rows = currentItems.map((reservation) => ({
     reservationNo: reservation.reservationNo,
@@ -165,25 +195,19 @@ function ReservationList({ reservations, handleDetail, setShowModal }) {
 
       <TableContainer sx={{ width: "100%", overflowX: "auto" }}>
         <Table>
-          <TableHead>
-            <TableRow>
-              {columns.map((col) => (
-                <TableCell key={col.id}>{col.label}</TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
+          <ReservationTableHead/>
           <TableBody>
             {rows.length > 0 ? (
               rows.map((row, index) => (
                 <TableRow key={index}>
-                  {columns.map((col) => (
+                  {headCells.map((col) => (
                     <TableCell key={col.id}>{row[col.id]}</TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} align="center">
+                <TableCell colSpan={headCells.length} align="center">
                   등록된 예약이 없습니다.
                 </TableCell>
               </TableRow>
