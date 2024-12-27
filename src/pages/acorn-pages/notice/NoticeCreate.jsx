@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router';
 import { ToastContainer, toast } from 'react-toastify';
 import { TextField, Checkbox, FormControlLabel, Button, Box, Typography, Container, Paper } from '@mui/material';
 import 'react-toastify/dist/ReactToastify.css';
+import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap 스타일
 
 export default function NoticeCreate() {
     const navigate = useNavigate();
@@ -122,11 +123,17 @@ export default function NoticeCreate() {
                             onChange={handleChange}
                         />
                         <Box sx={{ mt: 2 }}>
-                            <input
-                                accept="image/*"
-                                type="file"
-                                onChange={handleImageChange} // 이미지 파일 변경 시
-                            />
+                            {/* 파일 업로드 */}
+                            <div className="input-group mb-3">
+                                <input
+                                    type="file"
+                                    className="form-control"
+                                    id="inputGroupFile02"
+                                    accept="image/*"
+                                    onChange={handleImageChange} // 이미지 파일 변경 시
+                                />
+                            </div>
+                            {/* 이미지 미리보기 */}
                             {imagePreview && (
                                 <Box sx={{ mt: 2, display: 'inline-block' }}>
                                     <img
