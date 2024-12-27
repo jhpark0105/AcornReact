@@ -128,9 +128,10 @@ export default function NoticeCreate() {
                                 onChange={handleImageChange} // 이미지 파일 변경 시
                             />
                             {imagePreview && (
-                                <Box sx={{ mt: 2 }}>
+                                <Box sx={{ mt: 2, display: 'inline-block' }}>
                                     <img
                                         src={imagePreview}
+                                        alt="이미지 미리보기"
                                         style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain' }}
                                     />
                                 </Box>
