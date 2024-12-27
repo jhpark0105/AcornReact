@@ -53,35 +53,56 @@ const ProductModal = ({ handleChange, handleInsert, setShowModal }) => {
     };
 
     return (
-        <div className="modal show" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }} tabIndex="-1">
-            <div className="modal-dialog">
+        <div
+            className="modal show"
+            style={{
+                display: 'flex',
+                alignItems: 'center', // 세로 중앙 정렬
+                justifyContent: 'center', // 가로 중앙 정렬
+                backgroundColor: 'rgba(0, 0, 0, 0.5)', // 반투명 배경
+                position: 'fixed', // 화면에 고정
+                inset: '0', // top, right, bottom, left를 0으로 설정
+                zIndex: 1050, // 모달이 다른 요소 위에 표시되도록 설정
+                overflowY: 'auto', // 화면 크기를 초과할 경우 스크롤 가능
+            }}
+            tabIndex="-1"
+        >
+            <div
+                className="modal-dialog"
+                style={{
+                    maxWidth: '600px', // 최대 너비 설정
+                    width: '90%', // 화면 너비에 따라 조정
+                    margin: 'auto', // 중앙 정렬
+                }}
+            >
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title">상품 등록</h5>
-                        {/* 모달 닫기 버튼 */}
-                        <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
+                        <button
+                            type="button"
+                            className="btn-close"
+                            onClick={() => setShowModal(false)}
+                        ></button>
                     </div>
-                    <div className="modal-body">
+                    <div className="modal-body" style={{ maxHeight: '70vh', overflowY: 'auto' }}>
+                        {/* 내용 */}
                         <form>
-                            {/* 대분류 선택 */}
                             <div className="mb-3">
                                 <label>대분류</label>
                                 <select
                                     name="productBCode"
                                     value={selectedCategory}
-                                    onChange={handleCategoryChange} // 대분류 선택 시 처리
+                                    onChange={handleCategoryChange}
                                     className="form-control"
                                 >
                                     <option value="">대분류를 선택하세요</option>
                                     {productbs.map((productb) => (
                                         <option key={productb.productBCode} value={productb.productBCode}>
-                                            {productb.productBName} {/* 대분류 이름 출력 */}
+                                            {productb.productBName}
                                         </option>
                                     ))}
                                 </select>
                             </div>
-
-                            {/* 상품 코드 입력 */}
                             <div className="mb-3">
                                 <label>상품 코드</label>
                                 <input
@@ -92,8 +113,6 @@ const ProductModal = ({ handleChange, handleInsert, setShowModal }) => {
                                     placeholder="상품 코드를 입력하세요."
                                 />
                             </div>
-
-                            {/* 상품 명 입력 */}
                             <div className="mb-3">
                                 <label>상품 명</label>
                                 <input
@@ -104,8 +123,6 @@ const ProductModal = ({ handleChange, handleInsert, setShowModal }) => {
                                     placeholder="상품 이름을 입력하세요."
                                 />
                             </div>
-
-                            {/* 상품 금액 입력 */}
                             <div className="mb-3">
                                 <label>상품 금액</label>
                                 <input
@@ -116,8 +133,6 @@ const ProductModal = ({ handleChange, handleInsert, setShowModal }) => {
                                     placeholder="상품 금액을 입력하세요."
                                 />
                             </div>
-
-                            {/* 상품 수량 입력 */}
                             <div className="mb-3">
                                 <label>상품 수량</label>
                                 <input
@@ -131,13 +146,18 @@ const ProductModal = ({ handleChange, handleInsert, setShowModal }) => {
                         </form>
                     </div>
                     <div className="modal-footer">
-                        {/* 모달 닫기 버튼 */}
-                        <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>
+                        <button
+                            type="button"
+                            className="btn btn-secondary"
+                            onClick={() => setShowModal(false)}
+                        >
                             닫기
                         </button>
-
-                        {/* 소분류(상품) 등록 버튼 */}
-                        <button type="button" className="btn btn-primary" onClick={handleProductInsert}>
+                        <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={handleProductInsert}
+                        >
                             등록
                         </button>
                     </div>

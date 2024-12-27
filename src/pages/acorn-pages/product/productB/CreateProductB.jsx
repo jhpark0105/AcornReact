@@ -1,34 +1,53 @@
 import React from 'react';
-import '../../../../styles/modal.css'
+import '../../../../styles/modal.css';
 
 /**
  * 대분류 등록 모달
- * (JSDoc 주석. 자바스크립트 코드에서 함수, 변수, 매개변수, 클래스 등의 설명을 추가하기 위해 사용)
  * @param {function} handleChange - 입력값 변경을 처리하는 함수
  * @param {function} handleInsertB - 등록 버튼 선택 시 실행되는 함수
  * @param {function} setShowModal - 모달 상태를 변경하는 함수 (열기/닫기)
  */
-
 function ProductBModal({ handleChange, handleInsertB, setShowModal }) {
   return (
     <div
       className="modal show"
-      // 모달 배경색 설정 및 표시
-      style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-      // 모달 외부 클릭 시 포커스 이동을 방지하기 위한 설정
+      style={{
+        display: 'flex',
+        alignItems: 'center', // 세로 중앙 정렬
+        justifyContent: 'center', // 가로 중앙 정렬
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // 반투명 배경
+        position: 'fixed', // 화면 고정
+        inset: '0', // top, right, bottom, left 단축 속성
+        zIndex: 1050, // 모달이 다른 요소 위에 표시되도록 설정
+      }}
       tabIndex="-1"
     >
-      <div className="modal-dialog">
+      <div
+        className="modal-dialog"
+        style={{
+          maxWidth: '500px', // 최대 너비
+          width: '90%', // 화면 크기에 따라 조정
+          margin: 'auto', // 중앙 정렬
+          overflow: 'hidden', // 넘치는 내용 방지
+        }}
+      >
         <div className="modal-content">
           <div className="modal-header">
-            {/* 모달 제목 */}
             <h5 className="modal-title">대분류 등록</h5>
-            {/* 모달을 닫기 위해 setShowModal(false)을 호출 */}
-            <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
+            <button
+              type="button"
+              className="btn-close"
+              onClick={() => setShowModal(false)}
+            ></button>
           </div>
 
-          <div className="modal-body">
-            {/* 입력 폼 */}
+          <div
+            className="modal-body"
+            style={{
+              maxHeight: '70vh', // 화면 높이의 70%를 넘지 않도록 설정
+              overflowY: 'auto', // 높이를 초과할 경우 스크롤 가능
+            }}
+          >
             <form>
               <div className="mb-3">
                 <label>대분류 코드</label>
@@ -55,7 +74,6 @@ function ProductBModal({ handleChange, handleInsertB, setShowModal }) {
           </div>
 
           <div className="modal-footer">
-            {/* 닫기 버튼: 모달을 닫는 setShowModal 함수 호출 */}
             <button
               type="button"
               className="btn btn-secondary"
@@ -63,7 +81,6 @@ function ProductBModal({ handleChange, handleInsertB, setShowModal }) {
             >
               닫기
             </button>
-            {/* 등록 버튼: 대분류 등록을 위한 handleInsertB 함수 호출 */}
             <button
               type="button"
               className="btn btn-primary"

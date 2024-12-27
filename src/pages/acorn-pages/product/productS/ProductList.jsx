@@ -6,19 +6,20 @@ import { NumericFormat } from "react-number-format"; // 숫자 포맷팅 컴포�
 import { Button, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import styles from "../../../../styles/ListSearch.module.css";
 
-import OrderModal from './OrderModal'; // 발주 모달 컴포넌트
-import { Modal } from 'react-bootstrap';
-import './OrderModal.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import OrderModal from './OrderModal'; // 발주 모달 컴포넌트
+// import { Modal } from 'react-bootstrap';
+// import './OrderModal.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 
 function ProductList({ products, handleDetail, setShowModal }) {
   const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태 관리
   const [filteredData, setFilteredData] = useState([]); // 필터링된 데이터 상태 관리
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
   const [itemsPerPage, setItemsPerPage] = useState(10); // 페이지당 항목 수 (기본값 10)
-  const [show, setShow] = useState(false); // 발주 모달 상태
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  // const [show, setShow] = useState(false); // 발주 모달 상태
+  // const handleClose = () => setShow(false);
+  // const handleShow = () => setShow(true);
+
   const fetchProducts = async () => {
     try {
         const response = await axios.get('http://localhost:8080/product'); // 상품 API 경로
@@ -140,13 +141,16 @@ function ProductList({ products, handleDetail, setShowModal }) {
           </TableBody>
         </Table>
       </TableContainer>
-      {/* 상품 발주 버튼 - 테이블 우측 하단에 배치 */}
+      
+      {/* 상품 발주 버튼 - 주석 처리
       <div style={{ width: "100%", margin: "20px 0", display: "flex", justifyContent: "flex-end", alignItems: "center" }}>               
           <Button variant="contained" color="primary" onClick={handleShow} sx={{ width: "auto" }}>
               상품 발주
           </Button>
       </div>
-      {/* 발주 모달 */}
+      */}
+
+      {/* 발주 모달 - 주석 처리
       <Modal show={show} onHide={handleClose} className='custom-modal'backdrop={{style: {zIndex: 1200 }}}>
           <Modal.Header closeButton>
           <Modal.Title>발주 화면</Modal.Title>
@@ -160,6 +164,8 @@ function ProductList({ products, handleDetail, setShowModal }) {
               </button>
           </Modal.Footer>
       </Modal>
+      */}
+
       {/* 페이지네이션 */}
       <Pagination
         currentPage={currentPage}
