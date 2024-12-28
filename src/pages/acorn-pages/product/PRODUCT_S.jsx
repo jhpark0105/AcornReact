@@ -1,14 +1,14 @@
 import axios from "axios";
-import React, { useEffect, useState } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
+import React, { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
 
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'react-toastify/dist/ReactToastify.css';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "react-toastify/dist/ReactToastify.css";
 
-import ProductList from './productS/ProductList';
-import CreateProduct from './productS/CreateProduct';
-import ProductDetail from './productS/ProductDetail';
-import ProductDelete from './productS/ProductDelete';
+import ProductList from "./productS/ProductList";
+import CreateProduct from "./productS/CreateProduct";
+import ProductDetail from "./productS/ProductDetail";
+import ProductDelete from "./productS/ProductDelete";
 
 function PRODUCT() {
   const [products, setProducts] = useState([]);
@@ -21,7 +21,8 @@ function PRODUCT() {
 
   // 상품 목록을 서버에서 가져옴
   const fetchProducts = () => {
-    axios.get(`http://localhost:8080/product`)
+    axios
+      .get(`http://localhost:8080/product`)
       .then((response) => {
         setProducts(response.data);
       })
@@ -37,27 +38,37 @@ function PRODUCT() {
 
   // 입력 폼에서 값 변경 시 상태 업데이트
   const handleChange = (e) => {
+    const { name, value, files } = e.target;
     setState({
       ...state,
-      [e.target.name]: e.target.value,
+      [name]: files ? files[0] : value, // 파일 입력 처리
     });
   };
 
   // 상품 추가
-  const handleInsert = () => {
-    axios.post("http://localhost:8080/product", state)
+  const handleInsert = (imageFile) => {
+    const formData = new FormData();
+    const { image, ...dtoWithoutImage } = state; // state.image는 제외
+
+    formData.append("dto", new Blob([JSON.stringify(dtoWithoutImage)], { type: "application/json" }));
+    formData.append("image", imageFile); // 전달받은 이미지 파일 추가
+
+    axios
+      .post("http://localhost:8080/product", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      })
       .then((res) => {
-        if (res.data.isSuccess) { //성공 메시지
+        if (res.data.isSuccess) {
           toast.success("상품 등록 성공!");
           setShowModal(false);
           fetchProducts();
         } else {
-          toast.error(res.data.message); //실패 메시지
+          toast.error(res.data.message);
         }
       })
       .catch((error) => {
+        console.error("상품 등록 중 오류:", error);
         toast.error("상품 등록 중 오류가 발생했습니다.");
-        console.error("Error:", error);
       });
   };
 
@@ -75,48 +86,64 @@ function PRODUCT() {
 
   // 상품 수정
   const handleSave = () => {
-    axios.put(`http://localhost:8080/product/edit/${selectedProduct.productCode}`, selectedProduct)
-      .then((res) => {
-        if (res.data.isSuccess) { //성공 메시지
+    const formData = new FormData();
+
+    formData.append("dto", new Blob([JSON.stringify(selectedProduct)], { type: "application/json" }));
+
+    if (selectedProduct.imageFile) {
+      formData.append("image", selectedProduct.imageFile); // 새로운 이미지 파일 추가
+    } else {
+      toast.error("새로운 이미지를 추가하지 않았습니다.");
+    }
+
+    axios
+      .put(`http://localhost:8080/product/edit/${selectedProduct.productCode}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      })
+      .then((response) => {
+        if (response.data.isSuccess) {
           toast.success("상품 수정 성공!");
-          setIsEditing(false);
-          setShowDetailModal(false);
-          fetchProducts();
+          setShowDetailModal(false); // 모달 닫기
+          fetchProducts(); // 목록 갱신
         } else {
-          toast.error(res.data.message); //실패 메시지
+          toast.error(response.data.message);
         }
       })
       .catch((error) => {
         toast.error("상품 수정 중 오류가 발생했습니다.");
-        console.error("Error:", error);
+        console.error(error);
       });
   };
 
   // 상세 보기 입력값 변경 처리
   const handleDetailChange = (e) => {
-    setSelectedProduct({
-      ...selectedProduct,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value, files } = e.target;
+
+    // 상태 업데이트
+    setSelectedProduct((prev) => ({
+      ...prev,
+      [name]: files ? files[0] : value, // 파일 입력 처리
+    }));
   };
 
   // 상품 삭제
   const handleDelete = () => {
     if (selectedProduct) {
-      axios.delete(`http://localhost:8080/product/${selectedProduct.productCode}`)
+      axios
+        .delete(`http://localhost:8080/product/${selectedProduct.productCode}`)
         .then((res) => {
-          if (res.data.isSuccess) { //성공 메시지
+          if (res.data.isSuccess) {
             toast.success("상품 삭제 성공!");
             setShowDeleteModal(false);
             setShowDetailModal(false);
             fetchProducts();
           } else {
-            toast.error(res.data.message); //실패 메시지
+            toast.error(res.data.message);
           }
         })
         .catch((error) => {
-          toast.error("상품 삭제 중 오류가 발생했습니다.");
           console.error("Error:", error);
+          toast.error("상품 삭제 중 오류가 발생했습니다.");
         });
     }
   };
@@ -144,6 +171,7 @@ function PRODUCT() {
         <ProductDetail
           isEditing={isEditing}
           selectedProduct={selectedProduct}
+          setSelectedProduct={setSelectedProduct}
           handleDetailChange={handleDetailChange}
           handleSave={handleSave}
           handleEdit={handleEdit}

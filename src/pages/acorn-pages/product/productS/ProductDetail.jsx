@@ -1,4 +1,7 @@
 import '../../../../styles/modal.css';
+import { useState, useEffect } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 /**
  * 상품 상세 모달 컴포넌트
@@ -7,32 +10,79 @@ function ProductDetailModal({
   isEditing,
   selectedProduct,
   handleDetailChange,
+  setSelectedProduct, // 부모로부터 전달받은 상태 업데이트 함수
   handleSave,
   handleEdit,
   setShowDetailModal,
   setShowDeleteModal,
 }) {
+  const [imagePreview, setImagePreview] = useState(
+    selectedProduct.productImagePath
+      ? `http://localhost:8080${selectedProduct.productImagePath}`
+      : '' // 초기 이미지 경로 설정
+  );
+
+  // 이미지 변경 처리
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+
+    if (file) {
+      const maxSize = 5 * 1024 * 1024; // 5MB 제한
+      if (file.size > maxSize) {
+        toast.error("파일 크기는 5MB를 초과할 수 없습니다.");
+        return;
+      }
+
+      if (["image/png", "image/jpeg", "image/jpg"].includes(file.type)) {
+        // 이미지 미리보기 URL 설정
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImagePreview(reader.result); // 미리보기 업데이트
+        };
+        reader.readAsDataURL(file);
+
+        // `selectedProduct` 상태 업데이트
+        setSelectedProduct((prev) => ({
+          ...prev,
+          imageFile: file, // 새로운 이미지 파일 추가
+        }));
+      } else {
+        toast.error("PNG, JPG, JPEG 파일만 업로드 가능합니다.");
+      }
+    }
+  };
+
+  // 모달 닫기 시 상태 초기화
+  const closeModal = () => {
+    setShowDetailModal(false);
+    setImagePreview(
+      selectedProduct.productImagePath
+        ? `http://localhost:8080${selectedProduct.productImagePath}`
+        : ''
+    );
+  };
+
   return (
     <div
       className="modal show"
       style={{
         display: 'flex',
-        alignItems: 'center', // 세로 중앙 정렬
-        justifyContent: 'center', // 가로 중앙 정렬
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', // 반투명 배경
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
         position: 'fixed',
-        inset: '0', // top, right, bottom, left 단축 속성
+        inset: '0',
         zIndex: 1050,
       }}
       tabIndex="-1"
     >
+      <ToastContainer />
       <div
         className="modal-dialog"
         style={{
-          maxWidth: '600px', // 최대 너비
-          width: '90%', // 화면이 작을 경우 너비 조정
-          margin: 'auto', // 중앙 정렬
-          overflow: 'hidden', // 넘치는 내용 방지
+          maxWidth: '800px',
+          width: '90%',
+          margin: 'auto',
         }}
       >
         <div className="modal-content">
@@ -43,12 +93,13 @@ function ProductDetailModal({
             <button
               type="button"
               className="btn-close"
-              onClick={() => setShowDetailModal(false)}
+              onClick={closeModal}
             ></button>
           </div>
 
-          <div className="modal-body">
-            <form>
+          <div className="modal-body" style={{ display: 'flex', gap: '20px' }}> 
+            {/* 왼쪽: 상품 정보 */}
+            <form style={{ flex: 2 }}>
               <div className="mb-3">
                 <label>대분류</label>
                 <input
@@ -107,14 +158,60 @@ function ProductDetailModal({
                   className="form-control"
                 />
               </div>
+
+              {isEditing && (
+                <div className="mb-3">
+                  <label>상품 이미지 변경</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    name="image"
+                    onChange={handleImageChange}
+                    className="form-control"
+                  />
+                </div>
+              )}
             </form>
+
+            {/* 오른쪽: 이미지 미리보기 */}
+            <div style={{ flex: 1, textAlign: 'center' }}>
+              {imagePreview ? (
+                <img
+                  src={imagePreview}
+                  alt="상품 사진"
+                  style={{
+                    maxWidth: '100%',
+                    maxHeight: '300px',
+                    objectFit: 'contain',
+                    border: '1px solid #ddd',
+                    borderRadius: '8px',
+                    padding: '5px',
+                  }}
+                />
+              ) : (
+                <div
+                  style={{
+                    width: '100%',
+                    height: '300px',
+                    border: '1px dashed #ccc',
+                    borderRadius: '8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#aaa',
+                  }}
+                >
+                  상품 사진이 없습니다.
+                </div>
+              )}
+            </div>
           </div>
 
-          <div className="modal-footer">
+          <div className="modal-footer" style={{ justifyContent: 'flex-end' }}>
             <button
               type="button"
               className="btn btn-secondary"
-              onClick={() => setShowDetailModal(false)}
+              onClick={closeModal}
             >
               닫기
             </button>
@@ -122,7 +219,7 @@ function ProductDetailModal({
               <button
                 type="button"
                 className="btn btn-success"
-                onClick={handleSave}
+                onClick={() => handleSave(selectedProduct)} // 저장 호출 시 변경된 데이터를 전달
               >
                 저장
               </button>
