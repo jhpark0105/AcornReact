@@ -4,7 +4,7 @@ import { DatePicker } from 'rsuite';
 const DatePickerComponent = ({ selected, onChange }) => (
   <div className="date-picker-container">
     <DatePicker
-      style={{ width: 300 }}
+      style={{ width: 300, height:58}}
       placeholder="날짜를 선택하세요"
       format="yyyy-MM-dd"
       oneTap

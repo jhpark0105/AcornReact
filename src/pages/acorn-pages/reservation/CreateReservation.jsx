@@ -106,6 +106,7 @@ function ReservationModal({ handleChange, handleInsert, setShowModal }) {
 									onChange={(e) => handleFieldChange(e.target.name, e.target.value)}
 									className="form-control"
 									min={new Date().toLocaleDateString('en-CA')} // 최소값: 오늘 날짜
+									style={{width:'600'}}
 								/>
 							</div>
 
