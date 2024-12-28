@@ -7,6 +7,7 @@ import DateSearch from "./DateSearch";
 import { RiSearchLine } from "react-icons/ri";
 import styles from "./ListSearch.module.css";
 import { ToastContainer, toast } from 'react-toastify';
+import { height } from '@mui/system';
 
 function ReservationList({ reservations, handleDetail, setShowModal }) {
   const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태 관리
@@ -174,7 +175,7 @@ function ReservationList({ reservations, handleDetail, setShowModal }) {
       >
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <DateSearch selectedDate={startDate} setSelectedDate={setStartDate} />
-          <span>-</span>
+          <span style={{height:45}}>-</span>
           <DateSearch selectedDate={endDate} setSelectedDate={setEndDate} />
           <ListSearch
             searchTerm={searchTerm}
@@ -188,6 +189,11 @@ function ReservationList({ reservations, handleDetail, setShowModal }) {
           variant="contained"
           color="success"
           onClick={() => setShowModal(true)}
+          style={{
+            whiteSpace: "nowrap",
+            padding: "8px 20px",
+            marginTop: "-20px", // 위로 5px 이동
+          }}
         >
           예약 등록
         </Button>
