@@ -1,108 +1,121 @@
 import React, { useState, useEffect } from "react";
-import ListSearch from "acorn-components/components/ListSearch";
-import styles from "../../../../styles/ListSearch.module.css";
-import Pagination from "acorn-components/components/Pagination";
+import PropTypes from "prop-types";
 import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button } from "@mui/material";
+import Pagination from "acorn-components/components/Pagination";
+import ListSearch from "acorn-components/components/ListSearch";
 
 function ProductBList({ productBs, handleDetailB, setShowModal }) {
   const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태 관리
   const [filteredData, setFilteredData] = useState([]); // 필터링된 데이터 상태 관리
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
-  const [itemsPerPage, setItemsPerPage] = useState(10); // 페이지당 항목 수 (기본값 10)
+  const itemsPerPage = 10; // 페이지당 항목 수
 
-  // productBs 데이터가 변경되면 필터링 데이터를 갱신
+  // 초기 렌더링 시 filteredData를 productBs로 설정
   useEffect(() => {
-    setFilteredData(productBs);
+    if (productBs && productBs.length > 0) {
+      setFilteredData(productBs);
+    }
   }, [productBs]);
 
-  // 검색어 상태를 업데이트
-  const onChange = (term) => {
-    setSearchTerm(term);
-  };
+  // 페이지별 데이터 계산
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-  // 검색어 필터링
+  // currentItems: filteredData를 기준으로 현재 페이지에 해당하는 데이터를 계산
+  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+  // 총 페이지 수 계산
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+  // 검색어에 따른 필터링 처리
   const handleSearchClick = () => {
     const filtered = productBs.filter((item) =>
-      // 상품명에 검색어가 포함되는 항목만 필터링
-      item.productBName.toLowerCase().includes(searchTerm.toLowerCase())
+      item.productBName?.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredData(filtered);
     setCurrentPage(1); // 검색 후 첫 페이지로 이동
   };
 
-  // 페이지별 데이터 계산
-  const indexOfLastItem = currentPage * itemsPerPage; // itemsPerPage : 한 페이지에 표시할 서비스의 수를 정의
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const headCells = [
+    { id: "productBCode", label: "대분류 코드", width: "150px" },
+    { id: "productBName", label: "상품명", width: "200px" },
+  ];
 
-  //currentItems : filteredData를 기준으로 현재 페이지에 해당하는 데이터를 계산
-  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+  /**
+   * 테이블 헤더
+   */
+  function ProductBTableHead() {
+    return (
+      <TableHead>
+        <TableRow>
+          {headCells.map((headCell) => (
+            <TableCell key={headCell.id} sx={{ width: headCell.width }}>
+              {headCell.label}
+            </TableCell>
+          ))}
+        </TableRow>
+      </TableHead>
+    );
+  }
 
-  // 총 페이지 수 계산(전체 데이터 수 / 페이지당 항목 수)
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  const rows = currentItems.map((productB) => ({
+    productBCode: productB.productBCode,
+    productBName: (
+      <span
+        style={{
+          color: "blue",
+          cursor: "pointer",
+          textDecoration: "underline",
+        }}
+        onClick={() => handleDetailB(productB)}
+      >
+        {productB.productBName}
+      </span>
+    ),
+  }));
 
   return (
-    <Box>
-      {/* 검색 및 등록 버튼 */}
-      <div className={styles.flexContainer} style={{width:"100%"}}>
-      <div className={styles["list-component-container"]} style={{ flex: "1" }}>
-          {/* 검색 컴포넌트 */}
-          <ListSearch
-            searchTerm={searchTerm}
-            onChange={onChange}
-            handleSearchClick={handleSearchClick}
-          />
-        </div>
-        
-        <div className={styles.buttonBox}>
-          {/* 대분류 등록 버튼 */}
-          <Button
-            variant="contained"
-            color="success"
-            onClick={() => setShowModal(true)}
-            style={{
-              whiteSpace: "nowrap", // 텍스트가 한 줄로 나오도록 설정
-              padding: "8px 20px", // 버튼 크기 조정
-            }}
-          >
+    <Box sx={{ width: "100%", margin: "0 auto", padding: "16px" }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 2,
+        }}
+      >
+        <ListSearch
+          searchTerm={searchTerm}
+          onChange={setSearchTerm}
+          handleSearchClick={handleSearchClick}
+        />
+        <Button
+          variant="contained"
+          color="success"
+          onClick={() => setShowModal(true)}
+          style={{
+            whiteSpace: "nowrap",
+            padding: "8px 20px",
+          }}
+        >
           대분류 등록
         </Button>
-        </div>
-      </div>
+      </Box>
 
-      {/* 테이블 */}
-      <TableContainer className={styles["table-container"]}>
+      <TableContainer sx={{ width: "100%", overflowX: "auto" }}>
         <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>대분류 코드</TableCell>
-              <TableCell>상품명</TableCell>
-            </TableRow>
-          </TableHead>
+          <ProductBTableHead />
           <TableBody>
-            {/* 필터링된 데이터가 있을 경우 테이블 내용 표시 */}
-            {currentItems.length > 0 ? (
-              currentItems.map((productB) => (
-                <TableRow key={productB.productBCode}>
-                  <TableCell>{productB.productBCode}</TableCell>
-                  <TableCell>
-                    {/* 상품명을 클릭하면 상세 페이지로 이동 */}
-                    <span
-                      style={{
-                        color: "blue",
-                        cursor: "pointer",
-                        textDecoration: "underline",
-                      }}
-                      onClick={() => handleDetailB(productB)}
-                    >
-                      {productB.productBName}
-                    </span>
-                  </TableCell>
+            {rows.length > 0 ? (
+              rows.map((row, index) => (
+                <TableRow key={index}>
+                  {headCells.map((col) => (
+                    <TableCell key={col.id}>{row[col.id]}</TableCell>
+                  ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                {/* 데이터가 없을 경우 표시할 메시지 */}
-                <TableCell colSpan={2} align="center">
+                <TableCell colSpan={headCells.length} align="center">
                   등록된 대분류가 없습니다.
                 </TableCell>
               </TableRow>
@@ -113,14 +126,18 @@ function ProductBList({ productBs, handleDetailB, setShowModal }) {
 
       {/* 페이지네이션 */}
       <Pagination
-        currentPage={currentPage} // 현재 페이지
-        totalPages={totalPages} // 총 페이지 수
-        onPageChange={setCurrentPage} // 페이지 변경 시 호출될 함수
-        itemsPerPage={itemsPerPage} // 페이지당 항목 수
-        setItemsPerPage={setItemsPerPage} // 페이지당 항목 수를 변경할 함수
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
       />
     </Box>
   );
 }
+
+ProductBList.propTypes = {
+  productBs: PropTypes.array.isRequired,
+  handleDetailB: PropTypes.func.isRequired,
+  setShowModal: PropTypes.func.isRequired,
+};
 
 export default ProductBList;

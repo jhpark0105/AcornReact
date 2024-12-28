@@ -134,7 +134,7 @@ function Tabs() {
         >
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <DateSearch selectedDate={startDate} setSelectedDate={setStartDate} />
-            <span>-</span>
+            <span style={{height:45}}>-</span>
             <DateSearch selectedDate={endDate} setSelectedDate={setEndDate} />
           </Box>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>

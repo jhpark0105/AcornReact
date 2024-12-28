@@ -158,9 +158,18 @@ function CustomerList({ handleDetail,  }) {  // refresh를 refreshData로 이름
           setSelectedFilter={setSelectedFilter}
         />
 
-        <Button variant="contained" color="success" onClick={() => setShowModal(true)}>
-          고객등록
+        <Button variant="contained" color="success" onClick={() => setShowModal(true)}
+          style={{
+            whiteSpace: "nowrap",
+            padding: "8px 20px",
+            marginTop: "5px", // 위로 5px 이동
+          }}
+        >
+          고객 등록
         </Button>
+        {/* <Button variant="contained" color="success" onClick={() => setShowModal(true)}>
+          고객 등록
+        </Button> */}
       </Box>
 
       {/* 고객 목록 테이블 */}
