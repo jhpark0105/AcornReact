@@ -52,7 +52,8 @@ function a11yProps(index) {
 
 export default function Profile() {
   // 데이터 매니저 갖고와서 마이페이지 간단히 보는 모달에 뿌려줄 용도
-   const [managerData, setManagerData] = useState(null);
+  const [managerData, setManagerData] = useState(null);
+  const [adminData, setAdminData] = useState(null);
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -65,21 +66,65 @@ export default function Profile() {
   //   };
   //   fetchData();
   // }, []);
-  
+
   // 컴포넌트 렌더링 후 매니저 데이터 갖고옴
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       // URL 파라미터 제거, 쿠키를 자동으로 포함하여 요청
+  //       const response = await axios.get(`http://localhost:8080/manager/mypage`, {
+  //         withCredentials: true // 크로스 도메인 요청 시 쿠키 포함
+  //       });
+  //       setManagerData(response.data);
+  //     } catch (error) {
+  //       console.error('데이터 로딩 중 오류:', error);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {      
-        // URL 파라미터 제거, 쿠키를 자동으로 포함하여 요청
-        const response = await axios.get(`http://localhost:8080/manager/mypage`, {
-          withCredentials: true // 크로스 도메인 요청 시 쿠키 포함
+    const fetchAdminData = () => {
+      fetch('http://localhost:8080/admin/mypage', {
+        credentials: 'include', // 쿠키 포함
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Admin 데이터 로드 실패');
+          }
+          return response.json();
+        })
+        .then((data) => {
+          setAdminData(data); // Admin 데이터 설정
+          console.log('Admin Data:', data); // 디버깅용
+        })
+        .catch((error) => {
+          console.error('Admin 데이터 로딩 중 오류:', error);
         });
-        setManagerData(response.data);
-      } catch (error) {
-        console.error('데이터 로딩 중 오류:', error);
-      }
     };
-    fetchData();
+
+    const fetchManagerData = () => {
+      fetch('http://localhost:8080/manager/mypage', {
+        credentials: 'include', // 쿠키 포함
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Manager 데이터 로드 실패');
+          }
+          return response.json();
+        })
+        .then((data) => {
+          setManagerData(data); // Manager 데이터 설정
+          console.log('Manager Data:', data); // 디버깅용
+        })
+        .catch((error) => {
+          console.error('Manager 데이터 로딩 중 오류:', error);
+        });
+    };
+
+    // 순차적으로 요청 실행
+    fetchAdminData();
+    fetchManagerData();
   }, []);
 
   const theme = useTheme();
@@ -106,15 +151,15 @@ export default function Profile() {
 
   const handleLogout = () => {
     axios.post('http://localhost:8080/logoutProcess')
-    .then((response) => {
-      if (response.status === 200) {
-        //alert("로그아웃 성공");
-        navigate('/main/login');
-      }
-    })
-    .catch(error => {
+      .then((response) => {
+        if (response.status === 200) {
+          //alert("로그아웃 성공");
+          navigate('/main/login');
+        }
+      })
+      .catch(error => {
         console.error("로그아웃 에러 : ",error);
-    })
+      })
   }
 
   const iconBackColorOpen = 'grey.100';
@@ -137,13 +182,18 @@ export default function Profile() {
       >
 
         <Stack direction="row" spacing={1.25} alignItems="center" sx={{ p: 0.5 }}>
-          <Avatar alt="profile user" /* src={avatar1}  */ size="sm" />
+          <Avatar alt="profile user" /* src={avatar1} */ size="sm" />
           <Typography variant="subtitle1" sx={{ textTransform: 'capitalize' }}>
-            {managerData ? managerData.branchName : '로딩 중...'}
+            {managerData?.branchCode
+              ? managerData.branchName
+              : adminData?.adminId
+                ? adminData.adminName
+                : '로딩 중...'}
           </Typography>
         </Stack>
+
       </ButtonBase>
-      
+
       {/* 마이페이지 세부 설정 보기 */}
       <Popper
         placement="bottom-end"
@@ -172,13 +222,21 @@ export default function Profile() {
                     <Grid container justifyContent="space-between" alignItems="center">
                       <Grid item>
                         <Stack direction="row" spacing={1.25} alignItems="center">
-                          <Avatar alt="profile user" /*src={avatar1}*/ sx={{ width: 32, height: 32 }} />
+                          <Avatar alt="profile user" /* src={avatar1} */ sx={{ width: 32, height: 32 }} />
                           <Stack>
                             <Typography variant="h6">
-                              {managerData ? managerData.branchName : '로딩 중...'}
+                              {managerData && managerData.branchCode
+                                ? managerData.branchName
+                                : adminData && adminData.adminId
+                                  ? adminData.adminName
+                                  : '로딩 중...'}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
-                            담당 관리자 : {managerData ? managerData.managerName : '로딩 중...'}
+                              {managerData && managerData.branchCode
+                                ? `담당 관리자: ${managerData.branchName}`
+                                : adminData && adminData.adminId
+                                  ? `관리자 이름: ${adminData.adminName}`
+                                  : '로딩 중...'}
                             </Typography>
                           </Stack>
                         </Stack>
