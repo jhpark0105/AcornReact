@@ -59,7 +59,7 @@ function PRODUCT() {
       })
       .then((res) => {
         if (res.data.isSuccess) {
-          toast.success("상품 등록 성공!");
+          toast.success(res.data.message);
           setShowModal(false);
           fetchProducts();
         } else {
@@ -92,17 +92,16 @@ function PRODUCT() {
 
     if (selectedProduct.imageFile) {
       formData.append("image", selectedProduct.imageFile); // 새로운 이미지 파일 추가
-    } else {
-      toast.error("새로운 이미지를 추가하지 않았습니다.");
     }
 
     axios
       .put(`http://localhost:8080/product/edit/${selectedProduct.productCode}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
-      .then((response) => {
-        if (response.data.isSuccess) {
-          toast.success("상품 수정 성공!");
+      .then((res) => {
+        if (res.data.isSuccess) {
+          toast.success(res.data.message);
+          setIsEditing(false);
           setShowDetailModal(false); // 모달 닫기
           fetchProducts(); // 목록 갱신
         } else {
@@ -133,7 +132,7 @@ function PRODUCT() {
         .delete(`http://localhost:8080/product/${selectedProduct.productCode}`)
         .then((res) => {
           if (res.data.isSuccess) {
-            toast.success("상품 삭제 성공!");
+            toast.success(res.data.message);
             setShowDeleteModal(false);
             setShowDetailModal(false);
             fetchProducts();
@@ -142,8 +141,8 @@ function PRODUCT() {
           }
         })
         .catch((error) => {
-          console.error("Error:", error);
           toast.error("상품 삭제 중 오류가 발생했습니다.");
+          console.error("Error:", error);
         });
     }
   };

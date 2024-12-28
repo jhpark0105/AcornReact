@@ -1,5 +1,5 @@
 import '../../../../styles/modal.css';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -76,7 +76,6 @@ function ProductDetailModal({
       }}
       tabIndex="-1"
     >
-      <ToastContainer />
       <div
         className="modal-dialog"
         style={{
