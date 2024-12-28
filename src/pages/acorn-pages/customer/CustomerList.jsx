@@ -219,7 +219,7 @@ function CustomerList({ handleDetail,  }) {  // refresh를 refreshData로 이름
               </div>
 
               <div className="modal-body">
-                <CustomerInsForm setShowModal={setShowModal} refresh={refresh} />  {/* 고객 등록 폼 */}
+                <CustomerInsForm setShowModal={setShowModal} refresh={refresh} show={showModal} />  {/* 고객 등록 폼 */}
               </div>
             </div>
           </div>

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import '../../../../styles/modal.css'
+import '../../../../styles/modal.css';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 /**
  * 상품 등록 모달
- * (JSDoc 주석. 자바스크립트 코드에서 함수, 변수, 매개변수, 클래스 등의 설명을 추가하기 위해 사용)
  * @param {function} handleChange - 입력값 변경을 처리하는 함수
  * @param {function} handleInsert - 등록 버튼 선택 시 실행되는 함수
  * @param {function} setShowModal - 모달 상태를 변경하는 함수 (열기/닫기)
@@ -13,6 +14,8 @@ const ProductModal = ({ handleChange, handleInsert, setShowModal }) => {
     const [productbs, setProductbs] = useState([]); // 대분류 목록 상태
     const [loading, setLoading] = useState(true); // 로딩 상태
     const [selectedCategory, setSelectedCategory] = useState(''); // 선택된 대분류 초기값
+    const [image, setImage] = useState(null); // 이미지 상태 추가
+    const [imagePreview, setImagePreview] = useState(''); // 이미지 미리보기 상태
 
     // 대분류 목록을 서버에서 받아오기
     useEffect(() => {
@@ -46,9 +49,35 @@ const ProductModal = ({ handleChange, handleInsert, setShowModal }) => {
         handleChange({ target: { name: 'productBCode', value: selectedCode } }); // 대분류 코드 변경을 상위 컴포넌트로 전달
     };
 
+    // 이미지 업로드 처리
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+
+        if (file) {
+            // 파일 크기 제한 및 형식 확인
+            const maxSize = 5 * 1024 * 1024;
+            if (file.size > maxSize) {
+                toast.error("파일 크기는 5MB를 초과할 수 없습니다.");
+                return;
+            }
+
+            // 이미지 파일 형식 체크 (PNG, JPG, JPEG)
+            if (['image/png', 'image/jpeg', 'image/jpg'].includes(file.type)) {
+                setImage(file);
+    
+                // 이미지 미리보기 URL 설정
+                const reader = new FileReader();
+                reader.onloadend = () => setImagePreview(reader.result);
+                reader.readAsDataURL(file);
+            } else {
+                toast.error('PNG, JPG, JPEG 파일만 업로드 가능합니다.');
+            }
+        }
+    };
+
     // 상품 등록 처리
     const handleProductInsert = () => {
-        handleInsert(selectedCategory); // 대분류 코드와 함께 상품 등록 처리 함수 호출
+        handleInsert(image); // 대분류 코드와 함께 상품 등록 처리 함수 호출
         setShowModal(false); // 모달 닫기
     };
 
@@ -63,14 +92,13 @@ const ProductModal = ({ handleChange, handleInsert, setShowModal }) => {
                 position: 'fixed', // 화면에 고정
                 inset: '0', // top, right, bottom, left를 0으로 설정
                 zIndex: 1050, // 모달이 다른 요소 위에 표시되도록 설정
-                overflowY: 'auto', // 화면 크기를 초과할 경우 스크롤 가능
             }}
             tabIndex="-1"
         >
             <div
                 className="modal-dialog"
                 style={{
-                    maxWidth: '600px', // 최대 너비 설정
+                    maxWidth: '800px', // 더 넓은 너비
                     width: '90%', // 화면 너비에 따라 조정
                     margin: 'auto', // 중앙 정렬
                 }}
@@ -84,9 +112,9 @@ const ProductModal = ({ handleChange, handleInsert, setShowModal }) => {
                             onClick={() => setShowModal(false)}
                         ></button>
                     </div>
-                    <div className="modal-body" style={{ maxHeight: '70vh', overflowY: 'auto' }}>
-                        {/* 내용 */}
-                        <form>
+                    <div className="modal-body" style={{ display: 'flex', gap: '20px', maxHeight: '70vh', overflowY: 'auto' }}>
+                        {/* 왼쪽: 입력 폼 */}
+                        <form style={{ flex: '2' }}>
                             <div className="mb-3">
                                 <label>대분류</label>
                                 <select
@@ -143,9 +171,51 @@ const ProductModal = ({ handleChange, handleInsert, setShowModal }) => {
                                     placeholder="상품 수량을 입력하세요."
                                 />
                             </div>
+                            <div className="mb-3">
+                                <label>상품 이미지</label>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    name="image"
+                                    onChange={handleImageChange}
+                                    className="form-control"
+                                />
+                            </div>
                         </form>
+                        {/* 오른쪽: 이미지 미리보기 */}
+                        <div style={{ flex: '1', textAlign: 'center' }}>
+                            {imagePreview ? (
+                                <img
+                                    src={imagePreview}
+                                    alt="상품 이미지 미리보기"
+                                    style={{
+                                        maxWidth: '100%',
+                                        maxHeight: '300px',
+                                        objectFit: 'contain',
+                                        border: '1px solid #ddd',
+                                        borderRadius: '8px',
+                                        padding: '5px',
+                                    }}
+                                />
+                            ) : (
+                                <div
+                                    style={{
+                                        width: '100%',
+                                        height: '300px',
+                                        border: '1px dashed #ccc',
+                                        borderRadius: '8px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        color: '#aaa',
+                                    }}
+                                >
+                                    상품 사진
+                                </div>
+                            )}
+                        </div>
                     </div>
-                    <div className="modal-footer">
+                    <div className="modal-footer" style={{ justifyContent: 'flex-end' }}>
                         <button
                             type="button"
                             className="btn btn-secondary"
