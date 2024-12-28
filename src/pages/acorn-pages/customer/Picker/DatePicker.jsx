@@ -2,10 +2,10 @@
 import React from 'react';
 import { DatePicker } from 'rsuite';
 
-const DatePickerComponent = ({ selected, onChange, disabled }) => (
+const DatePickerComponent = ({ selected, onChange, disabled, style }) => (
   <div className="date-picker-container">
     <DatePicker
-      // style={{ width: 600 }}
+      style={style}  // style을 props로 전달받음
       placeholder="날짜를 선택하세요"
       format="yyyy-MM-dd"
       oneTap
