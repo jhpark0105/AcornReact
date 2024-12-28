@@ -79,6 +79,7 @@ function App() {
     setShowDetailModal(true); // 상세보기 모달 열기
     setUpdating(false); // update 모드 초기화
   };
+  console.log("branchCode : ", localStorage.getItem("branchCode"));
 
   // 상세보기 모달에서 update 모드로 전환
   const handleUpdate = () => {// update 모드 활성화

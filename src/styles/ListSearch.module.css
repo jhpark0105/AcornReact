@@ -37,7 +37,8 @@
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 16px;
+    font-size: 14px;
+    height: 35px;
   }
 
 /* 셀렉 박스 공통 스타일 */
@@ -46,7 +47,8 @@
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 16px;
+    font-size: 14px;
+    height: 35px;
   }
   
   /* 기본 아이콘 버튼 */
