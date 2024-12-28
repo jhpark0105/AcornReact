@@ -6,7 +6,7 @@ import Main from 'layout/Dashboard';
 import Login from 'pages/authentication/login';
 
 // 마이페이지
-import MypageView from '../pages/acorn-pages/mypage/MypageView';
+import AdminMypageView from '../pages/acorn-pages/mypage/AdminMypage';
 import MypageUpdate from '../pages/acorn-pages/mypage/MypageUpdate';
 import ErrorBoundary from "../pages/extra-pages/ErrorBoundary";
 import {element} from "prop-types";
@@ -93,11 +93,11 @@ const MainRoutes = {
           element: <Notice />
         },
         {
-          path: 'manager/mypage',
+          path: 'admin/mypage',
           children: [
             {
               path: "view",
-              element: <MypageView />
+              element: <AdminMypageView />
             },
             {
               path: 'update',
