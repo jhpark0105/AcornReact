@@ -142,6 +142,7 @@ export default function CustomerDetail({ selectedCustomer, setShowDetailModal, r
                 <label>고객 등록일</label>
                 <br />
                 <DatePickerComponent
+                  style={{ width: 600 }}
                   selected={startDate} // 현재 선택된 날짜
                   onChange={handleDateChange} // 날짜 변경 핸들러
                   disabled={!isEditing} // 수정 모드에서만 활성화
