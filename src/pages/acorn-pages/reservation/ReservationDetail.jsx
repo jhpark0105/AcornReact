@@ -169,6 +169,7 @@ function ReservationDetail({
                                     type="date"
                                     name="reservationDate"
                                     value={reservation.reservationDate}
+                                    onFocus={(e) => e.target.showPicker()} //클릭 시 달력 표시
                                     onChange={(e) =>
                                         handleFieldChange('reservationDate', e.target.value)
                                     }
