@@ -6,7 +6,7 @@ function TimePickerComponent({ value, onChange, isEditing = false }) {
 	useEffect(() => {
 		// value가 변경될 때마다 selectedTime을 동기화
 		if (value) {
-			// "13:30:00" 형식을 "13:30"으로 변환
+			// "00:00:00" 형식을 "00:00"으로 변환
 			const formattedValue = value.includes(':') ? value.slice(0, 5) : value;
 			setSelectedTime(formattedValue);
 		}

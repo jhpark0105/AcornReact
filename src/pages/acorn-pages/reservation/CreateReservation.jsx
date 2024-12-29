@@ -103,6 +103,7 @@ function ReservationModal({ handleChange, handleInsert, setShowModal }) {
 									type="date"
 									name="reservationDate"
 									value={selectedReservation.reservationDate}
+									onFocus={(e) => e.target.showPicker()} //클릭 시 달력 표시
 									onChange={(e) => handleFieldChange(e.target.name, e.target.value)}
 									className="form-control"
 									min={new Date().toLocaleDateString('en-CA')} // 최소값: 오늘 날짜

@@ -52,7 +52,8 @@ function a11yProps(index) {
 
 export default function Profile() {
   // 데이터 매니저 갖고와서 마이페이지 간단히 보는 모달에 뿌려줄 용도
-  const [managerData, setManagerData] = useState(null);
+  //const [managerData, setManagerData] = useState(null);
+  // 어드민 데이터 갖고와서 마이페이지 간단히 보는 모달에 뿌려줄 용도
   const [adminData, setAdminData] = useState(null);
 
   // useEffect(() => {
@@ -83,6 +84,8 @@ export default function Profile() {
   //   fetchData();
   // }, []);
 
+  //branch로그인 필요없을시 검토후 아래 useeffect는 삭제 필요
+  /*
   useEffect(() => {
     const fetchAdminData = () => {
       fetch('http://localhost:8080/admin/mypage', {
@@ -125,6 +128,24 @@ export default function Profile() {
     // 순차적으로 요청 실행
     fetchAdminData();
     fetchManagerData();
+  }, []);
+  */
+
+  //admin 정보 가져오기
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // URL 파라미터 제거, 쿠키를 자동으로 포함하여 요청
+        const response = await axios.get(`http://localhost:8080/admin/mypage`, {
+          withCredentials: true // 크로스 도메인 요청 시 쿠키 포함
+        });
+        setAdminData(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error('데이터 로딩 중 오류:', error);
+      }
+    };
+    fetchData();
   }, []);
 
   const theme = useTheme();
@@ -183,12 +204,18 @@ export default function Profile() {
 
         <Stack direction="row" spacing={1.25} alignItems="center" sx={{ p: 0.5 }}>
           <Avatar alt="profile user" /* src={avatar1} */ size="sm" />
+          {/*branch로그인 필요없을 시 검토후 아래 managerData 조건 삭제*/}
+          {/*
           <Typography variant="subtitle1" sx={{ textTransform: 'capitalize' }}>
             {managerData?.branchCode
               ? managerData.branchName
               : adminData?.adminId
                 ? adminData.adminName
                 : '로딩 중...'}
+          </Typography>
+          */}
+          <Typography variant="subtitle1" sx={{ textTransform: 'capitalize' }}>
+            {adminData ? adminData.adminName : '로딩 중...'}
           </Typography>
         </Stack>
 
@@ -224,6 +251,8 @@ export default function Profile() {
                         <Stack direction="row" spacing={1.25} alignItems="center">
                           <Avatar alt="profile user" /* src={avatar1} */ sx={{ width: 32, height: 32 }} />
                           <Stack>
+                            {/*branch로그인 필요없을 시 검토후 아래 managerData 조건 삭제*/}
+                            {/*
                             <Typography variant="h6">
                               {managerData && managerData.branchCode
                                 ? managerData.branchName
@@ -237,6 +266,13 @@ export default function Profile() {
                                 : adminData && adminData.adminId
                                   ? `관리자 이름: ${adminData.adminName}`
                                   : '로딩 중...'}
+                            </Typography>
+                            */}
+                            <Typography variant="h6">
+                              {adminData ? adminData.adminName : '로딩 중...'}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              담당 관리자 : {adminData ? adminData.adminName : '로딩 중...'}
                             </Typography>
                           </Stack>
                         </Stack>

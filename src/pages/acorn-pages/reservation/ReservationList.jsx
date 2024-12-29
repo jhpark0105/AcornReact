@@ -4,10 +4,7 @@ import {Box,Table,TableBody,TableCell,TableContainer,TableHead,TableRow,Button} 
 import Pagination from "./paging/Pagination";
 import ListSearch from "./ListSearch";
 import DateSearch from "./DateSearch";
-import { RiSearchLine } from "react-icons/ri";
-import styles from "./ListSearch.module.css";
-import { ToastContainer, toast } from 'react-toastify';
-import { height } from '@mui/system';
+import { toast } from 'react-toastify';
 
 function ReservationList({ reservations, handleDetail, setShowModal }) {
   const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태 관리
