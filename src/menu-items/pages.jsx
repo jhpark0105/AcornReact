@@ -22,19 +22,19 @@ const pages = {
 		{
 			id: 'customer',
 			title: '고객 관리',
-			url: 'customer', /* 부모 경로부터 누적된 상대경로를 요청 */
+			url: '/main/customer', /* 부모 경로부터 누적된 상대경로를 요청 */
 			type: 'item'
 		},
 		{
 			id: 'member',
 			title: '직원 관리',
-			url: 'member',
+			url: '/main/member',
 			type: 'item'
 		},
 		{
 			id: 'service',
 			title: '서비스 관리',
-			url: 'service',
+			url: '/main/service',
 			type: 'item'
 		},
 		{
