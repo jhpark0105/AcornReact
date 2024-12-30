@@ -12,7 +12,7 @@ import logo from 'src/assets/favicon.ico'; // 경로 확인 필요
 
 const LogoSection = ({ sx, to }) => {
   return (
-    <ButtonBase disableRipple component={Link} to={to ? to : '/'} sx={sx}>
+    <ButtonBase disableRipple component={Link} to={to ? to : '/main/dashboard'} sx={sx}>
       <Stack direction="row" spacing={1} alignItems="center">
         {/* 로고 이미지 추가 */}
         <img src={logo} alt="Logo" style={{ width: 40, height: 40 }} /> {/* 크기 조정 */}
