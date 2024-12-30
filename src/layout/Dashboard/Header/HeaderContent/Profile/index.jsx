@@ -215,7 +215,7 @@ export default function Profile() {
           </Typography>
           */}
           <Typography variant="subtitle1" sx={{ textTransform: 'capitalize' }}>
-            {adminData ? adminData.adminName : '로딩 중...'}
+            {adminData ? adminData.adminId : '로딩 중...'}
           </Typography>
         </Stack>
 
@@ -269,7 +269,7 @@ export default function Profile() {
                             </Typography>
                             */}
                             <Typography variant="h6">
-                              {adminData ? adminData.adminName : '로딩 중...'}
+                              {adminData ? adminData.adminId : '로딩 중...'}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
                               담당 관리자 : {adminData ? adminData.adminName : '로딩 중...'}
