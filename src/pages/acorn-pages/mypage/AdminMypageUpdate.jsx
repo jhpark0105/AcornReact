@@ -29,12 +29,13 @@ const ReadOnlyTextField = styled(TextField)({
 
 /**
  * AdminMypageUpdate 컴포넌트
- * 관리자 마이페이지를 수정할 수 있는 폼을 렌더링
+ * 관리자 마이페이지를 수정 및 탈퇴할 수 있는 폼을 렌더링
  */
 const AdminMypageUpdate = () => {
 	const navigate = useNavigate();
 	const [formData, setFormData] = useState(null); // 관리자 데이터 상태
 	const [showModal, setShowModal] = useState(false); // 수정 확인 모달 표시 상태
+	const [showDeleteModal, setShowDeleteModal] = useState(false); // 탈퇴 확인 모달 표시 상태
 
 	/**
 	 * 컴포넌트가 마운트될 때 관리자 데이터를 서버에서 가져옴
@@ -93,6 +94,30 @@ const AdminMypageUpdate = () => {
 		}
 	};
 
+	/**
+	 * 탈퇴 버튼 클릭 시 실행
+	 * 탈퇴 확인 모달 표시
+	 */
+	const handleDelete = () => {
+		setShowDeleteModal(true);
+	};
+
+	/**
+	 * 탈퇴 확인 모달에서 확인 버튼 클릭 시 실행
+	 * 서버에 DELETE 요청을 보내 관리자 계정 삭제
+	 */
+	const confirmDelete = async () => {
+		try {
+			await axios.delete(`http://localhost:8080/admin/${formData.adminId}`, {
+				withCredentials: true, // 인증 쿠키 포함
+			});
+			setShowDeleteModal(false);
+			navigate('/'); // 탈퇴 후 메인 페이지로 이동
+		} catch (error) {
+			console.error('관리자 탈퇴 중 오류:', error);
+		}
+	};
+
 	// 데이터 로딩 중 상태 표시
 	if (!formData) return <div>로딩 중...</div>;
 
@@ -104,6 +129,14 @@ const AdminMypageUpdate = () => {
 					message="관리자 정보를 수정하시겠습니까?"
 					onConfirm={confirmUpdate}
 					onCancel={() => setShowModal(false)}
+				/>
+			)}
+			{/** 탈퇴 확인 모달 */}
+			{showDeleteModal && (
+				<ConfirmModal
+					message="정말로 탈퇴하시겠습니까?"
+					onConfirm={confirmDelete}
+					onCancel={() => setShowDeleteModal(false)}
 				/>
 			)}
 			{/** 페이지 제목 */}
@@ -135,8 +168,8 @@ const AdminMypageUpdate = () => {
 						{/** 관리자 연락처 입력 필드 */}
 						<TextField
 							label="관리자 연락처"
-							name="adminTel"
-							value={formData.adminTel}
+							name="adminPhone"
+							value={formData.adminPhone}
 							onChange={handleChange}
 							fullWidth
 							margin="normal"
@@ -157,6 +190,9 @@ const AdminMypageUpdate = () => {
 			<Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
 				<Button type="submit" variant="contained" color="primary" onClick={handleUpdate} sx={{ mr: 2 }}>
 					수정하기
+				</Button>
+				<Button variant="contained" color="error" onClick={handleDelete} sx={{ mr: 2 }}>
+					탈퇴하기
 				</Button>
 				<Button variant="outlined" color="secondary" onClick={() => navigate(-1)}>
 					뒤로가기
