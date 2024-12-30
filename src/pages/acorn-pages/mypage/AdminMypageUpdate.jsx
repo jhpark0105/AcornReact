@@ -80,20 +80,27 @@ const AdminMypageUpdate = () => {
 
 	/**
 	 * 수정 확인 모달에서 확인 버튼 클릭 시 실행
-	 * 서버에 PUT 요청을 보내 수정 내용을 저장하고 완료 후 이전 페이지로 이동
+	 * 서버에 PUT 요청을 보내 수정 내용을 저장
 	 */
 	const confirmUpdate = async () => {
 		try {
-			await axios.put(`http://localhost:8080/admin/${formData.adminId}`, formData, {
-				withCredentials: true, // 인증 쿠키 포함
+			const updatedData = { ...formData };
+
+			console.log("Updated data sent to server:", updatedData);
+
+			const response = await axios.put(`http://localhost:8080/admin/${formData.adminId}`, updatedData, {
+				withCredentials: true,
 			});
+
+			alert("수정이 완료되었습니다.");
 			setShowModal(false);
-			navigate('/main/admin/mypage/view'); // 수정 완료 후 이동할 페이지
+			navigate("/main/admin/mypage/view");
 		} catch (error) {
-			console.error('관리자 수정 중 오류:', error);
+			console.error("관리자 수정 중 오류:", error);
+			alert("수정에 실패했습니다. 다시 시도해주세요.");
 		}
 	};
-
+	
 	/**
 	 * 탈퇴 버튼 클릭 시 실행
 	 * 탈퇴 확인 모달 표시
@@ -111,10 +118,12 @@ const AdminMypageUpdate = () => {
 			await axios.delete(`http://localhost:8080/admin/${formData.adminId}`, {
 				withCredentials: true, // 인증 쿠키 포함
 			});
+			alert('계정이 삭제되었습니다.');
 			setShowDeleteModal(false);
 			navigate('/'); // 탈퇴 후 메인 페이지로 이동
 		} catch (error) {
 			console.error('관리자 탈퇴 중 오류:', error);
+			alert('탈퇴에 실패했습니다. 다시 시도해주세요.');
 		}
 	};
 
@@ -183,6 +192,7 @@ const AdminMypageUpdate = () => {
 							fullWidth
 							margin="normal"
 						/>
+
 					</form>
 				</Grid>
 			</Grid>
