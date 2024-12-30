@@ -19,16 +19,26 @@ import { BellOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import MainCard from 'components/MainCard';
 import Transitions from 'components/@extended/Transitions';
 
+/**
+ * Notification 컴포넌트
+ * - WebSocket과 REST API를 사용하여 실시간 알림과 알림 목록을 표시
+ */
 export default function Notification() {
-  const anchorRef = useRef(null);
-  const [notifications, setNotifications] = useState([]); // 알림 목록
-  const [unreadCount, setUnreadCount] = useState(0); // 읽지 않은 알림 개수
-  const [open, setOpen] = useState(false);
-  const [hasMore, setHasMore] = useState(true); // 추가로 불러올 알림이 있는지 확인
-  const [isFetching, setIsFetching] = useState(false); // 데이터가 이미 로딩 중인지 확인
-  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 번호
+  const anchorRef = useRef(null); // Popper의 anchor를 참조하는 ref
+  const [notifications, setNotifications] = useState([]); // 알림 목록 상태
+  const [unreadCount, setUnreadCount] = useState(0); // 읽지 않은 알림 개수 상태
+  const [open, setOpen] = useState(false); // Popper 열림 상태
+  const [hasMore, setHasMore] = useState(true); // 추가 알림 로드 여부
+  const [isFetching, setIsFetching] = useState(false); // 데이터 로드 중 여부
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 번호 상태
 
-  // 중복 제거 함수
+  /**
+   * 중복 알림 필터링
+   * - 새로운 알림과 기존 알림을 비교하여 중복 제거
+   * @param {Array} newNotifications - 새로 가져온 알림 목록
+   * @param {Array} existingNotifications - 기존 알림 목록
+   * @returns {Array} 중복 제거된 알림 목록
+   */
   const filterDuplicates = (newNotifications, existingNotifications) => {
     return newNotifications.filter(
       (newNotification) =>
@@ -38,7 +48,10 @@ export default function Notification() {
     );
   };
 
-  // 서버에서 알림 목록을 가져오기
+  /**
+   * 서버에서 알림 목록 가져오기
+   * @param {number} page - 요청할 페이지 번호
+   */
   const fetchNotifications = async (page = 1) => {
     if (isFetching) return;
     setIsFetching(true);
@@ -49,7 +62,7 @@ export default function Notification() {
         const data = await response.json();
 
         if (data.length === 0) {
-          setHasMore(false); // 더 이상 데이터가 없으면 스크롤 종료
+          setHasMore(false); // 더 이상 데이터가 없으면 추가 로드 중지
         } else {
           setNotifications((prev) => {
             const combinedNotifications = [...prev, ...data];
@@ -73,7 +86,11 @@ export default function Notification() {
     }
   };
 
-  // WebSocket에서 새 알림 처리
+  /**
+   * WebSocket으로 수신한 새 알림 처리
+   * - 중복 여부를 확인 후 상태 업데이트
+   * @param {Object} newNotification - WebSocket으로 수신한 알림
+   */
   const processNewNotification = (newNotification) => {
     setNotifications((prev) => {
       if (prev.some((n) => n.id === newNotification.id)) {
@@ -91,7 +108,11 @@ export default function Notification() {
     });
   };
 
-  // 읽음 처리
+  /**
+   * 알림 읽음 처리
+   * - 특정 알림을 읽은 상태로 업데이트.
+   * @param {number} notificationId - 읽음 처리할 알림 ID
+   */
   const handleNotificationClick = async (notificationId) => {
     try {
       const notification = notifications.find((n) => n.id === notificationId);
@@ -126,7 +147,9 @@ export default function Notification() {
     }
   };
 
-  // 모든 알림 읽음 처리
+  /**
+   * 모든 알림 읽음 처리
+   */
   const markAllAsRead = async () => {
     try {
       await fetch(`http://localhost:8080/api/notifications/read`, { method: 'POST' });
@@ -140,7 +163,10 @@ export default function Notification() {
     }
   };
 
-  // WebSocket 초기화 및 구독
+  /**
+   * WebSocket 초기화 및 구독 설정
+   * - 컴포넌트가 마운트될 때 실행되고 언마운트 시 WebSocket 연결 해제
+   */
   useEffect(() => {
     const socket = new SockJS('http://localhost:8080/ws');
     const stompClient = Stomp.over(socket);
@@ -176,6 +202,9 @@ export default function Notification() {
     return () => stompClient.disconnect();
   }, []);
 
+  /**
+   * 무한 스크롤을 통해 알림 더 불러오기
+   */
   const loadMoreNotifications = () => {
     if (!isFetching && hasMore) {
       const nextPage = currentPage + 1;
@@ -184,7 +213,16 @@ export default function Notification() {
     }
   };
 
+  /**
+   * Popper 열기/닫기 토글
+   */
   const handleToggle = () => setOpen((prev) => !prev);
+
+  /**
+   * Popper 닫기
+   * - Popper 외부를 클릭하면 닫히도록 설정
+   * @param {Object} event - 클릭 이벤트 객체
+   */
   const handleClose = (event) => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) return;
     setOpen(false);

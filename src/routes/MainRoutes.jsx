@@ -7,7 +7,7 @@ import Login from 'pages/authentication/login';
 
 // 마이페이지
 import AdminMypageView from '../pages/acorn-pages/mypage/AdminMypage';
-import MypageUpdate from '../pages/acorn-pages/mypage/MypageUpdate';
+import AdminMypageUpdate from '../pages/acorn-pages/mypage/AdminMypageUpdate';
 import ErrorBoundary from "../pages/extra-pages/ErrorBoundary";
 import {element} from "prop-types";
 import ChatPage from '../pages/acorn-pages/chat/Attendance';
@@ -102,7 +102,7 @@ const MainRoutes = {
             },
             {
               path: 'update',
-              element: <MypageUpdate />
+              element: <AdminMypageUpdate />
             },
           ]
         },
