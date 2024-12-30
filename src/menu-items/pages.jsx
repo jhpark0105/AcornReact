@@ -79,8 +79,8 @@ const pages = {
 		},
 		{
 			id: 'chat',
-			title: '채팅 관리',
-			url: '/main/chat',
+			title: '근태 관리',
+			url: '/main/attendance',
 			type: 'item'
 		},
 		{
