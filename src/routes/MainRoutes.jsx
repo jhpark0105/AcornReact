@@ -10,7 +10,8 @@ import AdminMypageView from '../pages/acorn-pages/mypage/AdminMypage';
 import MypageUpdate from '../pages/acorn-pages/mypage/MypageUpdate';
 import ErrorBoundary from "../pages/extra-pages/ErrorBoundary";
 import {element} from "prop-types";
-import ChatPage from '../pages/acorn-pages/chat/ChatPage';
+import ChatPage from '../pages/acorn-pages/chat/Attendance';
+import Attendance from '../pages/acorn-pages/chat/Attendance';
 
 // =====
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard/index')));
@@ -22,7 +23,7 @@ const Reservation = Loadable(lazy(() => import('pages/acorn-pages/reservation/Re
 const ReservationStatus = Loadable(lazy(() => import('pages/acorn-pages/reservation/ReservationStatus')));
 const ProductB = Loadable(lazy(() => import('pages/acorn-pages/product/PRODUCT_B')));
 const ProductS = Loadable(lazy(() => import('pages/acorn-pages/product/PRODUCT_S')));
-const Order = Loadable(lazy(() => import('pages/acorn-pages/chat/ChatPage')));
+const Order = Loadable(lazy(() => import('pages/acorn-pages/chat/Attendance')));
 const Notice = Loadable(lazy(() => import('pages/acorn-pages/notice/Notice')));
 // ====================
 
@@ -85,8 +86,8 @@ const MainRoutes = {
             },
           ]
         },        {
-          path: 'chat/*',
-          element: <ChatPage />
+          path: 'attendance/*',
+          element: <Attendance />
         },
         {
           path: 'notice/*',
