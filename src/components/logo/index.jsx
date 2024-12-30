@@ -4,33 +4,21 @@ import { Link } from 'react-router-dom';
 // material-ui
 import { ButtonBase, Typography } from '@mui/material';
 import Stack from '@mui/material/Stack';
-import Chip from '@mui/material/Chip';
 
-// project import
-import Logo from './LogoMain';
-import config from 'config';
+// 로고 이미지 import (favicon.ico 또는 다른 파일)
+import logo from 'src/assets/favicon.ico'; // 경로 확인 필요
 
 // ==============================|| MAIN LOGO ||============================== //
 
 const LogoSection = ({ sx, to }) => {
   return (
-    <ButtonBase disableRipple component={Link} to={to ? to : config.defaultPath} sx={sx}>
+    <ButtonBase disableRipple component={Link} to={to ? to : '/'} sx={sx}>
       <Stack direction="row" spacing={1} alignItems="center">
-
-        {/* 로고 예시. 언제든지 다른 걸로 바꿔도 됨 */}
-        <Typography variant='h5' color='primary' align='center' >
-          뷰티샵 ERP
+        {/* 로고 이미지 추가 */}
+        <img src={logo} alt="Logo" style={{ width: 40, height: 40 }} /> {/* 크기 조정 */}
+        <Typography variant="h5" align="center">
+          ACORN BEAUTY
         </Typography>
-
-        {/*<Logo />*/} {/* mantis 로고 ("mantis"란 글자도 포함된 하나의 이미지 파일임) (사이드바 좌상에 있는 로고) */} 
-        
-        {/* {<Chip
-          label={"유기력"}
-          variant="outlined"
-          size="small"
-          color="secondary"
-          sx={{ mt: 0.5, ml: 1, fontSize: '0.725rem', height: 20, '& .MuiChip-label': { px: 0.5 } }}
-        />} */}
       </Stack>
     </ButtonBase>
   );
