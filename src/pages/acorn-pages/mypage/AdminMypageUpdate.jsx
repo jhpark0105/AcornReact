@@ -4,6 +4,8 @@ import { Paper, TextField, Button, Grid, Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import ConfirmModal from './ConfirmModal';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 /**
  * ReadOnlyTextField 스타일링
@@ -27,19 +29,12 @@ const ReadOnlyTextField = styled(TextField)({
 	},
 });
 
-/**
- * AdminMypageUpdate 컴포넌트
- * 관리자 마이페이지를 수정 및 탈퇴할 수 있는 폼을 렌더링
- */
-const AdminMypageUpdate = () => {
+const AdminMypageUpdate = ({ onUpdateSuccess }) => {
 	const navigate = useNavigate();
 	const [formData, setFormData] = useState(null); // 관리자 데이터 상태
 	const [showModal, setShowModal] = useState(false); // 수정 확인 모달 표시 상태
 	const [showDeleteModal, setShowDeleteModal] = useState(false); // 탈퇴 확인 모달 표시 상태
 
-	/**
-	 * 컴포넌트가 마운트될 때 관리자 데이터를 서버에서 가져옴
-	 */
 	useEffect(() => {
 		const fetchAdminData = async () => {
 			try {
@@ -49,166 +44,136 @@ const AdminMypageUpdate = () => {
 				setFormData(response.data);
 			} catch (error) {
 				console.error('데이터 로딩 중 오류:', error);
+				toast.error('데이터 로딩 중 오류가 발생했습니다.');
 			}
 		};
 
 		fetchAdminData();
 	}, []);
 
-	/**
-	 * 입력 필드 변경 처리 함수
-	 * 사용자의 입력값을 formData 상태에 반영
-	 * @param {Object} e - 입력 이벤트 객체
-	 */
-	const handleChange = (e) => {
-		const { name, value } = e.target;
-		setFormData((prev) => ({
-			...prev,
-			[name]: value,
-		}));
-	};
-
-	/**
-	 * 수정 버튼 클릭 시 실행
-	 * 수정 확인 모달 표시
-	 * @param {Object} e - 클릭 이벤트 객체
-	 */
 	const handleUpdate = (e) => {
 		e.preventDefault();
 		setShowModal(true);
 	};
 
-	/**
-	 * 수정 확인 모달에서 확인 버튼 클릭 시 실행
-	 * 서버에 PUT 요청을 보내 수정 내용을 저장
-	 */
 	const confirmUpdate = async () => {
 		try {
 			const updatedData = { ...formData };
 
-			console.log("Updated data sent to server:", updatedData);
+			console.log('Updated data sent to server:', updatedData);
 
-			const response = await axios.put(`http://localhost:8080/admin/${formData.adminId}`, updatedData, {
+			await axios.put(`http://localhost:8080/admin/${formData.adminId}`, updatedData, {
 				withCredentials: true,
 			});
 
-			alert("수정이 완료되었습니다.");
-			setShowModal(false);
-			navigate("/main/admin/mypage/view");
+			toast.success('수정이 완료되었습니다.'); // 토스트 표시
+
+			setTimeout(() => {
+				navigate('/main/admin/mypage/view'); // 수정 완료 후 마이페이지로 이동
+			}, 4000); // 2초 후 페이지 이동
 		} catch (error) {
-			console.error("관리자 수정 중 오류:", error);
-			alert("수정에 실패했습니다. 다시 시도해주세요.");
+			console.error('정보 수정 중 오류:', error);
+			toast.error('수정에 실패했습니다. 다시 시도해주세요.');
+		} finally {
+			setShowModal(false); // 모달 닫기
 		}
 	};
-	
-	/**
-	 * 탈퇴 버튼 클릭 시 실행
-	 * 탈퇴 확인 모달 표시
-	 */
+
 	const handleDelete = () => {
 		setShowDeleteModal(true);
 	};
 
-	/**
-	 * 탈퇴 확인 모달에서 확인 버튼 클릭 시 실행
-	 * 서버에 DELETE 요청을 보내 관리자 계정 삭제
-	 */
 	const confirmDelete = async () => {
 		try {
 			await axios.delete(`http://localhost:8080/admin/${formData.adminId}`, {
 				withCredentials: true, // 인증 쿠키 포함
 			});
-			alert('계정이 삭제되었습니다.');
-			setShowDeleteModal(false);
-			navigate('/'); // 탈퇴 후 메인 페이지로 이동
+			setShowDeleteModal(false); // 모달 닫기
+			setTimeout(() => {
+				navigate('/');
+			}, 1000);
 		} catch (error) {
-			console.error('관리자 탈퇴 중 오류:', error);
-			alert('탈퇴에 실패했습니다. 다시 시도해주세요.');
+			console.error('계정 탈퇴 중 오류:', error);
+			toast.error('탈퇴에 실패했습니다. 다시 시도해주세요.');
+			setShowDeleteModal(false); // 모달 닫기
 		}
 	};
 
-	// 데이터 로딩 중 상태 표시
 	if (!formData) return <div>로딩 중...</div>;
 
 	return (
-		<Paper elevation={3} sx={{ maxWidth: 800, margin: 'auto', p: 4 }}>
-			{/** 수정 확인 모달 */}
-			{showModal && (
-				<ConfirmModal
-					message="관리자 정보를 수정하시겠습니까?"
-					onConfirm={confirmUpdate}
-					onCancel={() => setShowModal(false)}
-				/>
-			)}
-			{/** 탈퇴 확인 모달 */}
-			{showDeleteModal && (
-				<ConfirmModal
-					message="정말로 탈퇴하시겠습니까?"
-					onConfirm={confirmDelete}
-					onCancel={() => setShowDeleteModal(false)}
-				/>
-			)}
-			{/** 페이지 제목 */}
-			<Typography variant="h5" align="center" sx={{ color: '#1976d2', marginBottom: 3 }}>
-				내 정보 수정
-			</Typography>
-			<Grid container spacing={3}>
-				<Grid item xs={12}>
-					<form onSubmit={handleUpdate}>
-						{/** 관리자 ID (읽기 전용 필드) */}
-						<ReadOnlyTextField
-							label="관리자 ID"
-							name="adminId"
-							value={formData.adminId}
-							fullWidth
-							margin="normal"
-							InputProps={{ readOnly: true }}
-							disabled
-						/>
-						{/** 관리자 이름 입력 필드 */}
-						<TextField
-							label="관리자 이름"
-							name="adminName"
-							value={formData.adminName}
-							onChange={handleChange}
-							fullWidth
-							margin="normal"
-						/>
-						{/** 관리자 연락처 입력 필드 */}
-						<TextField
-							label="관리자 연락처"
-							name="adminPhone"
-							value={formData.adminPhone}
-							onChange={handleChange}
-							fullWidth
-							margin="normal"
-						/>
-						{/** 관리자 이메일 입력 필드 */}
-						<TextField
-							label="관리자 이메일"
-							name="adminEmail"
-							value={formData.adminEmail}
-							onChange={handleChange}
-							fullWidth
-							margin="normal"
-						/>
-
-					</form>
+		<>
+			<ToastContainer />
+			<Paper elevation={3} sx={{ maxWidth: 800, margin: 'auto', p: 4 }}>
+				{showModal && (
+					<ConfirmModal
+						message="정보를 수정하시겠습니까?"
+						onConfirm={confirmUpdate}
+						onCancel={() => setShowModal(false)}
+					/>
+				)}
+				{showDeleteModal && (
+					<ConfirmModal
+						message="정말로 탈퇴하시겠습니까?"
+						onConfirm={confirmDelete}
+						onCancel={() => setShowDeleteModal(false)}
+					/>
+				)}
+				<Typography variant="h5" align="center" sx={{ color: '#1976d2', marginBottom: 3 }}>
+					내 정보 수정
+				</Typography>
+				<Grid container spacing={3}>
+					<Grid item xs={12}>
+						<form onSubmit={handleUpdate}>
+							<ReadOnlyTextField
+								label="관리자 ID"
+								name="adminId"
+								value={formData.adminId}
+								fullWidth
+								margin="normal"
+								InputProps={{ readOnly: true }}
+								disabled
+							/>
+							<TextField
+								label="관리자 이름"
+								name="adminName"
+								value={formData.adminName}
+								onChange={(e) => setFormData({ ...formData, adminName: e.target.value })}
+								fullWidth
+								margin="normal"
+							/>
+							<TextField
+								label="관리자 연락처"
+								name="adminPhone"
+								value={formData.adminPhone}
+								onChange={(e) => setFormData({ ...formData, adminPhone: e.target.value })}
+								fullWidth
+								margin="normal"
+							/>
+							<TextField
+								label="관리자 이메일"
+								name="adminEmail"
+								value={formData.adminEmail}
+								onChange={(e) => setFormData({ ...formData, adminEmail: e.target.value })}
+								fullWidth
+								margin="normal"
+							/>
+						</form>
+					</Grid>
 				</Grid>
-			</Grid>
-			{/** 버튼 영역 */}
-			<Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-				<Button type="submit" variant="contained" color="primary" onClick={handleUpdate} sx={{ mr: 2 }}>
-					수정하기
-				</Button>
-				<Button variant="contained" color="error" onClick={handleDelete} sx={{ mr: 2 }}>
-					탈퇴하기
-				</Button>
-				<Button variant="outlined" color="secondary" onClick={() => navigate(-1)}>
-					뒤로가기
-				</Button>
-			</Box>
-		</Paper>
+				<Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+					<Button type="submit" variant="contained" color="primary" onClick={handleUpdate} sx={{ mr: 2 }}>
+						수정하기
+					</Button>
+					<Button variant="contained" color="error" onClick={handleDelete} sx={{ mr: 2 }}>
+						탈퇴하기
+					</Button>
+					<Button variant="outlined" color="secondary" onClick={() => navigate(-1)}>
+						뒤로가기
+					</Button>
+				</Box>
+			</Paper>
+		</>
 	);
 };
 

@@ -30,7 +30,6 @@ import Transitions from 'components/@extended/Transitions';
 import LogoutOutlined from '@ant-design/icons/LogoutOutlined';
 import SettingOutlined from '@ant-design/icons/SettingOutlined';
 import UserOutlined from '@ant-design/icons/UserOutlined';
-import avatar1 from 'assets/images/users/avatar-1.png';
 
 // tab panel wrapper
 function TabPanel({ children, value, index, ...other }) {
@@ -51,98 +50,17 @@ function a11yProps(index) {
 // ==============================|| HEADER CONTENT - PROFILE ||============================== //
 
 export default function Profile() {
-  // 데이터 매니저 갖고와서 마이페이지 간단히 보는 모달에 뿌려줄 용도
-  //const [managerData, setManagerData] = useState(null);
-  // 어드민 데이터 갖고와서 마이페이지 간단히 보는 모달에 뿌려줄 용도
-  const [adminData, setAdminData] = useState(null);
+  const [adminData, setAdminData] = useState(null); // Admin data state
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.get(`http://localhost:8080/manager/mypage/B004`);
-  //       setManagerData(response.data);
-  //     } catch (error) {
-  //       console.error('데이터 로딩 중 오류:', error);
-  //     }
-  //   };
-  //   fetchData();
-  // }, []);
-
-  // 컴포넌트 렌더링 후 매니저 데이터 갖고옴
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       // URL 파라미터 제거, 쿠키를 자동으로 포함하여 요청
-  //       const response = await axios.get(`http://localhost:8080/manager/mypage`, {
-  //         withCredentials: true // 크로스 도메인 요청 시 쿠키 포함
-  //       });
-  //       setManagerData(response.data);
-  //     } catch (error) {
-  //       console.error('데이터 로딩 중 오류:', error);
-  //     }
-  //   };
-  //   fetchData();
-  // }, []);
-
-  //branch로그인 필요없을시 검토후 아래 useeffect는 삭제 필요
-  /*
-  useEffect(() => {
-    const fetchAdminData = () => {
-      fetch('http://localhost:8080/admin/mypage', {
-        credentials: 'include', // 쿠키 포함
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('Admin 데이터 로드 실패');
-          }
-          return response.json();
-        })
-        .then((data) => {
-          setAdminData(data); // Admin 데이터 설정
-          console.log('Admin Data:', data); // 디버깅용
-        })
-        .catch((error) => {
-          console.error('Admin 데이터 로딩 중 오류:', error);
-        });
-    };
-
-    const fetchManagerData = () => {
-      fetch('http://localhost:8080/manager/mypage', {
-        credentials: 'include', // 쿠키 포함
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('Manager 데이터 로드 실패');
-          }
-          return response.json();
-        })
-        .then((data) => {
-          setManagerData(data); // Manager 데이터 설정
-          console.log('Manager Data:', data); // 디버깅용
-        })
-        .catch((error) => {
-          console.error('Manager 데이터 로딩 중 오류:', error);
-        });
-    };
-
-    // 순차적으로 요청 실행
-    fetchAdminData();
-    fetchManagerData();
-  }, []);
-  */
-
-  //admin 정보 가져오기
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // URL 파라미터 제거, 쿠키를 자동으로 포함하여 요청
-        const response = await axios.get(`http://localhost:8080/admin/mypage`, {
-          withCredentials: true // 크로스 도메인 요청 시 쿠키 포함
+        const response = await axios.get('http://localhost:8080/admin/mypage', {
+          withCredentials: true // Include cookies for cross-domain requests
         });
         setAdminData(response.data);
-        console.log(response.data);
       } catch (error) {
-        console.error('데이터 로딩 중 오류:', error);
+        console.error('Error loading admin data:', error);
       }
     };
     fetchData();
@@ -174,14 +92,20 @@ export default function Profile() {
     axios.post('http://localhost:8080/logoutProcess')
       .then((response) => {
         if (response.status === 200) {
-          //alert("로그아웃 성공");
           navigate('/main/login');
         }
       })
       .catch(error => {
-        console.error("로그아웃 에러 : ",error);
-      })
-  }
+        console.error('Logout error:', error);
+      });
+  };
+
+  const updateAdminName = (newName) => {
+    setAdminData((prevData) => ({
+      ...prevData,
+      adminName: newName,
+    }));
+  };
 
   const iconBackColorOpen = 'grey.100';
 
@@ -201,27 +125,14 @@ export default function Profile() {
         aria-haspopup="true"
         onClick={handleToggle}
       >
-
         <Stack direction="row" spacing={1.25} alignItems="center" sx={{ p: 0.5 }}>
-          <Avatar alt="profile user" /* src={avatar1} */ size="sm" />
-          {/*branch로그인 필요없을 시 검토후 아래 managerData 조건 삭제*/}
-          {/*
+          <Avatar alt="profile user" size="sm" />
           <Typography variant="subtitle1" sx={{ textTransform: 'capitalize' }}>
-            {managerData?.branchCode
-              ? managerData.branchName
-              : adminData?.adminId
-                ? adminData.adminName
-                : '로딩 중...'}
-          </Typography>
-          */}
-          <Typography variant="subtitle1" sx={{ textTransform: 'capitalize' }}>
-            {adminData ? adminData.adminId : '로딩 중...'}
+            {adminData ? adminData.adminId : 'Loading...'}
           </Typography>
         </Stack>
-
       </ButtonBase>
 
-      {/* 마이페이지 세부 설정 보기 */}
       <Popper
         placement="bottom-end"
         open={open}
@@ -249,30 +160,10 @@ export default function Profile() {
                     <Grid container justifyContent="space-between" alignItems="center">
                       <Grid item>
                         <Stack direction="row" spacing={1.25} alignItems="center">
-                          <Avatar alt="profile user" /* src={avatar1} */ sx={{ width: 32, height: 32 }} />
+                          <Avatar alt="profile user" sx={{ width: 32, height: 32 }} />
                           <Stack>
-                            {/*branch로그인 필요없을 시 검토후 아래 managerData 조건 삭제*/}
-                            {/*
                             <Typography variant="h6">
-                              {managerData && managerData.branchCode
-                                ? managerData.branchName
-                                : adminData && adminData.adminId
-                                  ? adminData.adminName
-                                  : '로딩 중...'}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                              {managerData && managerData.branchCode
-                                ? `담당 관리자: ${managerData.branchName}`
-                                : adminData && adminData.adminId
-                                  ? `관리자 이름: ${adminData.adminName}`
-                                  : '로딩 중...'}
-                            </Typography>
-                            */}
-                            <Typography variant="h6">
-                              {adminData ? adminData.adminId : '로딩 중...'}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                              담당 관리자 : {adminData ? adminData.adminName : '로딩 중...'}
+                              {adminData ? adminData.adminId : 'Loading...'}
                             </Typography>
                           </Stack>
                         </Stack>
@@ -316,7 +207,7 @@ export default function Profile() {
                     </Tabs>
                   </Box>
                   <TabPanel value={value} index={0} dir={theme.direction}>
-                    <ProfileTab />
+                    <ProfileTab updateAdminName={updateAdminName} />
                   </TabPanel>
                   <TabPanel value={value} index={1} dir={theme.direction}>
                     <SettingTab />
