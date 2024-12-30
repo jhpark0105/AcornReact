@@ -32,6 +32,8 @@ const AttendanceForm = ({ existingData, refreshTable }) => {
   };
 
   return (
+    <div>
+    <h2>근태 관리</h2>
     <form onSubmit={handleSubmit}>
       <label>
         날짜:
@@ -80,6 +82,7 @@ const AttendanceForm = ({ existingData, refreshTable }) => {
       </label>
       <button type="submit">저장</button>
     </form>
+    </div>
   );
 };
 
