@@ -86,6 +86,12 @@ function PRODUCT() {
 
   // 상품 수정
   const handleSave = () => {
+    // 이미지가 없는 경우 에러 메시지 출력
+    if (!selectedProduct.imageFile && !selectedProduct.productImagePath) {
+      toast.error("상품 사진을 등록하세요.");
+      return;
+    }
+
     const formData = new FormData();
 
     formData.append("dto", new Blob([JSON.stringify(selectedProduct)], { type: "application/json" }));
