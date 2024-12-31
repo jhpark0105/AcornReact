@@ -14,27 +14,35 @@ function ReservationList({ reservations, handleDetail, setShowModal }) {
   const [selectedFilter, setSelectedFilter] = useState("serviceName"); // 선택된 기준 필터
   const [startDate, setStartDate] = useState(null); // 기간 조회 - 시작 날짜
   const [endDate, setEndDate] = useState(null); // 기간 조회 - 끝 날짜
+  const [order, setOrder] = useState("asc"); // 초기 정렬 방향
+  const [orderBy, setOrderBy] = useState("reservationDate"); // 초기 정렬 기준 : 예약 날짜
+
 
   // 초기 렌더링 시 filteredData를 reservations로 설정
   useEffect(() => {
     if (reservations && reservations.length > 0) {
       const today = new Date();
-      const startOfMonth = new Date(today.getFullYear(), today.getMonth(), today.getDate()); // 접속 당일 날짜
-      const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate()); // 접속 날짜로부터 + 1달
+      const startOfMonth = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
 
-      // 시작일 종료일 지정 
       setStartDate(startOfMonth);
       setEndDate(endOfMonth);
 
-      // 필터링된 데이터 설정 (초기 데이터는 한 달만 필터링)
-      const filtered = reservations.filter((reservation) => {
+      let filtered = reservations.filter((reservation) => {
         const reservationDate = new Date(reservation.reservationDate);
         return reservationDate >= startOfMonth && reservationDate <= endOfMonth;
       });
 
+      // 빠른 날자를 기준으로 정렬
+      filtered = filtered.sort((a, b) => {
+        const dateA = new Date(a[orderBy]);
+        const dateB = new Date(b[orderBy]);
+        return order === "asc" ? dateA - dateB : dateB - dateA;
+      });
+
       setFilteredData(filtered);
     }
-  }, [reservations]); // 예약데이터 변경될 때마다 필터링
+  }, [reservations, order, orderBy]);
 
   // 페이지별 데이터 계산
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -114,7 +122,12 @@ function ReservationList({ reservations, handleDetail, setShowModal }) {
    * @param {string} order - 정렬 방향
    * @param {string} orderBy - 정렬 기준 필드
    */
-  function ReservationTableHead({ order, orderBy }) {
+
+  function ReservationTableHead({ order, orderBy, onRequestSort }) {
+    const createSortHandler = (property) => () => {
+      onRequestSort(property);
+    };
+
     return (
       <TableHead>
         <TableRow>
@@ -123,7 +136,8 @@ function ReservationList({ reservations, handleDetail, setShowModal }) {
               key={headCell.id}
               align={headCell.align}
               sortDirection={orderBy === headCell.id ? order : false}
-              sx={{width:headCell.width}}
+              onClick={createSortHandler(headCell.id)} // 클릭 이벤트 추가
+              sx={{ width: headCell.width, cursor: "pointer" }}
             >
               {headCell.label}
             </TableCell>
@@ -136,6 +150,23 @@ function ReservationList({ reservations, handleDetail, setShowModal }) {
   ReservationTableHead.propTypes = {
     order: PropTypes.string.isRequired,
     orderBy: PropTypes.string.isRequired,
+    onRequestSort: PropTypes.func.isRequired,
+  };
+
+  //정렬 요청을 처리하는 함수
+  const handleRequestSort = (property) => {
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(property);
+
+    // 데이터 정렬
+    const sortedData = [...filteredData].sort((a, b) => {
+      const valueA = new Date(a[property]);
+      const valueB = new Date(b[property]);
+      return isAsc ? valueA - valueB : valueB - valueA;
+    });
+
+    setFilteredData(sortedData);
   };
 
 
@@ -198,7 +229,11 @@ function ReservationList({ reservations, handleDetail, setShowModal }) {
 
       <TableContainer sx={{ width: "100%", overflowX: "auto" }}>
         <Table>
-          <ReservationTableHead/>
+          <ReservationTableHead
+            order={order}
+            orderBy={orderBy}
+            onRequestSort={handleRequestSort}
+          />
           <TableBody>
             {rows.length > 0 ? (
               rows.map((row, index) => (
