@@ -15,13 +15,13 @@ const Tabs = () => {
           className={activeTab === "tab1" ? "active" : ""}
           onClick={() => setActiveTab("tab1")}
         >
-          근태 기록
+          근태 관리
         </button>
         <button
           className={activeTab === "tab2" ? "active" : ""}
           onClick={() => setActiveTab("tab2")}
         >
-          근태 관리
+          근태 기록
         </button>
         <button
           className={activeTab === "tab3" ? "active" : ""}

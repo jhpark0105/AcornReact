@@ -1,0 +1,18 @@
+.date-search-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.search-button {
+    background-color: #1976d2;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.search-button:hover {
+    background-color: #125ea1;
+}

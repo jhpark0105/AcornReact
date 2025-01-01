@@ -1,0 +1,36 @@
+/* Modal 전체 배경 */
+.modal.show {
+    display: flex;
+    align-items: center; /* 세로 중앙 정렬 */
+    justify-content: center; /* 가로 중앙 정렬 */
+    background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw; /* 전체 화면 너비 */
+    height: 100vh; /* 전체 화면 높이 */
+    z-index: 1050; /* 다른 요소 위 */
+}
+
+/* Modal 대화상자 */
+.modal-dialog {
+    max-width: 600px; /* 모달 너비 고정 */
+    width: 90%; /* 화면 너비의 90% */
+    margin: auto; /* 중앙 정렬 */
+    position: relative;
+    overflow: visible; /* 팝업 잘리지 않도록 */
+}
+
+/* Modal 내용 */
+.modal-content {
+    background-color: #fff;
+    border-radius: 8px; /* 모서리 둥글게 */
+    overflow-y: auto; /* 긴 내용 스크롤 */
+    max-height: 80vh; /* 내용 높이 제한 */
+    padding: 20px; /* 내용 패딩 */
+}
+
+/* DatePicker 팝업 */
+.rs-picker-menu {
+    z-index: 1060 !important; /* 모달 위로 표시 */
+}

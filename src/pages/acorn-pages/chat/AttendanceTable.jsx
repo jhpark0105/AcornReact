@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import {
 	Table,
 	TableBody,
@@ -8,181 +7,221 @@ import {
 	TableRow,
 	TableHead,
 	Box,
-	Modal,
-	Button,
 } from "@mui/material";
-import Pagination from "../../../acorn-components/components/Pagination";
 import axios from "axios";
-import AttendanceForm from "./AttendanceForm";
+import Pagination from "./paging/Pagination.jsx";
+import ListSearch from "./Search/ListSearch.jsx";
+import DateSearch from "./Search/DateSearch.jsx";
+import AttendanceDetailModal from "./AttendanceDetailModal.jsx";
+import "./AttendanceTable.css";
+import { RiSearchLine } from "react-icons/ri";
+import { toast } from "react-toastify";
+import styles from "./ListSearch.module.css";
 
-// 테이블 헤더 정의
 const headCells = [
-	{ id: "attendanceId", align: "left", label: "ID", width: "150px" },
-	{ id: "attendanceDate", align: "left", label: "날짜", width: "150px" },
-	{ id: "checkIn", align: "left", label: "출근", width: "150px" },
-	{ id: "checkOut", align: "left", label: "퇴근", width: "150px" },
-	{ id: "attendanceStatus", align: "left", label: "상태", width: "150px" },
-	{ id: "memberId", align: "left", label: "직원 ID", width: "150px" },
+	{ id: "attendanceId", label: "ID" },
+	{ id: "attendanceDate", label: "날짜" },
+	{ id: "checkIn", label: "출근" },
+	{ id: "checkOut", label: "퇴근" },
+	{ id: "attendanceStatus", label: "상태" },
+	{ id: "memberName", label: "직원 이름" },
 ];
 
 const AttendanceTable = () => {
 	const [attendances, setAttendances] = useState([]);
-	const [filteredData, setFilteredData] = useState([]); // 검색 결과 상태
-	const [loading, setLoading] = useState(true);
-	const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
-	const [itemsPerPage, setItemsPerPage] = useState(10); // 한 페이지당 항목 수
-	const [selectedAttendance, setSelectedAttendance] = useState(null); // 선택된 데이터
-	const [modalOpen, setModalOpen] = useState(false); // 모달 상태
+	const [filteredData, setFilteredData] = useState([]);
+	const [currentPage, setCurrentPage] = useState(1);
+	const itemsPerPage = 10;
+	const [searchTerm, setSearchTerm] = useState("");
+	const [startDate, setStartDate] = useState(null);
+	const [endDate, setEndDate] = useState(null);
+	const [selectedAttendance, setSelectedAttendance] = useState(null);
+	const [showModal, setShowModal] = useState(false);
+	const [updating, setUpdating] = useState(false); // 추가된 상태
 
-	// 데이터 가져오기
 	useEffect(() => {
+		fetchAttendanceData();
+	}, []);
+
+	const fetchAttendanceData = () => {
 		axios
-			.get("/api/attendance/all")
+			.get("http://localhost:8080/api/attendance/all")
 			.then((response) => {
 				if (Array.isArray(response.data)) {
 					setAttendances(response.data);
-					setFilteredData(response.data); // 검색 기본 상태 설정
+					setFilteredData(response.data);
 				} else {
-					console.error("Expected an array but received:", response.data);
+					toast.error("올바르지 않은 데이터 형식입니다.");
 				}
 			})
-			.catch((error) => {
-				console.error("Error fetching attendance data:", error);
-			})
-			.finally(() => {
-				setLoading(false);
+			.catch(() => {
+				toast.error("데이터를 불러오는 중 오류가 발생했습니다.");
 			});
-	}, []);
+	};
 
-	// 현재 페이지 데이터 계산
+	const handleSearchClick = () => {
+		let filtered = attendances;
+
+		if (searchTerm) {
+			filtered = filtered.filter((item) =>
+				item.memberName?.toLowerCase().includes(searchTerm.toLowerCase())
+			);
+		}
+
+		if (startDate && endDate) {
+			filtered = filtered.filter((attendance) => {
+				const attendanceDate = new Date(attendance.attendanceDate);
+				return attendanceDate >= startDate && attendanceDate <= endDate;
+			});
+		}
+
+		setFilteredData(filtered);
+		setCurrentPage(1);
+		toast.info("검색 결과가 업데이트되었습니다.");
+	};
+
+	const handleNameClick = (attendance) => {
+		setSelectedAttendance(attendance);
+		setShowModal(true);
+		setUpdating(false);
+	};
+
+	const handleModalClose = () => {
+		setShowModal(false);
+		setSelectedAttendance(null);
+		setUpdating(false);
+	};
+
+	const handleSave = () => {
+		axios
+			.put(`http://localhost:8080/api/attendance/update`, selectedAttendance)
+			.then((response) => {
+				toast.success("근태 정보가 저장되었습니다.");
+
+				setAttendances((prevAttendances) =>
+					prevAttendances.map((attendance) =>
+						attendance.attendanceId === selectedAttendance.attendanceId
+							? { ...attendance, ...selectedAttendance }
+							: attendance
+					)
+				);
+				// 필터링된 데이터도 즉시 업데이트
+				setFilteredData((prevFilteredData) =>
+					prevFilteredData.map((attendance) =>
+						attendance.attendanceId === selectedAttendance.attendanceId
+							? { ...attendance, ...selectedAttendance } // 수정 데이터 반영
+							: attendance
+					)
+				);
+
+				setShowModal(false);
+				setUpdating(false);
+			})
+			.catch(() => {
+				toast.error("저장 중 오류가 발생했습니다.");
+			});
+	};
+
+
+	const handleUpdate = () => {
+		setUpdating(true);
+	}
+
 	const indexOfLastItem = currentPage * itemsPerPage;
 	const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 	const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
-
-	// 총 페이지 수 계산
 	const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
-	// 수정 모달 열기
-	const handleEditClick = (attendance) => {
-		setSelectedAttendance(attendance);
-		setModalOpen(true);
-	};
-
-	// 모달 닫기
-	const handleCloseModal = () => {
-		setSelectedAttendance(null);
-		setModalOpen(false);
-	};
-
-	// 테이블 렌더링
 	return (
-		<Box>
-			<h2>근태 기록</h2>
+		<Box sx={{ width: "100%", margin: "0 auto", padding: "16px" }}>
+			<Box
+				sx={{
+					display: "flex",
+					justifyContent: "space-between",
+					alignItems: "center",
+					marginBottom: 2,
+				}}
+			>
+				<Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+					<DateSearch selectedDate={startDate} setSelectedDate={setStartDate} />
+					<span>-</span>
+					<DateSearch selectedDate={endDate} setSelectedDate={setEndDate} />
+					<button className={styles.searchButton} onClick={handleSearchClick}>
+						<RiSearchLine />
+					</button>
+				</Box>
+				<ListSearch
+					searchTerm={searchTerm}
+					onChange={setSearchTerm}
+					handleSearchClick={handleSearchClick}
+				/>
+			</Box>
 
-			{/* 로딩 상태 */}
-			{loading ? (
-				<p>Loading...</p>
-			) : (
-				<TableContainer style={{ marginTop: "20px" }}>
-					<Table>
-						{/* 테이블 헤더 */}
-						<TableHead>
-							<TableRow>
-								{headCells.map((headCell) => (
-									<TableCell
-										key={headCell.id}
-										align={headCell.align}
-										sx={{ width: headCell.width }}
-									>
-										{headCell.label}
-									</TableCell>
-								))}
-							</TableRow>
-						</TableHead>
-
-						{/* 테이블 데이터 */}
-						<TableBody>
-							{currentItems.length > 0 ? (
-								currentItems.map((row) => (
-									<TableRow key={row.attendanceId}>
-										{headCells.map((column) => (
-											<TableCell
-												key={column.id}
-												align={column.align}
-												onClick={
-													column.id === "attendanceId"
-														? () => handleEditClick(row)
-														: undefined
-												}
-												style={{
-													cursor: column.id === "attendanceId" ? "pointer" : "default",
-													color: column.id === "attendanceId" ? "blue" : "inherit",
-													textDecoration:
-														column.id === "attendanceId" ? "underline" : "none",
-												}}
-											>
-												{row[column.id]}
-											</TableCell>
-										))}
-									</TableRow>
-								))
-							) : (
-								<TableRow>
-									<TableCell colSpan={headCells.length} align="center">
-										근태 데이터가 없습니다.
-									</TableCell>
+			<TableContainer sx={{ width: "100%", overflowX: "auto" }}>
+				<Table>
+					<TableHead>
+						<TableRow>
+							{headCells.map((col) => (
+								<TableCell key={col.id}>{col.label}</TableCell>
+							))}
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{currentItems.length > 0 ? (
+							currentItems.map((row, index) => (
+								<TableRow key={index}>
+									{headCells.map((col) => (
+										<TableCell
+											key={col.id}
+											onClick={
+												col.id === "memberName"
+													? () => handleNameClick(row)
+													: undefined
+											}
+											style={
+												col.id === "memberName"
+													? { color: "blue", cursor: "pointer", textDecoration: "underline" }
+													: {}
+											}
+										>
+											{row[col.id] || "미등록"}
+										</TableCell>
+									))}
 								</TableRow>
-							)}
-						</TableBody>
-					</Table>
-				</TableContainer>
-			)}
+							))
+						) : (
+							<TableRow>
+								<TableCell colSpan={headCells.length} align="center">
+									데이터가 없습니다.
+								</TableCell>
+							</TableRow>
+						)}
+					</TableBody>
+				</Table>
+			</TableContainer>
 
-			{/* 페이지네이션 */}
 			<Pagination
 				currentPage={currentPage}
 				totalPages={totalPages}
 				onPageChange={setCurrentPage}
-				itemsPerPage={itemsPerPage}
-				setItemsPerPage={setItemsPerPage}
 			/>
 
-			{/* 수정 모달 */}
-			<Modal open={modalOpen} onClose={handleCloseModal}>
-				<Box
-					sx={{
-						position: "absolute",
-						top: "50%",
-						left: "50%",
-						transform: "translate(-50%, -50%)",
-						width: 400,
-						bgcolor: "background.paper",
-						boxShadow: 24,
-						p: 4,
-						borderRadius: 2,
+			{showModal && selectedAttendance && (
+				<AttendanceDetailModal
+					existingData={selectedAttendance}
+					handleDetailChange={(e) => {
+						const { name, value } = e.target;
+						setSelectedAttendance((prev) => ({
+							...prev,
+							[name]: value,
+						}));
 					}}
-				>
-					<AttendanceForm
-						existingData={selectedAttendance}
-						refreshTable={() => {
-							setModalOpen(false);
-							// 테이블 리프레시
-							axios.get("/api/attendance/all").then((response) => {
-								setAttendances(response.data);
-								setFilteredData(response.data);
-							});
-						}}
-					/>
-					<Button
-						variant="contained"
-						color="error"
-						onClick={handleCloseModal}
-						sx={{ marginTop: 2 }}
-					>
-						닫기
-					</Button>
-				</Box>
-			</Modal>
+					handleSave={handleSave}
+					handleUpdate={handleUpdate}
+					setShowDetailModal={handleModalClose}
+					updating={updating}
+				/>
+			)}
 		</Box>
 	);
 };
