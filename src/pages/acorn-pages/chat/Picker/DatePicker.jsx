@@ -3,7 +3,7 @@ import React from 'react';
 import { toast } from 'react-toastify';
 import { DatePicker } from 'rsuite';
 
-const DatePickerComponent = ({handleDate, value, readOnly}) => {
+const DatePickerComponent = ({handleDate, value, readOnly, style}) => {
   
   const getSetToday = () => {
     const today = new Date();
@@ -36,7 +36,8 @@ const DatePickerComponent = ({handleDate, value, readOnly}) => {
     <div className="date-picker-container" onClick={(e) => readOnly && e.stopPropagation()}>
       {/* readOnly일 때 클릭 이벤트 차단 */}
       <DatePicker
-        style={{ width: 600 }}
+        // style={{ width: 600 }}
+        style={style}  // style을 props로 전달받음
         placeholder="입사일을 선택해주세요 "
         format="yyyy / MM / dd"
         oneTap

@@ -9,7 +9,7 @@ import {
 	Paper,
 } from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
 
 const AttendanceActions = () => {
 	const [memberId, setMemberId] = useState("");

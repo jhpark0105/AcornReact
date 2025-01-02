@@ -58,6 +58,7 @@ const AttendanceDetailModal = ({
 										})
 									}
 									readOnly={!updating} // 수정 모드에서만 활성화
+									style={{ width: 600 }}
 								/>
 							</div>
 
