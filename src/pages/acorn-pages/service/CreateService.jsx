@@ -27,6 +27,7 @@ function ServiceModal({ handleChange, handleInsert, setShowModal }) {
                 <input
                   type="text"
                   name="serviceCode"
+                  style={{ width: 465}}
                   onChange={handleChange} // 입력값 변경 시 handleChange 함수 호출
                   className="form-control"
                   placeholder="서비스 코드를 입력하세요."
