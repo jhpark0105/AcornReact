@@ -1,0 +1,3 @@
+.notification-content {
+    white-space: pre-line !important; /* \n 문자에 의한 줄바꿈 적용 */
+}

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import './Notification';
 import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -98,7 +99,12 @@ export default function Notification() {
         return prev;
       }
 
-      const updatedNotifications = [newNotification, ...prev].sort((a, b) => b.id - a.id);
+      // 줄바꿈 처리
+      const formattedContent = newNotification.content.replace(/\n/g, '<br />');
+
+      const updatedNotifications = [{ ...newNotification, content: formattedContent }, ...prev].sort(
+        (a, b) => b.id - a.id
+      );
 
       // 읽지 않은 알림 개수 업데이트
       const newUnreadCount = updatedNotifications.filter((n) => !n.isRead).length;
@@ -273,7 +279,11 @@ export default function Notification() {
                                   {!notification.isRead && (
                                     <span style={{ color: 'red', marginRight: 8 }}>🔴</span>
                                   )}
-                                  {notification.content}
+                                  {/* 알림 내용에 클래스 적용 */}
+                                  <span
+                                    className="notification-content"
+                                    dangerouslySetInnerHTML={{ __html: notification.content }}
+                                  />
                                 </span>
                               }
                               secondary={
