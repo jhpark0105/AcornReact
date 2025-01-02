@@ -44,6 +44,10 @@
   }
   .rs-picker-popup {
     z-index: 9999 !important;
+    height: auto;
+    max-height: 150px; /* 드롭다운의 최대 높이 제한 */
+    overflow-y: auto; /* 필요시 스크롤 추가 */
+    padding: 0; /* 불필요한 여백 제거 */
   }
   .modal-content {
     position: relative;
@@ -67,5 +71,4 @@
     z-index: 1060; /* 모달보다 높은 값으로 설정 */
   }
   
-    
   
