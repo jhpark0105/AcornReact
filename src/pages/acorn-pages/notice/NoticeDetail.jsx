@@ -89,7 +89,7 @@ export default function NoticeDetail() {
             <Grid item xs={4}> {/* 이미지가 있는 경우 오른쪽에 4칸 사용 */}
               <Box
                 component="img"
-                src={`http://localhost:8080${notice.noticeImagePath}`} // 서버 URL + 이미지 경로
+                src={notice.noticeImagePath} // 서버 URL + 이미지 경로
                 alt="공지 이미지"
                 sx={{
                   width: '100%',
