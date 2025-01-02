@@ -70,7 +70,7 @@ export default function CustomerInsForm({ setShowModal, refresh, show }) {
             <h5 className="modal-title">고객 등록</h5>
             <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
           </div>
-          <div className="modal-body">
+          <div className="modal-body" >
             <form>
               {/* 고객 이름 */}
               <div className="mb-3">
