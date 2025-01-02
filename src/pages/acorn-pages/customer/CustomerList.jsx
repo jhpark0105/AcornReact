@@ -49,7 +49,7 @@ function CustomerList({ handleDetail,  }) {  // refresh를 refreshData로 이름
   };
 
   useEffect(() => {
-    refresh(); // 초기 데이터 불러오기
+    refresh();  // 초기 데이터 불러오기
   }, []);
 
   // 이름, 등급, 번호 검색
@@ -81,27 +81,25 @@ function CustomerList({ handleDetail,  }) {  // refresh를 refreshData로 이름
     setCurrentPage(1);  // 검색 결과 첫 페이지로 이동
   };
 
-
   // 페이지네이션을 위한 계산
   const indexOfLastItem = currentPage * itemsPerPage; // 현재 페이지의 마지막 아이템 인덱스
   const indexOfFirstItem = indexOfLastItem - itemsPerPage; // 현재 페이지의 첫 아이템 인덱스
   const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem); // 현재 페이지에 표시할 아이템
   const totalPages = Math.ceil(filteredData.length / itemsPerPage); // 전체 페이지 수 계산
 
+
   // 테이블 열 설정
-  const columns = [
-    { id: "customerId", label: "ID" },
-    { id: "customerName", label: "이름" },
-    { id: "customerGender", label: "성별" },
-    { id: "customerTel", label: "연락처" },
-    { id: "customerMail", label: "E-mail" },
-    { id: "customerReg", label: "고객 등록일" },
-    { id: "customerRank", label: "고객 등급" },
-    { id: "customerNote", label: "특이사항" },
+  const headCells = [
+    { id: "customerId", label: "ID", width: "100px" },
+    { id: "customerName", label: "이름", width: "150px" },
+    { id: "customerGender", label: "성별", width: "100px" },
+    { id: "customerTel", label: "연락처", width: "200px" },
+    { id: "customerMail", label: "E-mail", width: "250px" },
+    { id: "customerReg", label: "고객 등록일", width: "150px" },
+    { id: "customerRank", label: "고객 등급", width: "150px" },
+    { id: "customerNote", label: "특이사항", width: "300px" },
   ];
 
-
-  // 테이블 데이터 생성
   const rows = currentItems.map((customer) => ({
     customerId: customer.customerId,
     customerName: (
@@ -111,21 +109,21 @@ function CustomerList({ handleDetail,  }) {  // refresh를 refreshData로 이름
           cursor: "pointer",
           textDecoration: "underline",
         }}
-        onClick={() => {  // 고객 이름 클릭 시
-          setSelectedCustomer(customer);  // 선택된 고객 정보 업데이트
-          setShowDetailModal(true);  // 상세보기 모달
-          handleDetail(customer); // 부모 컴포넌트로 고객 상세 정보 전달
+        onClick={() => {
+          console.log("Customer clicked:", customer);
+          setSelectedCustomer(customer);
+          setShowDetailModal(true);
         }}
       >
         {customer.customerName}
       </span>
     ),
-    customerGender: customer.customerGender || "정보 없음",  //각각 정보 없는 경우 기본값으로
-    customerTel: customer.customerTel || "정보 없음",
-    customerMail: customer.customerMail || "정보 없음",
-    customerReg: customer.customerReg || "정보 없음",
-    customerRank: customer.customerRank || "정보 없음",
-    customerNote: customer.customerNote || "없음",
+    customerGender: customer.customerGender || " ",
+    customerTel: customer.customerTel || " ",
+    customerMail: customer.customerMail || " ",
+    customerReg: customer.customerReg || " ",
+    customerRank: customer.customerRank || " ",
+    customerNote: customer.customerNote || " ",
   }));
 
   return (
@@ -144,7 +142,7 @@ function CustomerList({ handleDetail,  }) {  // refresh를 refreshData로 이름
           <DateSearch selectedDate={startDate} setSelectedDate={setStartDate} />  {/* 시작 날짜 */}
           <span>-</span>
           <DateSearch selectedDate={endDate} setSelectedDate={setEndDate} />  {/* 종료 날짜 */}
-          <button className={styles.searchButton} onClick={handleSearch}>  {/* 검색 버튼 */}
+          <button className={styles.searchButton} onClick={handleSearch}>  {/* 검색 버튼 */} 
             <RiSearchLine />
           </button>
         </Box>
@@ -158,27 +156,36 @@ function CustomerList({ handleDetail,  }) {  // refresh를 refreshData로 이름
           setSelectedFilter={setSelectedFilter}
         />
 
-        <Button variant="contained" color="success" onClick={() => setShowModal(true)}
+        <Button
+          variant="contained"
+          color="success"
+          onClick={() => setShowModal(true)}
           style={{
             whiteSpace: "nowrap",
             padding: "8px 20px",
-            marginTop: "5px", // 위로 5px 이동
+            marginTop: "5px",
           }}
         >
           고객 등록
         </Button>
-        {/* <Button variant="contained" color="success" onClick={() => setShowModal(true)}>
-          고객 등록
-        </Button> */}
       </Box>
 
       {/* 고객 목록 테이블 */}
-      <TableContainer sx={{ width: "100%", overflowX: "auto" }}>
-        <Table>
+      <TableContainer sx={{ marginTop: "20px", overflowX: "auto" }}>
+        <Table sx={{ tableLayout: "fixed", width: "100%" }}>
           <TableHead>
             <TableRow>
-              {columns.map((col) => (
-                <TableCell key={col.id}>{col.label}</TableCell>
+              {headCells.map((headCell) => (
+                <TableCell
+                  key={headCell.id}
+                  sx={{
+                    width: headCell.width,
+                    minWidth: headCell.width,
+                    maxWidth: headCell.width,
+                  }}
+                >
+                  {headCell.label}
+                </TableCell>
               ))}
             </TableRow>
           </TableHead>
@@ -186,14 +193,14 @@ function CustomerList({ handleDetail,  }) {  // refresh를 refreshData로 이름
             {rows.length > 0 ? (
               rows.map((row, index) => (
                 <TableRow key={index}>
-                  {columns.map((col) => (
-                    <TableCell key={col.id}>{row[col.id]}</TableCell>
+                  {headCells.map((column) => (
+                    <TableCell key={column.id}>{row[column.id]}</TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} align="center">
+                <TableCell colSpan={headCells.length} align="center">
                   등록된 고객이 없습니다.
                 </TableCell>
               </TableRow>
@@ -211,36 +218,13 @@ function CustomerList({ handleDetail,  }) {  // refresh를 refreshData로 이름
 
       {/* 고객 등록 모달 */}
       {showModal && (
-        <div
-          className="modal show"
-          style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-          tabIndex="-1"
-        >
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">고객 등록</h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={() => setShowModal(false)}
-                ></button>
-              </div>
-
-              <div className="modal-body">
-                <CustomerInsForm setShowModal={setShowModal} refresh={refresh} show={showModal} />  {/* 고객 등록 폼 */}
-              </div>
-            </div>
-          </div>
-        </div>
+        <CustomerInsForm setShowModal={setShowModal} refresh={refresh} />
       )}
-
-      {/* 고객 상세 정보 모달 */}
       {showDetailModal && selectedCustomer && (
         <CustomerDetail
-          selectedCustomer={selectedCustomer}  // 선택된 고객 정보 전달
-          setShowDetailModal={setShowDetailModal}  // 상세 보기 모달 닫기
-          refresh={refresh}  // 새로 고침
+          selectedCustomer={selectedCustomer}
+          setShowDetailModal={setShowDetailModal}
+          refresh={refresh}
         />
       )}
     </Box>
@@ -248,8 +232,7 @@ function CustomerList({ handleDetail,  }) {  // refresh를 refreshData로 이름
 }
 
 CustomerList.propTypes = {
-  handleDetail: PropTypes.func.isRequired,  // 상세 정보 전달 함수
-  refreshData: PropTypes.func.isRequired, // 데이터 갱신 함수
+  handleDetail: PropTypes.func.isRequired,
 };
 
 export default CustomerList;
