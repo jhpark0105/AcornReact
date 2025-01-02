@@ -36,6 +36,7 @@ function ServiceDetailModal({
                 <input
                   type="text"
                   name="serviceCode"
+                  style={{ width: 465 }}
                   value={selectedService.serviceCode}
                   onChange={handleDetailChange}
                   readOnly

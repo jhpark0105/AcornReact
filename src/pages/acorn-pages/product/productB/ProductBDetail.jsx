@@ -35,6 +35,7 @@ function ProductBDetailModal({ selectedProductB, setShowDetailBModal, setShowDel
                                 <label>대분류 코드</label>
                                 <input type="text" 
                                        name="productBCode" 
+                                       style={{ width: 465 }}
                                        value={selectedProductB.productBCode} // 선택된 대분류의 코드 값을 표시
                                        readOnly 
                                        className="form-control" />
@@ -45,6 +46,7 @@ function ProductBDetailModal({ selectedProductB, setShowDetailBModal, setShowDel
                                 <label>상품명</label>
                                 <input type="text" 
                                        name="productBName" 
+                                       style={{ width: 465 }}
                                        value={selectedProductB.productBName} // 선택된 대분류의 상품명 값을 표시
                                        readOnly 
                                        className="form-control" />

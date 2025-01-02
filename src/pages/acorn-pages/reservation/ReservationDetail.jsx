@@ -176,6 +176,7 @@ function ReservationDetail({
                                     disabled={!isEditing}
                                     className="form-control"
                                     min={new Date().toISOString().split('T')[0]}
+                                    style={{width: 465}}
                                 />
                             </div>
 
