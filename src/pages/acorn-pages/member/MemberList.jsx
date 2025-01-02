@@ -91,36 +91,37 @@ function MemberList({ members, handleDetail, setShowModal }) {
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
   return (
-    <Box>
+    <Box sx={{ width: "100%", margin: "0 auto", padding: "16px" }}>
       {/* 검색 및 등록 버튼 */}
-      <div className={styles.flexContainer} style={{width:"100%"}}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 2,
+        }}
+      >
         {/* 검색 컴포넌트 */}
-        <div className={styles["list-component-container"]} style={{ flex: "1" }}>
-          <ListSearch
-            searchTerm={searchTerm}
-            onChange={onChange}
-            handleSearchClick={handleSearchClick}
-          />
-        </div>
+        <ListSearch
+          searchTerm={searchTerm}
+          onChange={setSearchTerm}
+          handleSearchClick={handleSearchClick}
+        />
         {/* 직원 등록 버튼 */}
-        <div className={styles.buttonBox}>
         <Button
-            variant="contained"
-            color="success"
-            onClick={() => setShowModal(true)}
-            style={{
-              whiteSpace: "nowrap",
-              padding: "8px 20px",
-            }}
-          >
+          variant="contained"
+          color="success"
+          onClick={() => setShowModal(true)}
+          sx={{ whiteSpace: "nowrap", padding: "8px 20px", marginTop: "5px" }}
+        >
           직원 등록
         </Button>
-        </div>
-      </div>
+      </Box>
+
 
       {/* 직원 테이블 */}
-      <TableContainer style={{ marginTop: "20px" }}>
-        <Table>
+      <TableContainer sx={{ marginTop: "20px", overflowX: "auto" }}>
+        <Table sx={{ tableLayout: "fixed", width: "100%" }}>
           {/* 테이블 헤더 */}
           <MemberTableHead order="asc" orderBy="memberId" />
           <TableBody>

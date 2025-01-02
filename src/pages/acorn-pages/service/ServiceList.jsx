@@ -124,39 +124,64 @@ function ServiceList({ services, handleDetail, setShowModal }) {
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
   return (
-    <Box>
+    // <Box>
+    //   {/* 검색 및 등록 버튼 */}
+    //   <div
+    //     style={{
+    //       display: "flex",
+    //       //justify-content: space-between과 align-items: center를 사용하여 
+    //       // 버튼과 검색 필드를 일관되게 배치
+    //       justifyContent: "space-between",
+    //       alignItems: "center",
+    //       width: "100%", // 테이블 컨테이너에 width: 100%를 적용하여 테이블이 부모 컨테이너의 전체 너비를 차지
+    //     }}
+    //   >
+    //     {/* ListSearch 컴포넌트가 왼쪽 끝에 맞게 설정 */}
+    //     <div className={styles["list-component-container"]} style={{ flex: "1" }}>
+    //       <ListSearch
+    //         searchTerm={searchTerm}
+    //         onChange={onChange}
+    //         handleSearchClick={handleSearchClick}
+    //       />
+    //     </div>
+
+    //     <Button
+    //       variant="contained"
+    //       color="success"
+    //       onClick={() => setShowModal(true)}
+    //     >
+    //     서비스 등록
+    //   </Button>
+    //   </div>
+
+    <Box sx={{ width: "100%", margin: "0 auto", padding: "16px" }}>
       {/* 검색 및 등록 버튼 */}
-      <div
-        style={{
+      <Box
+        sx={{
           display: "flex",
-          //justify-content: space-between과 align-items: center를 사용하여 
-          // 버튼과 검색 필드를 일관되게 배치
           justifyContent: "space-between",
           alignItems: "center",
-          width: "100%", // 테이블 컨테이너에 width: 100%를 적용하여 테이블이 부모 컨테이너의 전체 너비를 차지
+          marginBottom: 2,
         }}
       >
-        {/* ListSearch 컴포넌트가 왼쪽 끝에 맞게 설정 */}
-        <div className={styles["list-component-container"]} style={{ flex: "1" }}>
-          <ListSearch
-            searchTerm={searchTerm}
-            onChange={onChange}
-            handleSearchClick={handleSearchClick}
-          />
-        </div>
-
+        <ListSearch
+          searchTerm={searchTerm}
+          onChange={setSearchTerm}
+          handleSearchClick={handleSearchClick}
+        />
         <Button
           variant="contained"
           color="success"
           onClick={() => setShowModal(true)}
+          sx={{ whiteSpace: "nowrap", padding: "8px 20px", marginTop: "5px" }}
         >
-        서비스 등록
-      </Button>
-      </div>
+          서비스 등록
+        </Button>
+      </Box>
 
       {/* 서비스 테이블 */}
-      <TableContainer className={styles["table-container"]}>
-        <Table>
+      <TableContainer sx={{ marginTop: "20px", overflowX: "auto" }}>
+        <Table sx={{ tableLayout: "fixed", width: "100%" }}>
           {/* 테이블 헤더 */}
           <TestTableHead order="asc" orderBy="serviceCode" />
           <TableBody>
