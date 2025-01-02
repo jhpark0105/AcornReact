@@ -57,9 +57,10 @@
     justify-content: center; /* Center the modal horizontally */
   }
 
-  .modal-body {
-    overflow-y: auto; /* If content is long */
-    max-height: calc(100vh - 200px); /* Prevent the modal from exceeding the viewport height */
+  .modal-body label {
+    display: block; /* 블록 요소로 변경 */
+    text-align: left; /* 왼쪽 정렬 */
+    margin-bottom: 5px; /* 간격 추가 */
   }
 
   .datepicker-dropdown, .genderpicker-dropdown {
