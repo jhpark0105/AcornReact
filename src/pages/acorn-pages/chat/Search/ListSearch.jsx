@@ -12,22 +12,13 @@ const ListSearch = ({ searchTerm, handleSearchClick, onChange, selectedFilter, s
 
   return (
     <div className={styles.searchContainer}>
-      <select 
-      className={styles.searchSelect}
-      value={selectedFilter}
-      onChange={(e) => setSelectedFilter(e.target.value)}> 
-      {/*필터 기준 상태 업데이트 */}
-        <option value="customerName">이름</option>
-        <option value="customerTel">연락처</option>
-        <option value="customerRank">등급</option>
-      </select>
       <input
         type="text"
         className={styles.searchInput}
         value={searchTerm}
         onChange={(e) => onChange(e.target.value)} // 상태 업데이트
         onKeyDown={handleKeyPress} // 엔터 키 입력 처리
-        placeholder="검색어 입력"
+        placeholder="직원 이름을 입력하세요."
       />
       <button
         className={styles.searchButton}

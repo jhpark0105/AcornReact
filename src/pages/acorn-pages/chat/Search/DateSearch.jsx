@@ -20,7 +20,7 @@ const DateSearch = (props) => {
         dateFormat="yyyy/MM/dd"
         customInput={<CustomInput />}
         showPopperArrow={false}
-        style={{ width: 100 }}
+        style={{ width: 300 }}
       />
     </div>
   );
