@@ -46,6 +46,7 @@
     text-align: right;
 }
 
+/* Modal label 왼쪽 정렬 */
 .modal-body label {
     display: block; /* 블록 요소로 변경 */
     text-align: left; /* 왼쪽 정렬 */

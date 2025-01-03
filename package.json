@@ -58,7 +58,7 @@
     "react-toastify": "^10.0.6",
     "redux": "^5.0.1",
     "rollup": "^4.28.0",
-    "rsuite": "^5.74.2",
+    "rsuite": "^5.76.2",
     "simplebar-react": "^3.2.4",
     "slick-carousel": "^1.8.1",
     "sockjs-client": "^1.6.1",
