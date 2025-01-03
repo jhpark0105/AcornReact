@@ -52,31 +52,43 @@ const ProductModal = ({ handleChange, handleInsert, setShowModal }) => {
     // 이미지 업로드 처리
     const handleImageChange = (e) => {
         const file = e.target.files[0];
-
+    
         if (file) {
-            // 파일 크기 제한 및 형식 확인
-            const maxSize = 5 * 1024 * 1024;
+            const maxSize = 5 * 1024 * 1024; // 5MB 크기 제한
             if (file.size > maxSize) {
                 toast.error("파일 크기는 5MB를 초과할 수 없습니다.");
                 return;
             }
-
-            // 이미지 파일 형식 체크 (PNG, JPG, JPEG)
-            if (['image/png', 'image/jpeg', 'image/jpg'].includes(file.type)) {
-                setImage(file);
     
-                // 이미지 미리보기 URL 설정
+            if (["image/png", "image/jpeg", "image/jpg"].includes(file.type)) {
+                setImage(file); // 선택한 파일을 상태에 저장
+    
+                // 이미지 미리보기 생성
                 const reader = new FileReader();
-                reader.onloadend = () => setImagePreview(reader.result);
+                reader.onload = (event) => {
+                    setImagePreview(event.target.result); // base64 URL을 미리보기로 설정
+                };
                 reader.readAsDataURL(file);
             } else {
-                toast.error('PNG, JPG, JPEG 파일만 업로드 가능합니다.');
+                toast.error("PNG, JPG, JPEG 파일만 업로드 가능합니다.");
             }
         }
     };
 
     // 상품 등록 처리
     const handleProductInsert = () => {
+        // 대분류가 선택되지 않은 경우
+        if (!selectedCategory) {
+            toast.error("대분류를 선택해주세요.");
+            return;
+        }
+
+        // 이미지가 없는 경우
+        if (!image) {
+            toast.error("상품 사진을 등록하세요.");
+            return;
+        }
+
         handleInsert(image); // 대분류 코드와 함께 상품 등록 처리 함수 호출
         setShowModal(false); // 모달 닫기
     };
@@ -172,7 +184,7 @@ const ProductModal = ({ handleChange, handleInsert, setShowModal }) => {
                                 />
                             </div>
                             <div className="mb-3">
-                                <label>상품 이미지</label>
+                                <label>상품 사진</label>
                                 <input
                                     type="file"
                                     accept="image/*"
@@ -187,7 +199,7 @@ const ProductModal = ({ handleChange, handleInsert, setShowModal }) => {
                             {imagePreview ? (
                                 <img
                                     src={imagePreview}
-                                    alt="상품 이미지 미리보기"
+                                    alt="상품 사진"
                                     style={{
                                         maxWidth: '100%',
                                         maxHeight: '300px',

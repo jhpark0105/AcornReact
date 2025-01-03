@@ -18,7 +18,7 @@ function ProductDetailModal({
 }) {
   const [imagePreview, setImagePreview] = useState(
     selectedProduct.productImagePath
-      ? `http://localhost:8080${selectedProduct.productImagePath}`
+      ? `${selectedProduct.productImagePath}`
       : '' // 초기 이미지 경로 설정
   );
 
@@ -38,6 +38,7 @@ function ProductDetailModal({
         const reader = new FileReader();
         reader.onloadend = () => {
           setImagePreview(reader.result); // 미리보기 업데이트
+          setImage(file);
         };
         reader.readAsDataURL(file);
 
@@ -57,7 +58,7 @@ function ProductDetailModal({
     setShowDetailModal(false);
     setImagePreview(
       selectedProduct.productImagePath
-        ? `http://localhost:8080${selectedProduct.productImagePath}`
+        ? `${selectedProduct.productImagePath}`
         : ''
     );
   };
@@ -160,7 +161,7 @@ function ProductDetailModal({
 
               {isEditing && (
                 <div className="mb-3">
-                  <label>상품 이미지 변경</label>
+                  <label>상품 사진</label>
                   <input
                     type="file"
                     accept="image/*"
