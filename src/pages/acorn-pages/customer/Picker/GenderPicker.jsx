@@ -20,6 +20,10 @@ const GenderPickerComponent = ({value, onChange}) => {
             container={()=> document.body} // 모달 내부로 제한
             virtualized={true}
             searchable={false}  //검색 비허용
+            menuStyle={{
+              maxHeight: '90px', // 드롭다운 최대 높이
+              overflowY: 'auto',  // 스크롤 가능하게 설정
+          }}
             />
     </div>
    )
