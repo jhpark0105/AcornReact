@@ -53,6 +53,11 @@ function Reservation() {
       return;
     }
 
+    if (!state.reservationDate || !state.reservationTime) {
+      toast.error("예약 날짜 및 예약 시간을 선택해야 합니다.");
+      return;
+    }
+
     const dataToInsert = {
       serviceName: state.serviceName,
       customerName: state.customerName,
