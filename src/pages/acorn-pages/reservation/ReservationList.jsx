@@ -136,8 +136,6 @@ function ReservationList({ reservations, handleDetail, setShowModal }) {
               key={headCell.id}
               align={headCell.align}
               sortDirection={orderBy === headCell.id ? order : false}
-              onClick={createSortHandler(headCell.id)} // 클릭 이벤트 추가
-              sx={{ width: headCell.width, cursor: "pointer" }}
             >
               {headCell.label}
             </TableCell>
