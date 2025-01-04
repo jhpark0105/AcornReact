@@ -134,7 +134,7 @@ function ProductList({ products, handleDetail, setShowModal }) {
             ) : (
               <TableRow>
                 <TableCell colSpan={headCells.length} align="center">
-                  검색된 상품이 없습니다.
+                  등록된 상품이 없습니다.
                 </TableCell>
               </TableRow>
             )}
