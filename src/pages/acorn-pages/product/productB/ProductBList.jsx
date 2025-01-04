@@ -40,9 +40,7 @@ function ProductBList({ productBs, handleDetailB, setShowModal }) {
     { id: "productBName", label: "상품명", width: "200px" },
   ];
 
-  /**
-   * 테이블 헤더
-   */
+  //테이블 헤더
   function ProductBTableHead() {
     return (
       <TableHead>

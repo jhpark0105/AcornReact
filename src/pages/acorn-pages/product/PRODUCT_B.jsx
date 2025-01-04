@@ -44,6 +44,18 @@ function PRODUCT_B() {
 
   // 대분류 추가
   const handleInsertB = () => {
+    // 유효성 검사
+    if (!state.productBCode || state.productBCode.trim() === "") {
+      toast.error("대분류 코드를 입력해주세요.");
+      return;
+    }
+  
+    if (!state.productBName || state.productBName.trim() === "") {
+      toast.error("대분류 이름을 입력해주세요.");
+      return;
+    }
+  
+    // 서버에 데이터 전송
     axios.post("http://localhost:8080/productB", state)
       .then((res) => {
         if (res.data.isSuccess) {
@@ -58,7 +70,7 @@ function PRODUCT_B() {
         toast.error("대분류 등록 중 오류가 발생했습니다.");
         console.error("Error:", error);
       });
-  };  
+  };
 
   // 특정 대분류의 상세 정보 표시
   const handleDetailB = (productB) => {

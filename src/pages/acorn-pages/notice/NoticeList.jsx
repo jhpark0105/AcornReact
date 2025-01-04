@@ -26,8 +26,6 @@ export default function NoticeList() {
     axios
       .get(`http://localhost:8080/notice?page=${pageNumber - 1}`)
       .then((response) => {
-        console.log("API Response (fetchNotices):", response.data); // 응답 데이터 출력
-  
         setNotices(response.data.content || []); // 공지 목록 저장
         setTotalPages(response.data.totalPages || 0); // 전체 페이지 수 저장
       })
@@ -40,8 +38,6 @@ export default function NoticeList() {
     axios
       .get(`http://localhost:8080/notice/search?keyword=${keyword}&page=${pageNumber - 1}`)
       .then((response) => {
-        console.log("API Response (noticeSearching):", response.data); // 응답 데이터 출력
-  
         setSearchedNotices(response.data.content || []); // 검색된 데이터 저장
         setTotalPages(response.data.totalPages || 0); // 검색 결과의 전체 페이지 수 저장
       })
@@ -113,7 +109,7 @@ export default function NoticeList() {
     rows = [
       {
         noticeNo: '',
-        noticeTitle: <span>일치하는 결과가 없습니다.</span>,
+        noticeTitle: <span>등록된 공지사항이 없습니다.</span>,
         noticeReg: ''
       }
     ];

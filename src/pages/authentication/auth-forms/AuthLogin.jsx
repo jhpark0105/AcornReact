@@ -107,8 +107,13 @@ export default function AuthLogin({ isDemo = false }) {
           submit: null
         }}
         validationSchema={Yup.object().shape({ // 유효성 검사
-          id: Yup.string().max(20).required('아이디는 필수 입력 항목입니다.'),
-          password: Yup.string().max(20).required('비밀번호는 필수 입력 항목입니다.')
+          id: Yup.string()
+            .min(2)
+            .max(20)
+            .required('아이디는 필수 입력 항목입니다.')
+            .matches(/^[A-Za-z][A-Za-z0-9]{1,19}$/, '아이디는 영문자와 숫자만 포함하며, 2자 이상 20자 이하로 입력해야 합니다.')
+          ,
+          password: Yup.string().min(2).max(20).required('비밀번호는 필수 입력 항목입니다.')
         })}
         onSubmit={handleLogin} // handleLogin 함수 연결
       >

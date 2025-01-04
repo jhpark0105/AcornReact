@@ -1,7 +1,8 @@
-import React from 'react';
-import '../../../styles/modal.css';
+import React, { useState } from "react";
+import "../../../styles/modal.css";
+
 /**
- * 서비스 상세  & 수정 모달
+ * 서비스 상세 & 수정 모달
  * @param {boolean} isEditing - 편집 모드 여부
  * @param {object} selectedService - 선택된 서비스 데이터
  * @param {function} handleDetailChange - 서비스 상세 정보 변경 함수
@@ -10,7 +11,6 @@ import '../../../styles/modal.css';
  * @param {function} setShowDetailModal - 모달 상태 변경 함수 (열기/닫기)
  * @param {function} setShowDeleteModal - 삭제 확인 모달 상태 변경 함수
  */
-
 function ServiceDetailModal({
                               isEditing,
                               selectedService,
@@ -18,15 +18,53 @@ function ServiceDetailModal({
                               handleSave,
                               handleEdit,
                               setShowDetailModal,
-                              setShowDeleteModal
+                              setShowDeleteModal,
                             }) {
+  const [errorMessages, setErrorMessages] = useState({
+    serviceName: "",
+    servicePrice: "",
+  });
+
+  const validateFields = () => {
+    const errors = {
+      serviceName: "",
+      servicePrice: "",
+    };
+    let hasError = false;
+
+    // 서비스 명 필드 검사
+    if (!selectedService.serviceName || selectedService.serviceName.trim() === "") {
+      errors.serviceName = "서비스 이름을 입력해주세요.";
+      hasError = true;
+    }
+
+    // 서비스 금액 필드 검사
+    if (!selectedService.servicePrice || isNaN(selectedService.servicePrice)) {
+      errors.servicePrice = "서비스 금액은 숫자로 입력해주세요.";
+      hasError = true;
+    }
+
+    setErrorMessages(errors);
+    return !hasError;
+  };
+
+  const handleSaveClick = () => {
+    if (validateFields()) {
+      handleSave(); // 유효성 검사를 통과한 경우 저장
+    }
+  };
+
   return (
     <div className="modal show" tabIndex="-1">
       <div className="modal-dialog">
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">{isEditing ? "서비스 수정" : "서비스 상세"}</h5>
-            <button type="button" className="btn-close" onClick={() => setShowDetailModal(false)}></button>
+            <button
+              type="button"
+              className="btn-close"
+              onClick={() => setShowDetailModal(false)}
+            ></button>
           </div>
 
           <div className="modal-body">
@@ -54,6 +92,9 @@ function ServiceDetailModal({
                   disabled={!isEditing}
                   className="form-control"
                 />
+                {errorMessages.serviceName && (
+                  <p style={{ color: "red", marginTop: "5px" }}>{errorMessages.serviceName}</p>
+                )}
               </div>
 
               <div className="mb-3">
@@ -63,28 +104,46 @@ function ServiceDetailModal({
                   name="servicePrice"
                   value={selectedService.servicePrice}
                   onChange={handleDetailChange}
-                  disabled={!isEditing} // 편집 모드가 아니면 비활성화
+                  disabled={!isEditing}
                   className="form-control"
                 />
+                {errorMessages.servicePrice && (
+                  <p style={{ color: "red", marginTop: "5px" }}>{errorMessages.servicePrice}</p>
+                )}
               </div>
             </form>
           </div>
 
-          <div className="modal-footer"> {/* 편집 모드 여부에 따라 버튼 구성 */}
-            <button type="button" className="btn btn-secondary" onClick={() => setShowDetailModal(false)}>
+          <div className="modal-footer">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => setShowDetailModal(false)}
+            >
               닫기
             </button>
-            {isEditing ? ( // 편집 모드일 때만 표시
-              <button type="button" className="btn btn-success" onClick={handleSave}>
+            {isEditing ? (
+              <button
+                type="button"
+                className="btn btn-success"
+                onClick={handleSaveClick}
+              >
                 저장
               </button>
             ) : (
               <>
-                {/* 편집 모드가 아닐 때만 표시 */}
-                <button type="button" className="btn btn-warning" onClick={handleEdit}>
+                <button
+                  type="button"
+                  className="btn btn-warning"
+                  onClick={handleEdit}
+                >
                   수정
                 </button>
-                <button type="button" className="btn btn-danger" onClick={() => setShowDeleteModal(true)}>
+                <button
+                  type="button"
+                  className="btn btn-danger"
+                  onClick={() => setShowDeleteModal(true)}
+                >
                   삭제
                 </button>
               </>
@@ -97,4 +156,3 @@ function ServiceDetailModal({
 }
 
 export default ServiceDetailModal;
-
