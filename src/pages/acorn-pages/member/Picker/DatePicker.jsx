@@ -37,7 +37,7 @@ const DatePickerComponent = ({handleDate, value, readOnly}) => {
       {/* readOnly일 때 클릭 이벤트 차단 */}
       <DatePicker
         style={{ width: 600 }}
-        placeholder="입사일을 선택해주세요 "
+        placeholder="입사일을 선택하세요."
         format="yyyy / MM / dd"
         oneTap
         onChange={handleChange}

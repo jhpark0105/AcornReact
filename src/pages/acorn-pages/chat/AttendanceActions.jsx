@@ -8,7 +8,7 @@ import {
 	Grid,
 	Paper,
 } from "@mui/material";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 
 const AttendanceActions = () => {

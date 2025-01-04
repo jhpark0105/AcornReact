@@ -1,11 +1,9 @@
 import '../../../../styles/modal.css';
 import { useState } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-/**
- * 상품 상세 모달 컴포넌트
- */
+//상품 상세 모달 컴포넌트
 function ProductDetailModal({
   isEditing,
   selectedProduct,
@@ -141,7 +139,14 @@ function ProductDetailModal({
                   type="number"
                   name="productPrice"
                   value={selectedProduct.productPrice}
-                  onChange={handleDetailChange}
+                  onChange={(e) => {
+                    const value = parseFloat(e.target.value);
+                    if (value >= 0 || e.target.value === "") { // 음수 또는 빈 값 방지
+                      handleDetailChange(e);
+                    } else {
+                      toast.error("상품 금액은 음수가 될 수 없습니다.");
+                    }
+                  }}
                   disabled={!isEditing}
                   className="form-control"
                 />
@@ -153,7 +158,14 @@ function ProductDetailModal({
                   type="number"
                   name="productEa"
                   value={selectedProduct.productEa}
-                  onChange={handleDetailChange}
+                  onChange={(e) => {
+                    const value = parseInt(e.target.value, 10);
+                    if (value >= 0 || e.target.value === "") { // 음수 또는 빈 값 방지
+                      handleDetailChange(e);
+                    } else {
+                      toast.error("상품 수량은 음수가 될 수 없습니다.");
+                    }
+                  }}
                   disabled={!isEditing}
                   className="form-control"
                 />

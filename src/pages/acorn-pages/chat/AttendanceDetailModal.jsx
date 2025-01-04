@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from 'react';
 import PropTypes from "prop-types";
 import { Button, TextField } from "@mui/material";
 import DatePickerComponent from "./Picker/DatePicker.jsx";
@@ -13,10 +13,16 @@ const AttendanceDetailModal = ({
 																 setShowDetailModal,
 																 updating,
 															 }) => {
+
+	// 수정 버튼과 저장 버튼 관리
+	const [showSaveButton, setShowSaveButton] = useState(false);
+
 	// 날짜 값 설정
 	const attendanceDate = existingData.attendanceDate
-		? new Date(existingData.attendanceDate).toLocaleDateString("en-CA")
+		? new Date(existingData.attendanceDate)
 		: "";
+
+	//console.log(attendanceDate);
 
 	return (
 		<div className="modal show">
@@ -24,7 +30,7 @@ const AttendanceDetailModal = ({
 				<div className="modal-content">
 					{/* 모달 헤더 */}
 					<div className="modal-header">
-						<h5 className="modal-title">근태 상세</h5>
+						<h5 className="modal-title">{updating ? "근태 수정" : "근태 상세"}</h5>
 						<button
 							type="button"
 							className="btn-close"
@@ -54,7 +60,7 @@ const AttendanceDetailModal = ({
 									value={attendanceDate}
 									handleDate={(date) =>
 										handleDetailChange({
-											target: { name: "attendanceDate", value: date },
+											target: { name: "attendanceDate", value: date.toISOString().split("T")[0] },
 										})
 									}
 									readOnly={!updating} // 수정 모드에서만 활성화
@@ -72,7 +78,6 @@ const AttendanceDetailModal = ({
 									value={existingData.checkIn || ""}
 									onChange={handleDetailChange}
 									disabled={!updating} // 수정 모드에서만 활성화
-									className="form-control"
 								/>
 							</div>
 
@@ -86,7 +91,6 @@ const AttendanceDetailModal = ({
 									value={existingData.checkOut || ""}
 									onChange={handleDetailChange}
 									disabled={!updating} // 수정 모드에서만 활성화
-									className="form-control"
 								/>
 							</div>
 
@@ -118,22 +122,31 @@ const AttendanceDetailModal = ({
 						>
 							닫기
 						</Button>
-						<Button
-							variant="contained"
-							color="warning"
-							onClick={handleUpdate} // 수정 버튼 클릭 시 수정 모드 활성화
-							style={{ marginRight: "8px" }}
-						>
-							수정
-						</Button>
-						<Button
-							variant="contained"
-							color="primary"
-							onClick={handleSave} // 저장 버튼 클릭 시 데이터 저장
-							disabled={!updating} // 수정 모드에서만 활성화
-						>
-							저장
-						</Button>
+						{!showSaveButton && (
+							<Button
+								variant="contained"
+								color="warning"
+								onClick={() => {
+									handleUpdate(); // 수정 모드 활성화
+									setShowSaveButton(true); // 저장 버튼 표시
+								}}
+								style={{ marginRight: "8px" }}
+							>
+								수정
+							</Button>
+						)}
+						{showSaveButton && (
+							<Button
+								variant="contained"
+								color="primary"
+								onClick={() => {
+									handleSave(); // 저장 수행
+									setShowSaveButton(false); // 저장 버튼 숨기기
+								}}
+							>
+								저장
+							</Button>
+						)}
 					</div>
 				</div>
 			</div>

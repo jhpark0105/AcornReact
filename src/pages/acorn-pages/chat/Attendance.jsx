@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import AttendanceTable from "./AttendanceTable";
 import AttendanceForm from "./AttendanceForm";
 import AttendanceActions from "./AttendanceActions";
+import { ToastContainer } from 'react-toastify';
 import "./Tab.css";
 
 const Tabs = () => {
@@ -9,6 +10,7 @@ const Tabs = () => {
 
   return (
     <div className="tabs-container">
+      <ToastContainer />
       {/* 탭 버튼 */}
       <div className="tab-buttons">
         <button

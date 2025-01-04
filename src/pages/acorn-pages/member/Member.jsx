@@ -51,7 +51,7 @@ function App() {
     console.log(state);
     // 필수 필드 비어져있을 때 
     if(!state.memberName || !state.memberId) {
-      toast.error("직원명과 사번을 입력해주세요");
+      toast.error("직원 사번과 직원 이름을 입력해주세요");
       return ;
     }
 

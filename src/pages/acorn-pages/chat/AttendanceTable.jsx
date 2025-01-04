@@ -96,7 +96,13 @@ const AttendanceTable = () => {
 		axios
 			.put(`http://localhost:8080/api/attendance/update`, selectedAttendance)
 			.then((response) => {
-				toast.success("근태 정보가 저장되었습니다.");
+				// 서버 응답에서 성공 여부 확인
+				if (response.data.Success) {
+					toast.success("근태 정보가 수정되었습니다.");
+				} else {
+					toast.error("근태 정보 수정에 실패했습니다.");
+				}
+
 
 				setAttendances((prevAttendances) =>
 					prevAttendances.map((attendance) =>
