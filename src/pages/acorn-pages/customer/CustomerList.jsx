@@ -64,7 +64,7 @@ function CustomerList({ handleDetail,  }) {  // refresh를 refreshData로 이름
   // 기간 검색용
   const handleSearch = () => {
     if (!startDate || !endDate) {  // 시작, 종료 날짜 모두 선택 안 된 경우
-      alert("시작 날짜와 종료 날짜를 모두 선택해주세요.");  // 알림
+      toast.error("시작 날짜와 종료 날짜를 모두 선택해주세요.");  // 알림
       return;
     }
 
