@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import DatePickerComponent from "./Picker/DatePicker";
 import GenderPickerComponent from "./Picker/GenderPicker";
 import SelectPickerComponent from "./Picker/SelectPicker";
@@ -17,48 +18,63 @@ export default function CustomerInsForm({ setShowModal, refresh, show }) {
     customerNote: "",
   });
 
-  // DatePicker - 고객 등록일 관리
   const [startDate, setStartDate] = useState(new Date());
-
-  // useNavigate - 페이지 전환
   const navigate = useNavigate();
 
-  // 입력값 변경 핸들러(입력된 값에 따라 state 업데이트)
   const handleChange = (e) => {
     setState({
-      ...state,  // 기존 state 유지
-      [e.target.name]: e.target.value,  // 변경된 입력 필드 업데이트
+      ...state,
+      [e.target.name]: e.target.value,
     });
   };
 
-  // 등록 버튼 누르면 저장(저장 버튼 -> 고객 데이터 서버로 전송)
   const handleSave = () => {
+    // 이메일 유효성 검사 정규식
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // 전화번호 유효성 검사 정규식
+    const phoneRegex = /^\d{3}-\d{4}-\d{4}$/;
+
+    // 필수 입력값 검증
+    if (!state.customerName.trim()) {
+      toast.error("고객 이름을 입력해주세요.");
+      return;
+    }
+    if (!state.customerTel.trim()) {
+      toast.error("고객 연락처를 입력해주세요.");
+      return;
+    }
+    if (!phoneRegex.test(state.customerTel)) {
+      toast.error("올바른 연락처 형식을 입력해주세요. (예: 000-0000-0000)");
+      return;
+    }
+    if (!state.customerMail.trim()) {
+      toast.error("고객 e-mail을 입력해주세요.");
+      return;
+    }
+    if (!emailRegex.test(state.customerMail)) {
+      toast.error("올바른 이메일 형식을 입력해주세요.");
+      return;
+    }
+
+    // 등록 요청 데이터 준비
     const requestData = {  
       ...state,
       customerReg: startDate.toISOString().split('T')[0], // 등록일 년월일
     };
 
     axios
-      .post("http://localhost:8080/customer", requestData)  //POST요청으로 고객 데이터 보냄
+      .post("http://localhost:8080/customer", requestData)  // POST 요청으로 고객 데이터 전송
       .then((res) => {
         if (res.data.isSuccess) {  // 요청 성공 시 처리
           toast.success("고객 등록이 완료되었습니다.");
           setShowModal(false); // 모달 닫기
           refresh();  // 부모 컴포넌트의 데이터를 갱신
-          navigate(""); //추가 후 고객 목록페이지로
+          navigate(""); // 추가 후 고객 목록 페이지로 이동
         }
       })
-      .catch((error) => {  // 요청 실패 시
-        toast.error("등록 중 오류 발생:", error);
+      .catch((error) => {  // 요청 실패 시 처리
         toast.error("고객 등록 중 오류가 발생했습니다: " + (error.message || "서버 오류"));
-        // 오류 응답을 로그에 출력
-        if (error.response) {
-          toast.error("서버 응답 오류:", error.response);
-        } else if (error.request) {
-          toast.error("서버에 요청이 전달되지 않았습니다:", error.request);
-        } else {
-          toast.error("오류 발생:", error.message);
-        }
       });
   };
 
@@ -70,9 +86,8 @@ export default function CustomerInsForm({ setShowModal, refresh, show }) {
             <h5 className="modal-title">고객 등록</h5>
             <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
           </div>
-          <div className="modal-body" >
+          <div className="modal-body">
             <form>
-              {/* 고객 이름 */}
               <div className="mb-3">
                 <label>고객 이름</label>
                 <input
@@ -86,7 +101,6 @@ export default function CustomerInsForm({ setShowModal, refresh, show }) {
                 />
               </div>
 
-              {/* 고객 성별 */}
               <div className="mb-3">
                 <label>고객 성별</label>
                 <GenderPickerComponent
@@ -95,7 +109,6 @@ export default function CustomerInsForm({ setShowModal, refresh, show }) {
                 />
               </div>
 
-              {/* 고객 연락처 */}
               <div className="mb-3">
                 <label>고객 연락처</label>
                 <input
@@ -109,7 +122,6 @@ export default function CustomerInsForm({ setShowModal, refresh, show }) {
                 />
               </div>
 
-              {/* 고객 e-mail */}
               <div className="mb-3">
                 <label>고객 e-mail</label>
                 <input
@@ -122,7 +134,6 @@ export default function CustomerInsForm({ setShowModal, refresh, show }) {
                 />
               </div>
 
-              {/* 고객 등록일 */}
               <div className="mb-3">
                 <label>고객 등록일</label>
                 <DatePickerComponent
@@ -134,7 +145,6 @@ export default function CustomerInsForm({ setShowModal, refresh, show }) {
                 />
               </div>
 
-              {/* 고객 등급 */}
               <div className="mb-3">
                 <label>고객 등급</label>
                 <SelectPickerComponent
@@ -143,7 +153,6 @@ export default function CustomerInsForm({ setShowModal, refresh, show }) {
                 />
               </div>
 
-              {/* 고객 특이사항 */}
               <div className="mb-3">
                 <label>고객 특이사항</label>
                 <input
