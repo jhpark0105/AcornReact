@@ -7,6 +7,7 @@ import '../../../../styles/modal.css';
  * @param {function} handleInsertB - 등록 버튼 선택 시 실행되는 함수
  * @param {function} setShowModal - 모달 상태를 변경하는 함수 (열기/닫기)
  */
+
 function ProductBModal({ handleChange, handleInsertB, setShowModal }) {
   return (
     <div

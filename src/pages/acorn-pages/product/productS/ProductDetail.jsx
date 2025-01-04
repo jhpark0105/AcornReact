@@ -1,11 +1,9 @@
 import '../../../../styles/modal.css';
 import { useState } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-/**
- * 상품 상세 모달 컴포넌트
- */
+//상품 상세 모달 컴포넌트
 function ProductDetailModal({
   isEditing,
   selectedProduct,

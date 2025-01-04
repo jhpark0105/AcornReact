@@ -70,6 +70,7 @@ function PRODUCT() {
         })
         .catch((error) => {
             toast.error("상품 등록 중 오류가 발생했습니다.");
+            console.error("Insert Error:", error);
         });
   };
 
@@ -103,10 +104,10 @@ function PRODUCT() {
   
     // 이미지 처리
     if (selectedProduct.imageFile) {
-      //새로운 이미지 추가가
+      //새로운 이미지 추가
       formData.append("image", selectedProduct.imageFile);
     } else if (selectedProduct.productImagePath) {
-      //기존 이미지 경로 유지지
+      //기존 이미지 경로 유지
       formData.append("imagePath", selectedProduct.productImagePath);
     } else {
       console.log("이미지가 제공되지 않았습니다.");
@@ -128,6 +129,7 @@ function PRODUCT() {
       })
       .catch((error) => {
         toast.error("상품 수정 중 오류가 발생했습니다.");
+        console.error("Update Error:", error);
       });
   };
 
@@ -159,6 +161,7 @@ function PRODUCT() {
         })
         .catch((error) => {
           toast.error("상품 삭제 중 오류가 발생했습니다.");
+          console.error("Delete Error:", error);
         });
     }
   };

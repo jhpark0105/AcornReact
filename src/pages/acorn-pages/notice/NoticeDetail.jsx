@@ -19,8 +19,6 @@ export default function NoticeDetail() {
   useEffect(() => {
     axios.get(`http://localhost:8080/notice/${noticeNo}`) // 공지 상세 데이터를 가져오기 위한 API 호출
       .then((response) => {
-        console.log("Notice Data:", response.data); // 전체 notice 객체를 직접 확인
-        console.log("noticeImagePath:", response.data.noticeImagePath); // 이미지 경로를 확인
         setNotice(response.data); // 가져온 데이터를 상태에 저장
       })
       .catch((error) => {
