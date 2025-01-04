@@ -123,11 +123,7 @@ function ReservationList({ reservations, handleDetail, setShowModal }) {
    * @param {string} orderBy - 정렬 기준 필드
    */
 
-  function ReservationTableHead({ order, orderBy, onRequestSort }) {
-    const createSortHandler = (property) => () => {
-      onRequestSort(property);
-    };
-
+  function ReservationTableHead({ order, orderBy }) {
     return (
       <TableHead>
         <TableRow>
@@ -136,6 +132,11 @@ function ReservationList({ reservations, handleDetail, setShowModal }) {
               key={headCell.id}
               align={headCell.align}
               sortDirection={orderBy === headCell.id ? order : false}
+              sx={{
+                width: headCell.width,
+                cursor: "default", // 클릭 가능한 커서 제거
+                pointerEvents: "none", // 클릭 이벤트 비활성화
+              }}
             >
               {headCell.label}
             </TableCell>
