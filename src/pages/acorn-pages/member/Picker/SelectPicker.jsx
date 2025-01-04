@@ -14,7 +14,7 @@ const SelectPickerComponent = ({handleJob, value}) => {
     <div className='select-picker-container'>
             <SelectPicker
             data={jobs}
-            placeholder="직책을 선택해주세요."
+            placeholder="직책을 선택하세요."
             block
             value={value}
             onChange={handleJob}

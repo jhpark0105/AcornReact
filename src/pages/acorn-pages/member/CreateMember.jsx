@@ -36,67 +36,76 @@ console.log("selected date",date);
 
                   
     return (
-        <div className={`modal ${show ? 'show' : ''}`} style={{ display: show ? 'block' : 'none', backgroundColor: "rgba(0, 0, 0, 0.5)", zIndex: 1080 }} tabIndex="-1">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">직원 등록</h5>
-                {/* onClick={() => setShowModal(true)} : 등록 모달 열기 */}
-                <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
-              </div>
-    
-              <div className="modal-body">
-                <form>
-                  <div className="mb-3">
-                    <label>직원 사번</label>
-                    <input type="text" name="memberId" onChange={handleChange}
-                      className="form-control" placeholder="사번을 입력하세요." />
-                  </div>
-    
-                  <div className="mb-3">
-                    <label>직원 이름</label>
-                    <input type="text" name="memberName" onChange={handleChange}
-                      className="form-control" placeholder="직원 이름을 입력하세요." />
-                  </div>
+			<div
+				className={`modal ${show ? 'show' : ''}`}
+				style={{ display: show ? 'block' : 'none', backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1080 }}
+				tabIndex="-1"
+			>
+				<div className="modal-dialog">
+					<div className="modal-content">
+						<div className="modal-header">
+							<h5 className="modal-title">직원 등록</h5>
+							{/* onClick={() => setShowModal(true)} : 등록 모달 열기 */}
+							<button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
+						</div>
 
-                  <div className="mb-3">
-                    <SelectPickerComponent
-                    value={selectedJob}
-                    handleJob={handleJob}
-                    />
-                  </div>
+						<div className="modal-body">
+							<form>
+								<div className="mb-3">
+									<label>직원 사번</label>
+									<input type="text" name="memberId" onChange={handleChange} className="form-control" placeholder="사번을 입력하세요." />
+								</div>
 
-                  <div className="mb-3" ref={modalRef}>
-                    <label>입사일</label>
-                    <DatePickerComponent
-                     name="memberDate"
-                     mindate={today} // Date 객체로 전달 
-                     handleDate={handleDate}
-                     
-                     value={selectedDate}
-                    />
-                  </div>
+								<div className="mb-3">
+									<label>직원 이름</label>
+									<input
+										type="text"
+										name="memberName"
+										onChange={handleChange}
+										className="form-control"
+										placeholder="직원 이름을 입력하세요."
+									/>
+								</div>
 
-                  <div className="mb-3">
-                    <label>연락처</label>
-                    <input type="text" name="memberTel" onChange={handleChange}
-                      className="form-control" placeholder="직원 연락처를 입력하세요." />
-                  </div>
+								<div className="mb-3">
+									<label>직원 직책</label>
+									<SelectPickerComponent value={selectedJob} handleJob={handleJob} />
+								</div>
 
-                </form>
-              </div>
-    
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>
-                  닫기
-                </button>
-                <button type="button" className="btn btn-primary" onClick={insertProcess}>
-                  등록
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      );
+								<div className="mb-3" ref={modalRef}>
+									<label>입사일</label>
+									<DatePickerComponent
+										name="memberDate"
+										mindate={today} // Date 객체로 전달
+										handleDate={handleDate}
+										value={selectedDate}
+									/>
+								</div>
+
+								<div className="mb-3">
+									<label>연락처</label>
+									<input
+										type="text"
+										name="memberTel"
+										onChange={handleChange}
+										className="form-control"
+										placeholder="직원 연락처를 입력하세요."
+									/>
+								</div>
+							</form>
+						</div>
+
+						<div className="modal-footer">
+							<button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>
+								닫기
+							</button>
+							<button type="button" className="btn btn-primary" onClick={insertProcess}>
+								등록
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		);
     }
 export default MemberModal;

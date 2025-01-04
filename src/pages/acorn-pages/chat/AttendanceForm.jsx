@@ -65,7 +65,7 @@ const TodayAttendanceTable = () => {
 				<Table>
 					<TableHead>
 						<TableRow>
-							<TableCell>ID</TableCell>
+							<TableCell>직원 사번</TableCell>
 							<TableCell>직원 이름</TableCell>
 							<TableCell>날짜</TableCell>
 							<TableCell>출근 시간</TableCell>
