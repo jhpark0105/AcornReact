@@ -20,6 +20,8 @@ export default function NoticeDetail() {
   // 댓글 관련 상태
   const [comments, setComments] = useState([]); // 댓글 목록
   const [newComment, setNewComment] = useState(''); // 새 댓글 내용
+  const [replyingTo, setReplyingTo] = useState(null); // 답글 작성 중인 댓글 ID
+  const [replyContents, setReplyContents] = useState({}); // 답글 내용을 각 댓글별로 관리
   const [editingCommentId, setEditingCommentId] = useState(null); // 수정 중인 댓글 ID
   const [editingContent, setEditingContent] = useState(''); // 수정 중인 댓글 내용
   const [deleteCommentId, setDeleteCommentId] = useState(null); // 삭제할 댓글 ID
@@ -109,6 +111,11 @@ export default function NoticeDetail() {
       });
   };
 
+  //답글 버튼 클릭 처리
+  const handleReplyButtonClick = (commentNo) => {
+    setReplyingTo((prevReplyingTo) => (prevReplyingTo === commentNo ? null : commentNo));
+  };
+
   // 댓글 삭제 모달 열기
   const handleOpenDeleteCommentModal = (commentNo) => {
     setDeleteCommentId(commentNo);
@@ -152,34 +159,31 @@ export default function NoticeDetail() {
   };
 
   // 답글 작성 처리 함수
-  const handleReplyComment = (parentCommentId, replyContent) => {
-    if (!replyContent.trim()) return;
-  
+  const handleReplyComment = (parentCommentId) => {
+    const replyContent = replyContents[parentCommentId]?.trim(); // 해당 댓글의 답글 내용
+    if (!replyContent) {
+      toast.warning('답글 내용을 입력해주세요.');
+      return;
+    }
+
     axios
       .post(`http://localhost:8080/comment`, {
         noticeNo: noticeNo,
         content: replyContent,
         parentNo: parentCommentId,
-        authorType: 'ADMIN', // 예: 관리자 고정
-        authorId: 1, // 예: 관리자의 ID (고정값 또는 인증 정보에서 가져오기)
+        authorType: 'ADMIN', // 관리자
+        authorId: 1, // 관리자 ID
       })
-      .then((response) => {
-        const newReply = response.data;
-  
-        // 댓글 트리 업데이트
-        setComments((prevComments) =>
-          prevComments.map((comment) => {
-            if (comment.commentNo === parentCommentId) {
-              return {
-                ...comment,
-                replies: [...comment.replies, newReply],
-              };
-            }
-            return comment;
-          })
-        );
-  
-        toast.success('답글이 작성되었습니다.');
+      .then(() => {
+        // 댓글 목록 새로고침
+        axios
+          .get(`http://localhost:8080/comment/${noticeNo}`)
+          .then((response) => {
+            setComments(response.data);
+            setReplyContents((prev) => ({ ...prev, [parentCommentId]: '' })); // 해당 댓글의 답글 입력창 초기화
+            setReplyingTo(null); // 답글 작성 상태 초기화
+            toast.success('답글이 작성되었습니다.');
+          });
       })
       .catch((error) => {
         toast.error('답글 작성 중 오류가 발생했습니다.');
@@ -187,14 +191,36 @@ export default function NoticeDetail() {
       });
   };
 
-  const renderComments = (comments) => {
+  //댓글 트리 렌더링
+  const renderComments = (comments, depth = 0) => {
     return comments.map((comment) => (
-      <Box key={comment.commentNo} sx={{ marginLeft: comment.parentNo ? 1 : 0, marginBottom: 2 }}>
+      <Box
+        key={comment.commentNo}
+        sx={{
+          marginLeft: depth > 0 ? depth * 2 : 0,
+          marginBottom: 2,
+          borderLeft: depth > 0 ? '1px solid #ddd' : 'none',
+          paddingLeft: depth > 0 ? 2 : 0,
+        }}
+      >
         {/* 댓글 본문 */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
           <Box sx={{ flexGrow: 1 }}>
-            {comment.parentNo && (
-              <Typography variant="body2" sx={{ color: 'gray', display: 'inline-block', marginRight: 1 }}>
+            {depth > 0 && (
+              <Typography
+                variant="body2"
+                sx={{
+                  color: 'gray',
+                  display: 'inline-block',
+                  marginRight: 1,
+                }}
+              >
                 ↳
               </Typography>
             )}
@@ -205,7 +231,7 @@ export default function NoticeDetail() {
                 onChange={(e) => setEditingContent(e.target.value)}
                 sx={{
                   width: '96%',
-                  marginRight: 2,
+                  marginBottom: 1,
                 }}
               />
             ) : (
@@ -215,16 +241,17 @@ export default function NoticeDetail() {
             )}
             <Typography variant="body2" color="text.secondary">
               작성자: {comment.authorType === 'CUSTOMER' ? '고객' : '관리자'} |{' '}
-              작성일: {format(new Date(comment.createdAt), 'yyyy-MM-dd HH:mm:ss')}
-              {comment.updatedAt &&
-                new Date(comment.updatedAt).getTime() > new Date(comment.createdAt).getTime() && (
-                  <> (수정)</>
-                )}
+              작성일:{' '}
+              {new Date(comment.updatedAt).getTime() > new Date(comment.createdAt).getTime()
+                ? format(new Date(comment.updatedAt), 'yyyy-MM-dd HH:mm:ss') // 수정일
+                : format(new Date(comment.createdAt), 'yyyy-MM-dd HH:mm:ss')} {/* 작성일 */}
+              {new Date(comment.updatedAt).getTime() > new Date(comment.createdAt).getTime() && (
+                <span> (수정)</span> // 수정 여부 표시
+              )}
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', gap: 1 }}>
             {comment.authorType === 'ADMIN' ? (
-              // 관리자 댓글에 수정/삭제 버튼 표시
               editingCommentId === comment.commentNo ? (
                 <>
                   <Button
@@ -268,20 +295,11 @@ export default function NoticeDetail() {
                 </>
               )
             ) : (
-              // 고객 댓글에 답글 버튼 표시
               <Button
                 variant="outlined"
                 color="secondary"
                 size="small"
-                onClick={() =>
-                  setComments((prevComments) =>
-                    prevComments.map((c) =>
-                      c.commentNo === comment.commentNo
-                        ? { ...c, isReplying: !c.isReplying } // isReplying 상태 토글
-                        : c
-                    )
-                  )
-                }
+                onClick={() => handleReplyButtonClick(comment.commentNo)}
               >
                 답글
               </Button>
@@ -289,15 +307,14 @@ export default function NoticeDetail() {
           </Box>
         </Box>
   
-        {/* 답글 작성 인풋박스 */}
-        {comment.isReplying && comment.authorType === 'CUSTOMER' && (
+        {/* 답글 작성 UI */}
+        {replyingTo === comment.commentNo && (
           <Box
             sx={{
               display: 'flex',
               alignItems: 'center',
               gap: 1,
               marginTop: 2,
-              marginLeft: 1, // 들여쓰기 효과
             }}
           >
             <Typography variant="body2" sx={{ flexShrink: 0 }}>
@@ -307,35 +324,22 @@ export default function NoticeDetail() {
               size="small"
               variant="outlined"
               placeholder="답글을 입력하세요"
-              value={comment.replyContent || ''}
+              value={replyContents[comment.commentNo] || ''} // 해당 댓글의 답글 내용
               onChange={(e) =>
-                setComments((prevComments) =>
-                  prevComments.map((c) =>
-                    c.commentNo === comment.commentNo
-                      ? { ...c, replyContent: e.target.value }
-                      : c
-                  )
-                )
+                setReplyContents((prev) => ({
+                  ...prev,
+                  [comment.commentNo]: e.target.value,
+                }))
               }
               sx={{
                 flexGrow: 1,
-                maxWidth: '100%', // 최대 너비 제한
               }}
             />
             <Button
               variant="contained"
               color="primary"
               size="small"
-              onClick={() => {
-                handleReplyComment(comment.commentNo, comment.replyContent || '');
-                setComments((prevComments) =>
-                  prevComments.map((c) =>
-                    c.commentNo === comment.commentNo
-                      ? { ...c, isReplying: false, replyContent: '' }
-                      : c
-                  )
-                );
-              }}
+              onClick={() => handleReplyComment(comment.commentNo)}
             >
               답글 작성
             </Button>
@@ -344,7 +348,9 @@ export default function NoticeDetail() {
   
         {/* 대댓글(답글) 렌더링 */}
         {comment.replies && comment.replies.length > 0 && (
-          <Box sx={{ marginLeft: 1, marginTop: 1 }}>{renderComments(comment.replies)}</Box>
+          <Box sx={{ marginLeft: 1, marginTop: 1 }}>
+            {renderComments(comment.replies, depth + 1)}
+          </Box>
         )}
       </Box>
     ));
@@ -369,24 +375,17 @@ export default function NoticeDetail() {
       {/* 공지사항 상세 */}
       <Card sx={{ minWidth: 650, margin: 'auto', marginTop: 4 }}>
         <CardContent>
-          {/* 공지 제목 */}
-          <Typography variant="h5" gutterBottom>
-            {notice.noticeTitle}
-          </Typography>
-
-          {/* 공지번호와 작성일 */}
+          {/* 공지 제목 및 작성일 */}
           <Box
             sx={{
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              marginBottom: 1,
             }}
           >
-            {/* 공지번호 */}
-            <Typography color="text.secondary"># {notice.noticeNo}</Typography>
-
-            {/* 작성일 */}
+            <Typography variant="h5" gutterBottom>
+              {notice.noticeTitle}
+            </Typography>
             <Typography color="text.secondary" sx={{ textAlign: 'right' }}>
               작성일: {notice.noticeReg}
             </Typography>
@@ -394,27 +393,38 @@ export default function NoticeDetail() {
 
           <Divider sx={{ my: 2 }} />
 
-          {/* 공지 내용 */}
-          <Typography style={{ whiteSpace: 'pre-line' }}>
-            {notice.noticeContent}
-          </Typography>
+          {/* 공지 내용과 공지 이미지 */}
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'flex-start',
+              gap: 2, // 공지 내용과 이미지 간격
+            }}
+          >
+            {/* 공지 내용 */}
+            <Box sx={{ flex: 1 }}>
+              <Typography style={{ whiteSpace: 'pre-line' }}>
+                {notice.noticeContent}
+              </Typography>
+            </Box>
 
-          {/* 공지 이미지 */}
-          {notice.noticeImagePath && (
-            <Box
-              component="img"
-              src={notice.noticeImagePath}
-              alt="공지 이미지"
-              sx={{
-                width: '100%',
-                height: 'auto',
-                maxHeight: '300px',
-                objectFit: 'contain',
-                borderRadius: 2,
-                marginTop: 2,
-              }}
-            />
-          )}
+            {/* 공지 이미지 */}
+            {notice.noticeImagePath && (
+              <Box
+                component="img"
+                src={notice.noticeImagePath}
+                alt="공지 이미지"
+                sx={{
+                  width: '40%', // 이미지가 차지할 비율
+                  height: 'auto',
+                  maxHeight: '300px',
+                  objectFit: 'contain',
+                  borderRadius: 2,
+                }}
+              />
+            )}
+          </Box>
         </CardContent>
       </Card>
 
