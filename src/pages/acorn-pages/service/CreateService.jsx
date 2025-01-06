@@ -93,6 +93,7 @@ function ServiceModal({ handleChange, handleInsert, setShowModal }) {
                   onChange={handleInputChange}
                   className="form-control"
                   placeholder="서비스 코드를 입력하세요."
+                  style={{width:465}}
                 />
                 {/* 서비스 코드 오류 메시지 */}
                 {errorMessages.serviceCode && (
@@ -111,6 +112,7 @@ function ServiceModal({ handleChange, handleInsert, setShowModal }) {
                   onChange={handleInputChange}
                   className="form-control"
                   placeholder="서비스 이름을 입력하세요."
+                  style={{width:465}}
                 />
                 {/* 서비스 이름 오류 메시지 */}
                 {errorMessages.serviceName && (
@@ -129,6 +131,7 @@ function ServiceModal({ handleChange, handleInsert, setShowModal }) {
                   onChange={handleInputChange}
                   className="form-control"
                   placeholder="서비스 금액을 입력하세요."
+                  style={{width:465}}
                 />
                 {/* 서비스 금액 오류 메시지 */}
                 {errorMessages.servicePrice && (
