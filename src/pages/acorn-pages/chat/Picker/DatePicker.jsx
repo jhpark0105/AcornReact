@@ -13,7 +13,6 @@ const DatePickerComponent = ({ value, handleDate, disabled, style }) => (
       onChange={handleDate}
       placement="bottomStart" // 팝업 위치 조정
       container={() => document.body} // 모달 내부로 제한
-      virtualized={true}
       disabled={disabled}
     />
   </div>

@@ -24,8 +24,7 @@ const MemberDetailModal = ({
     const handleJob = (value) => {
         handleDetailChange({target:{name:'memberJob', value}});
     }
-    console.log(selectedMember.memberName)
-    console.log(selectedMember.memberDate)
+
     return(
         <>
         {/* 모달 배경

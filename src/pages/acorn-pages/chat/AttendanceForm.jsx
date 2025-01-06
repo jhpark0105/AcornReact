@@ -52,9 +52,9 @@ const TodayAttendanceTable = () => {
 			memberId: member.memberId,
 			memberName: member.memberName,
 			attendanceDate: attendance?.attendanceDate || todayDate,
-			checkIn: attendance?.checkIn || "미등록",
-			checkOut: attendance?.checkOut || "미등록",
-			attendanceStatus: attendance?.attendanceStatus || "미등록",
+			checkIn: attendance?.checkIn || "-",
+			checkOut: attendance?.checkOut || "-",
+			attendanceStatus: attendance?.attendanceStatus || "-",
 		};
 	});
 

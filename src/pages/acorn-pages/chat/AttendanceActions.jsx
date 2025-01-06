@@ -11,13 +11,14 @@ import {
 import { toast } from "react-toastify";
 
 
+
 const AttendanceActions = () => {
 	const [memberId, setMemberId] = useState("");
 	const [password, setPassword] = useState("");
 
 	const handleCheckIn = () => {
 		axios
-			.post("/api/attendance/check-in", null, {
+			.post("http://localhost:8080/api/attendance/check-in", null, {
 				params: { memberId, password },
 			})
 			.then((response) => {
@@ -26,14 +27,14 @@ const AttendanceActions = () => {
 			.catch((error) => {
 				console.error("Error during check-in:", error);
 				toast.error(
-					error.response?.data || "출근 처리 중 오류가 발생했습니다."
+					error.response?.data
 				);
 			});
 	};
 
 	const handleCheckOut = () => {
 		axios
-			.post("/api/attendance/check-out", null, {
+			.post("http://localhost:8080/api/attendance/check-out", null, {
 				params: { memberId },
 			})
 			.then((response) => {
@@ -49,7 +50,6 @@ const AttendanceActions = () => {
 
 	return (
 		<Paper elevation={3} sx={{ padding: 3, margin: "20px auto", maxWidth: 400 }}>
-			<ToastContainer />
 			<Typography variant="h5" component="h2" gutterBottom align="center">
 				출근 / 퇴근 관리
 			</Typography>

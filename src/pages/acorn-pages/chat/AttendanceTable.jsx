@@ -190,7 +190,7 @@ const AttendanceTable = () => {
 													: {}
 											}
 										>
-											{row[col.id] || "미등록"}
+											{row[col.id] || "-"}
 										</TableCell>
 									))}
 								</TableRow>
